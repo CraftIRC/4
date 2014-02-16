@@ -96,7 +96,7 @@ public final class EndpointManager {
         }
         for (final Object listElement : list) {
             if (!Map.class.isAssignableFrom(listElement.getClass())) {
-                // Not even a map? What kind of nonsense is this
+                // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;
             }
             final Map<?, ?> endpointMap = (Map<?, ?>) listElement;
