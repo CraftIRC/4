@@ -25,7 +25,7 @@ public abstract class Endpoint {
 
     /**
      * Adds a filter to the loaded Endpoint.
-     * <p>
+     * <p/>
      * Filters are added to a list and processed in the order they were
      * added.
      *
@@ -39,10 +39,10 @@ public abstract class Endpoint {
 
     /**
      * Optional method to load any additional information for this Endpoint.
-     * <p>
+     * <p/>
      * Additional information is stored under 'extra' in the Endpoint's
      * definition.
-     * <p>
+     * <p/>
      * This method is not called if no such section exists.
      *
      * @param data the 'extra' section of the configuration
@@ -53,7 +53,7 @@ public abstract class Endpoint {
 
     /**
      * Loads any custom filters for this Endpoint type.
-     * <p>
+     * <p/>
      * It is up to the implementation to call
      * {@link #addFilter(org.kitteh.craftirc.endpoint.filter.Filter)} to add
      * loaded filters.

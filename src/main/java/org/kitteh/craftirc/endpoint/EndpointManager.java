@@ -17,6 +17,7 @@ public final class EndpointManager {
     private final Map<String, Constructor<? extends Endpoint>> types = new ConcurrentHashMap<String, Constructor<? extends Endpoint>>();
     private final Map<String, List<Pair<String, Map<?, ?>>>> unRegistered = new ConcurrentHashMap<String, List<Pair<String, Map<?, ?>>>>();
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
+    private final Map<String, List<String>> links = new ConcurrentHashMap<String, List<String>>();
 
     EndpointManager() {
         // We register ours first.
@@ -26,9 +27,9 @@ public final class EndpointManager {
     /**
      * Registers an Endpoint type by {@link EndpointType} name. Endpoint
      * types registered here can be processed for loading from configuration.
-     * <p>
+     * <p/>
      * Classes must have a public, no-args constructor.
-     * <p>
+     * <p/>
      * Names are unique and may not be registered twice.
      *
      * @param clazz class of the Endpoint type to be registered
@@ -136,5 +137,53 @@ public final class EndpointManager {
             }
             this.loadEndpoint(constructor, name, endpointMap);
         }
+    }
+
+    void loadLinks(List<?> list) {
+        if (list == null) {
+            // TODO fire message for lack of links
+            return;
+        }
+        for (final Object listElement : list) {
+            if (!Map.class.isAssignableFrom(listElement.getClass())) {
+                // TODO: Track (Don't fire each time!) that an invalid entry was added
+                continue;
+            }
+            final Map<?, ?> linkMap = (Map<?, ?>) listElement;
+            final String source = this.get(linkMap, "source", String.class);
+            if (source == null) {
+                // TODO fire message for link without source
+                continue;
+            }
+            final String target = this.get(linkMap, "target", String.class);
+            if (target == null) {
+                // TODO fire message for link without target
+                continue;
+            }
+            final Object bidirectionalObject = linkMap.get("bidirectional");
+            boolean bidirectional = false;
+            if (bidirectionalObject != null) {
+                if (bidirectionalObject instanceof Boolean && bidirectionalObject == Boolean.TRUE) {
+                    bidirectional = true;
+                } else if (bidirectionalObject instanceof String && ((String) bidirectionalObject).equalsIgnoreCase("true")) {
+                    bidirectional = true;
+                }
+            }
+            this.addLink(source, target);
+            if (bidirectional) {
+                this.addLink(target, source);
+            }
+        }
+    }
+
+    private void addLink(String source, String target) {
+        source = source.toLowerCase();
+        target = target.toLowerCase();
+        List<String> targets = this.links.get(source);
+        if (targets == null) {
+            targets = new LinkedList<String>();
+            this.links.put(source, targets);
+        }
+        targets.add(target);
     }
 }
