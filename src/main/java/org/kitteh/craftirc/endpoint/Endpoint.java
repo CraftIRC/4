@@ -6,6 +6,10 @@ import java.util.Map;
 
 import org.kitteh.craftirc.endpoint.filter.Filter;
 
+/**
+ * Endpoints are the origin and destination of messages tracked by this
+ * plugin.
+ */
 public abstract class Endpoint {
     private String name;
     private List<Filter> filters = new LinkedList<Filter>();
@@ -19,6 +23,14 @@ public abstract class Endpoint {
         return this.name;
     }
 
+    /**
+     * Adds a filter to the loaded Endpoint.
+     * <p>
+     * Filters are added to a list and processed in the order they were
+     * added.
+     *
+     * @param filter filter to be added
+     */
     protected void addFilter(Filter filter) {
         if (filter != null) {
             this.filters.add(filter);
@@ -41,6 +53,10 @@ public abstract class Endpoint {
 
     /**
      * Loads any custom filters for this Endpoint type.
+     * <p>
+     * It is up to the implementation to call
+     * {@link #addFilter(org.kitteh.craftirc.endpoint.filter.Filter)} to add
+     * loaded filters.
      *
      * @param filters configuration section describing the filters to load
      */

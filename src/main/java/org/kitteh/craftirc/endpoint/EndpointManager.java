@@ -10,15 +10,29 @@ import org.apache.commons.lang.Validate;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.util.Pair;
 
+/**
+ * Maintains {@link Endpoint}s and classes corresponding to Endpoint types.
+ */
 public final class EndpointManager {
     private final Map<String, Constructor<? extends Endpoint>> types = new ConcurrentHashMap<String, Constructor<? extends Endpoint>>();
     private final Map<String, List<Pair<String, Map<?, ?>>>> unRegistered = new ConcurrentHashMap<String, List<Pair<String, Map<?, ?>>>>();
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
 
     EndpointManager() {
+        // We register ours first.
         registerEndpointType(MinecraftEndpoint.class);
     }
 
+    /**
+     * Registers an Endpoint type by {@link EndpointType} name. Endpoint
+     * types registered here can be processed for loading from configuration.
+     * <p>
+     * Classes must have a public, no-args constructor.
+     * <p>
+     * Names are unique and may not be registered twice.
+     *
+     * @param clazz class of the Endpoint type to be registered
+     */
     public void registerEndpointType(Class<? extends Endpoint> clazz) {
         Validate.isTrue(Endpoint.class.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type Endpoint");
         Constructor<? extends Endpoint> constructor = null;
