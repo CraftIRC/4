@@ -1,10 +1,12 @@
 package org.kitteh.craftirc.endpoint;
 
+import org.apache.commons.lang.Validate;
 import org.kitteh.craftirc.endpoint.filter.Filter;
+import org.kitteh.craftirc.message.EndpointMessage;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Endpoints are the origin and destination of messages tracked by this
@@ -12,7 +14,7 @@ import java.util.Map;
  */
 public abstract class Endpoint {
     private String name;
-    private List<Filter> filters = new LinkedList<Filter>();
+    private List<Filter> filters = new CopyOnWriteArrayList<Filter>();
 
     /**
      * Gets the name of this Endpoint.
@@ -32,9 +34,8 @@ public abstract class Endpoint {
      * @param filter filter to be added
      */
     protected void addFilter(Filter filter) {
-        if (filter != null) {
-            this.filters.add(filter);
-        }
+        Validate.notNull(filter, "Cannot add null filter!");
+        this.filters.add(filter);
     }
 
     /**
@@ -60,7 +61,27 @@ public abstract class Endpoint {
      *
      * @param filters configuration section describing the filters to load
      */
-    protected abstract void loadFilters(Map<String, Object> filters);
+    protected void loadFilters(Map<String, Object> filters) {
+        // By default, don't load any filters
+    }
+
+    /**
+     * Processes a received message prior to processing by filters. For
+     * example, now is the place to add the list of targetted Minecraft
+     * players, in a
+     * {@link org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint}.
+     *
+     * @param message message to process
+     */
+    protected void processReceivedMessage(EndpointMessage message) {
+        // By default, don't do anything
+    }
+
+    final void receiveMessage(EndpointMessage message) {
+        for (Filter filter : this.filters) {
+            filter.processIncomingMessage(message);
+        }
+    }
 
     void setName(String name) {
         this.name = name;

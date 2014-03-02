@@ -12,7 +12,7 @@ import java.util.Map;
  * {@link org.kitteh.craftirc.endpoint.Endpoint}.
  */
 public final class Message {
-    private Map<String, String> data;
+    private Map<String, Object> data;
     private String defaultMessage;
     private Endpoint source;
 
@@ -23,7 +23,7 @@ public final class Message {
      * @param defaultMessage this default message
      * @param data           all associated data
      */
-    public Message(Endpoint source, String defaultMessage, Map<String, String> data) {
+    public Message(Endpoint source, String defaultMessage, Map<String, Object> data) {
         this.source = source;
         this.defaultMessage = defaultMessage;
         this.data = data;
@@ -34,7 +34,7 @@ public final class Message {
      *
      * @return an immutable map representing the data
      */
-    public Map<String, String> getData() {
+    public Map<String, Object> getData() {
         return ImmutableMap.copyOf(this.data);
     }
 

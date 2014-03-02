@@ -13,7 +13,7 @@ public final class EndpointMessage {
     private Message originatingMessage;
     private Endpoint target;
     private String customMessage;
-    private WrappedMap<String, String> customData;
+    private WrappedMap<String, Object> customData;
 
     /**
      * Creates a message targetted at an
@@ -25,7 +25,7 @@ public final class EndpointMessage {
     public EndpointMessage(Endpoint target, Message originatingMessage) {
         this.target = target;
         this.originatingMessage = originatingMessage;
-        this.customData = new WrappedMap<String, String>(originatingMessage.getData());
+        this.customData = new WrappedMap<String, Object>(originatingMessage.getData());
         this.customMessage = originatingMessage.getDefaultMessage();
     }
 
@@ -35,7 +35,7 @@ public final class EndpointMessage {
      *
      * @return the custom data associated with the message
      */
-    public WrappedMap<String, String> getCustomData() {
+    public WrappedMap<String, Object> getCustomData() {
         return this.customData;
     }
 

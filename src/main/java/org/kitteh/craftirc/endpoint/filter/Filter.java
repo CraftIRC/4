@@ -1,5 +1,8 @@
 package org.kitteh.craftirc.endpoint.filter;
 
+import org.kitteh.craftirc.message.EndpointMessage;
+
 public interface Filter {
-    // TODO figure out a good way to process
+    // TODO handle outgoing
+    void processIncomingMessage(EndpointMessage message);
 }
