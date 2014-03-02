@@ -1,6 +1,7 @@
 package org.kitteh.craftirc.endpoint;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Server;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.util.Pair;
 
@@ -31,20 +32,25 @@ public final class EndpointManager {
      * Registers an Endpoint type by {@link EndpointType} name. Endpoint
      * types registered here can be processed for loading from configuration.
      * <p/>
-     * Classes must have a public, no-args constructor.
-     * <p/>
      * Names are unique and may not be registered twice.
+     * <p/>
+     * Classes must have a public constructor. The first constructor found is
+     * the constructor used. The following types can be specified as
+     * constructor parameters, with all others being passed null:
+     * <ul>
+     * <li>
+     * {@link org.bukkit.Server} - Is passed the Bukkit server.
+     * </li>
+     * </ul>
      *
      * @param clazz class of the Endpoint type to be registered
      */
     public void registerEndpointType(Class<? extends Endpoint> clazz) {
         Validate.isTrue(Endpoint.class.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type Endpoint");
-        Constructor<? extends Endpoint> constructor;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("Class '" + clazz.getSimpleName() + "' lacks a no-args constructor");
-        }
+        Constructor[] constructors = clazz.getConstructors();
+        Validate.isTrue(constructors.length > 0, "Class '" + clazz.getSimpleName() + "' lacks a public constructor");
+        @SuppressWarnings("unchecked")
+        Constructor<? extends Endpoint> constructor = constructors[0];
         final EndpointType type = clazz.getAnnotation(EndpointType.class);
         Validate.notNull(type, "Submitted class '" + clazz.getSimpleName() + "' has no EndpointType annotation");
         final String name = type.name();
@@ -87,8 +93,15 @@ public final class EndpointManager {
     }
 
     private void loadEndpoint(Constructor<? extends Endpoint> type, String name, Map<?, ?> map) {
+        Class<?>[] parameterTypes = type.getParameterTypes();
+        Object[] args = new Object[parameterTypes.length];
+        for (int i = 0; i < args.length; i++) {
+            if (parameterTypes[i].equals(Server.class)) {
+                args[i] = null; // TODO add Server
+            }
+        }
         try {
-            final Endpoint endpoint = type.newInstance();
+            final Endpoint endpoint = type.newInstance(args);
             endpoint.setName(name);
             final Map<String, Object> filters = this.getStringObjectMap(map.get("filter"), "filter");
             if (filters != null) {
