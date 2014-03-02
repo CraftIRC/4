@@ -5,6 +5,6 @@ package org.kitteh.craftirc.exceptions;
  */
 public class CraftIRCFoundTabsException extends CraftIRCInvalidConfigException {
     public CraftIRCFoundTabsException(int lineNumber, String line) {
-        super("Config cannot contain tabs. Found a tab on line " + lineNumber + ": " + line.substring(line.lastIndexOf('\t')));
+        super("Config cannot contain tabs. Found a tab on line " + lineNumber + ": " + line.replace("\t",""));
     }
 }
