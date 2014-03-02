@@ -1,5 +1,6 @@
 package org.kitteh.craftirc.endpoint.defaults;
 
+import org.bukkit.Server;
 import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.EndpointType;
 import org.kitteh.craftirc.endpoint.filter.defaults.BukkitPermissionFilter;
@@ -18,10 +19,16 @@ import java.util.Map;
 public class MinecraftEndpoint extends Endpoint {
     public static final String PLAYER_LIST = "destinationPlayers";
 
+    private Server server;
+
+    public MinecraftEndpoint(Server server) {
+        this.server = server;
+    }
+
     @Override
     protected void loadFilters(Map<String, Object> filters) {
         if (filters.containsKey("permission")) {
-            this.addFilter(new BukkitPermissionFilter(filters.get("permission").toString()));
+            this.addFilter(new BukkitPermissionFilter(this.server, filters.get("permission").toString()));
         }
     }
 

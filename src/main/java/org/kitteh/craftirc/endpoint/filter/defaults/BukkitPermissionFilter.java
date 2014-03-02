@@ -1,10 +1,13 @@
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.message.EndpointMessage;
 import org.kitteh.craftirc.util.MinecraftPlayer;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,14 +15,16 @@ import java.util.List;
  */
 public final class BukkitPermissionFilter implements Filter {
     private String permission;
+    private Server server;
 
     /**
      * Creates a filter by permission node.
      *
      * @param permission permission node to by which to filter
      */
-    public BukkitPermissionFilter(String permission) {
+    public BukkitPermissionFilter(Server server, String permission) {
         this.permission = permission;
+        this.server = server;
     }
 
     /**
@@ -35,7 +40,14 @@ public final class BukkitPermissionFilter implements Filter {
     public void processIncomingMessage(EndpointMessage message) {
         if (message.getCustomData().containsKey(MinecraftEndpoint.PLAYER_LIST)) {
             List<MinecraftPlayer> players = (List<MinecraftPlayer>) message.getCustomData().get(MinecraftEndpoint.PLAYER_LIST);
-            // TODO determine if player has the permission and remove otherwise
+            Iterator<MinecraftPlayer> iterator = players.iterator();
+            while (iterator.hasNext()) {
+                MinecraftPlayer minecraftPlayer = iterator.next();
+                Player player = this.server.getPlayerExact(minecraftPlayer.getName());
+                if (player == null || !player.hasPermission(this.getPermission())) {
+                    iterator.remove();
+                }
+            }
         }
     }
 }

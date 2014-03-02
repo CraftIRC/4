@@ -79,7 +79,11 @@ public abstract class Endpoint {
 
     final void receiveMessage(EndpointMessage message) {
         for (Filter filter : this.filters) {
-            filter.processIncomingMessage(message);
+            try {
+                filter.processIncomingMessage(message);
+            } catch (Throwable thrown) {
+                // TODO output stacktrace
+            }
         }
     }
 
