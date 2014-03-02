@@ -1,14 +1,14 @@
 package org.kitteh.craftirc.endpoint;
 
+import org.apache.commons.lang.Validate;
+import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
+import org.kitteh.craftirc.util.Pair;
+
 import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang.Validate;
-import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
-import org.kitteh.craftirc.util.Pair;
 
 /**
  * Maintains {@link Endpoint}s and classes corresponding to Endpoint types.
@@ -19,9 +19,12 @@ public final class EndpointManager {
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
     private final Map<String, List<String>> links = new ConcurrentHashMap<String, List<String>>();
 
-    EndpointManager() {
+    public EndpointManager(List<?> endpoints, List<?> links) {
         // We register ours first.
         registerEndpointType(MinecraftEndpoint.class);
+
+        loadEndpoints(endpoints);
+        loadLinks(links);
     }
 
     /**
@@ -36,12 +39,12 @@ public final class EndpointManager {
      */
     public void registerEndpointType(Class<? extends Endpoint> clazz) {
         Validate.isTrue(Endpoint.class.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type Endpoint");
-        Constructor<? extends Endpoint> constructor = null;
+        Constructor<? extends Endpoint> constructor;
         try {
             constructor = clazz.getConstructor();
         } catch (final Exception e) {
+            throw new IllegalArgumentException("Class '" + clazz.getSimpleName() + "' lacks a no-args constructor");
         }
-        Validate.notNull(constructor, "Class '" + clazz.getSimpleName() + "' lacks a no-args constructor");
         final EndpointType type = clazz.getAnnotation(EndpointType.class);
         Validate.notNull(type, "Submitted class '" + clazz.getSimpleName() + "' has no EndpointType annotation");
         final String name = type.name();
@@ -100,15 +103,11 @@ public final class EndpointManager {
                 // TODO message about replacing an endpoint. Alternately, don't replace.
             }
         } catch (final Exception e) {
-            // TODO error loading endpoint 
+            // TODO error loading endpoint
         }
     }
 
-    void loadEndpoints(List<?> list) {
-        if (list == null) {
-            // TODO fire message for lack of endpoints
-            return;
-        }
+    private void loadEndpoints(List<?> list) {
         for (final Object listElement : list) {
             if (!Map.class.isAssignableFrom(listElement.getClass())) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
@@ -139,7 +138,7 @@ public final class EndpointManager {
         }
     }
 
-    void loadLinks(List<?> list) {
+    private void loadLinks(List<?> list) {
         if (list == null) {
             // TODO fire message for lack of links
             return;

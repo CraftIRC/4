@@ -1,10 +1,10 @@
 package org.kitteh.craftirc.endpoint;
 
+import org.kitteh.craftirc.endpoint.filter.Filter;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.kitteh.craftirc.endpoint.filter.Filter;
 
 /**
  * Endpoints are the origin and destination of messages tracked by this
