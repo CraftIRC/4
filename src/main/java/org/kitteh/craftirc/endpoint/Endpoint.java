@@ -2,6 +2,7 @@ package org.kitteh.craftirc.endpoint;
 
 import org.apache.commons.lang.Validate;
 import org.kitteh.craftirc.endpoint.filter.Filter;
+import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.message.EndpointMessage;
 
 import java.util.List;
@@ -25,15 +26,7 @@ public abstract class Endpoint {
         return this.name;
     }
 
-    /**
-     * Adds a filter to the loaded Endpoint.
-     * <p/>
-     * Filters are added to a list and processed in the order they were
-     * added.
-     *
-     * @param filter filter to be added
-     */
-    protected void addFilter(Filter filter) {
+    private void addFilter(Filter filter) {
         Validate.notNull(filter, "Cannot add null filter!");
         this.filters.add(filter);
     }
@@ -53,17 +46,12 @@ public abstract class Endpoint {
     }
 
     /**
-     * Loads any custom filters for this Endpoint type.
-     * <p/>
-     * It is up to the implementation to call
-     * {@link #addFilter(org.kitteh.craftirc.endpoint.filter.Filter)} to add
-     * loaded filters.
+     * Loads a named {@link org.kitteh.craftirc.endpoint.filter.Filter}.
      *
-     * @param filters configuration section describing the filters to load
+     * @param name name of the Filter to load
+     * @param data associated information
      */
-    protected void loadFilters(Map<String, Object> filters) {
-        // By default, don't load any filters
-    }
+    protected abstract Filter loadFilter(String name, Object data);
 
     /**
      * Processes a received message prior to processing by filters. For
@@ -75,6 +63,32 @@ public abstract class Endpoint {
      */
     protected void processReceivedMessage(EndpointMessage message) {
         // By default, don't do anything
+    }
+
+    /**
+     * Loads filters for this Endpoint.
+     *
+     * @param filters configuration section describing the filters to load
+     */
+    final void loadFilters(Map<String, Object> filters) {
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            try {
+                Filter filter = this.loadFilter(entry.getKey(), entry.getValue());
+                if (filter == null) {
+                    // Default filters here
+                    if (entry.getKey().equalsIgnoreCase("regex")) {
+                        filter = new RegexFilter(); // TODO data!
+                    }
+                }
+                if (filter != null) {
+                    this.addFilter(filter);
+                } else {
+                    // TODO log unknown filter
+                }
+            } catch (Throwable thrown) {
+                // TODO print stacktrace
+            }
+        }
     }
 
     final void receiveMessage(EndpointMessage message) {
