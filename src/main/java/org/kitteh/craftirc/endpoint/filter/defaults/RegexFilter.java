@@ -1,6 +1,6 @@
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
-import org.kitteh.craftirc.endpoint.EndpointMessage;
+import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 
 /**
@@ -8,7 +8,7 @@ import org.kitteh.craftirc.endpoint.filter.Filter;
  */
 public class RegexFilter implements Filter {
     @Override
-    public void processIncomingMessage(EndpointMessage message) {
+    public void processIncomingMessage(TargetedMessage message) {
         // TODO get dx to do this
     }
 }

@@ -2,7 +2,7 @@ package org.kitteh.craftirc.endpoint.defaults;
 
 import org.bukkit.Server;
 import org.kitteh.craftirc.endpoint.Endpoint;
-import org.kitteh.craftirc.endpoint.EndpointMessage;
+import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.EndpointType;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.endpoint.filter.defaults.BukkitPermissionFilter;
@@ -34,7 +34,7 @@ public class MinecraftEndpoint extends Endpoint {
     }
 
     @Override
-    protected void processReceivedMessage(EndpointMessage message) {
+    protected void processReceivedMessage(TargetedMessage message) {
         // TODO populate list
         List<MinecraftPlayer> players = new LinkedList<MinecraftPlayer>();
         message.getCustomData().put(MinecraftEndpoint.PLAYER_LIST, players);

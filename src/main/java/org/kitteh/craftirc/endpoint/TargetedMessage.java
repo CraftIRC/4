@@ -6,9 +6,8 @@ import org.kitteh.craftirc.util.WrappedMap;
  * Defines a message as received by a particular
  * {@link org.kitteh.craftirc.endpoint.Endpoint}.
  * <p/>
- * TODO: Come up with a better name for this class
  */
-public final class EndpointMessage {
+public final class TargetedMessage {
     private Message originatingMessage;
     private Endpoint target;
     private String customMessage;
@@ -21,7 +20,7 @@ public final class EndpointMessage {
      * @param target message destination
      * @param originatingMessage the message being sent
      */
-    public EndpointMessage(Endpoint target, Message originatingMessage) {
+    public TargetedMessage(Endpoint target, Message originatingMessage) {
         this.target = target;
         this.originatingMessage = originatingMessage;
         this.customData = new WrappedMap<String, Object>(originatingMessage.getData());
@@ -30,7 +29,7 @@ public final class EndpointMessage {
 
     /**
      * Gets any custom data associated with this message. The data can be
-     * modified specifically for this EndpointMessage.
+     * modified specifically for this TargetedMessage.
      *
      * @return the custom data associated with the message
      */

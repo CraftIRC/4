@@ -60,7 +60,7 @@ public abstract class Endpoint {
      *
      * @param message message to process
      */
-    protected void processReceivedMessage(EndpointMessage message) {
+    protected void processReceivedMessage(TargetedMessage message) {
         // By default, don't do anything
     }
 
@@ -91,11 +91,11 @@ public abstract class Endpoint {
     }
 
     final void receiveMessage(Message message) {
-        EndpointMessage endpointMessage = new EndpointMessage(this, message);
-        this.processReceivedMessage(endpointMessage);
+        TargetedMessage targetedMessage = new TargetedMessage(this, message);
+        this.processReceivedMessage(targetedMessage);
         for (Filter filter : this.filters) {
             try {
-                filter.processIncomingMessage(endpointMessage);
+                filter.processIncomingMessage(targetedMessage);
             } catch (Throwable thrown) {
                 // TODO output stacktrace
             }

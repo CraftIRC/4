@@ -2,7 +2,7 @@ package org.kitteh.craftirc.endpoint.filter.defaults;
 
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import org.kitteh.craftirc.endpoint.EndpointMessage;
+import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.util.MinecraftPlayer;
@@ -37,7 +37,7 @@ public final class BukkitPermissionFilter implements Filter {
     }
 
     @Override
-    public void processIncomingMessage(EndpointMessage message) {
+    public void processIncomingMessage(TargetedMessage message) {
         if (message.getCustomData().containsKey(MinecraftEndpoint.PLAYER_LIST)) {
             @SuppressWarnings("unchecked")
             List<MinecraftPlayer> players = (List<MinecraftPlayer>) message.getCustomData().get(MinecraftEndpoint.PLAYER_LIST);
