@@ -18,6 +18,10 @@ import java.util.logging.Level;
 public final class CraftIRC extends JavaPlugin {
     EndpointManager endpointManager;
 
+    public EndpointManager getEndpointManager() {
+        return this.endpointManager;
+    }
+
     @Override
     public void onEnable() {
         this.getLogger().info("I do nothing!");

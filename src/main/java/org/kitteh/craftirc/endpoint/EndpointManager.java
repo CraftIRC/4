@@ -3,6 +3,7 @@ package org.kitteh.craftirc.endpoint;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
+import org.kitteh.craftirc.message.Message;
 import org.kitteh.craftirc.util.Pair;
 
 import java.lang.reflect.Constructor;
@@ -59,6 +60,19 @@ public final class EndpointManager {
         if (this.unRegistered.containsKey(name)) {
             for (final Pair<String, Map<?, ?>> endpoint : this.unRegistered.get(name)) {
                 this.loadEndpoint(constructor, endpoint.getA(), endpoint.getB());
+            }
+        }
+    }
+
+    public void sendMessage(Message message) {
+        Endpoint source = message.getSource();
+        List<String> targets = this.links.get(source.getName());
+        if (targets != null) { // Ya know, just in case
+            for (String name : targets) {
+                Endpoint target = this.endpoints.get(name);
+                if (target != null) { // Just in case!
+                    target.receiveMessage(message);
+                }
             }
         }
     }

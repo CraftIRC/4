@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.message.EndpointMessage;
+import org.kitteh.craftirc.message.Message;
 
 import java.util.List;
 import java.util.Map;
@@ -91,10 +92,11 @@ public abstract class Endpoint {
         }
     }
 
-    final void receiveMessage(EndpointMessage message) {
+    final void receiveMessage(Message message) {
+        EndpointMessage endpointMessage = new EndpointMessage(this, message);
         for (Filter filter : this.filters) {
             try {
-                filter.processIncomingMessage(message);
+                filter.processIncomingMessage(endpointMessage);
             } catch (Throwable thrown) {
                 // TODO output stacktrace
             }
