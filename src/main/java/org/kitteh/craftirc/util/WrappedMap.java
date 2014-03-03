@@ -98,10 +98,10 @@ public class WrappedMap<K, V> {
      */
     public V put(K key, V value) {
         V displaced;
-        if (!this.outerMap.containsKey(key)) {
-            displaced = this.innerMap.get(key);
-        } else {
+        if (this.outerMap.containsKey(key)) {
             displaced = this.outerMap.get(key);
+        } else {
+            displaced = this.innerMap.get(key);
         }
         this.outerMap.put(key, value);
         return displaced;

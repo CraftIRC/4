@@ -94,6 +94,7 @@ public abstract class Endpoint {
 
     final void receiveMessage(Message message) {
         EndpointMessage endpointMessage = new EndpointMessage(this, message);
+        this.processReceivedMessage(endpointMessage);
         for (Filter filter : this.filters) {
             try {
                 filter.processIncomingMessage(endpointMessage);

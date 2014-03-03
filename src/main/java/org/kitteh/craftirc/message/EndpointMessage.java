@@ -70,4 +70,13 @@ public final class EndpointMessage {
     public Endpoint getTarget() {
         return this.target;
     }
+
+    /**
+     * Gets the message sent by the source.
+     *
+     * @return the originating message
+     */
+    public Message getOriginatingMessage() {
+        return this.originatingMessage;
+    }
 }

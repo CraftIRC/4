@@ -39,6 +39,7 @@ public final class BukkitPermissionFilter implements Filter {
     @Override
     public void processIncomingMessage(EndpointMessage message) {
         if (message.getCustomData().containsKey(MinecraftEndpoint.PLAYER_LIST)) {
+            @SuppressWarnings("unchecked")
             List<MinecraftPlayer> players = (List<MinecraftPlayer>) message.getCustomData().get(MinecraftEndpoint.PLAYER_LIST);
             Iterator<MinecraftPlayer> iterator = players.iterator();
             while (iterator.hasNext()) {
