@@ -19,7 +19,7 @@ public final class EndpointMessage {
      * Creates a message targetted at an
      * {@link org.kitteh.craftirc.endpoint.Endpoint}.
      *
-     * @param target             message destination
+     * @param target message destination
      * @param originatingMessage the message being sent
      */
     public EndpointMessage(Endpoint target, Message originatingMessage) {

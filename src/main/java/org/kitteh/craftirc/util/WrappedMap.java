@@ -91,7 +91,7 @@ public class WrappedMap<K, V> {
      * this method will return the inner value which is now hidden by the
      * presence of the new mapping.
      *
-     * @param key   the key to map
+     * @param key the key to map
      * @param value the value mapped to the key
      * @return the value 'displaced' by the new mapping (See above) or null
      * if nothing was displaced.

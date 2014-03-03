@@ -19,9 +19,9 @@ public final class Message {
     /**
      * Creates a new message.
      *
-     * @param source         originator of this message
+     * @param source originator of this message
      * @param defaultMessage this default message
-     * @param data           all associated data
+     * @param data all associated data
      */
     public Message(Endpoint source, String defaultMessage, Map<String, Object> data) {
         this.source = source;
