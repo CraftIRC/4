@@ -3,7 +3,6 @@ package org.kitteh.craftirc.endpoint;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
-import org.kitteh.craftirc.message.Message;
 import org.kitteh.craftirc.util.Pair;
 
 import java.lang.reflect.Constructor;

@@ -1,7 +1,6 @@
-package org.kitteh.craftirc.message;
+package org.kitteh.craftirc.endpoint;
 
 import com.google.common.collect.ImmutableMap;
-import org.kitteh.craftirc.endpoint.Endpoint;
 
 import java.util.Map;
 

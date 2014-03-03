@@ -1,7 +1,7 @@
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
+import org.kitteh.craftirc.endpoint.EndpointMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
-import org.kitteh.craftirc.message.EndpointMessage;
 
 /**
  * Filter of information into the displayed message, via regular expression.

@@ -2,9 +2,9 @@ package org.kitteh.craftirc.endpoint.filter.defaults;
 
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.kitteh.craftirc.endpoint.EndpointMessage;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.endpoint.filter.Filter;
-import org.kitteh.craftirc.message.EndpointMessage;
 import org.kitteh.craftirc.util.MinecraftPlayer;
 
 import java.util.Iterator;

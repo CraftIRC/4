@@ -3,8 +3,6 @@ package org.kitteh.craftirc.endpoint;
 import org.apache.commons.lang.Validate;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
-import org.kitteh.craftirc.message.EndpointMessage;
-import org.kitteh.craftirc.message.Message;
 
 import java.util.List;
 import java.util.Map;

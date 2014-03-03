@@ -1,6 +1,5 @@
-package org.kitteh.craftirc.message;
+package org.kitteh.craftirc.endpoint;
 
-import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.util.WrappedMap;
 
 /**
@@ -42,7 +41,7 @@ public final class EndpointMessage {
     /**
      * Gets the current message to be outputted to the target Endpoint. By
      * default, this message is
-     * {@link org.kitteh.craftirc.message.Message#getDefaultMessage()}.
+     * {@link Message#getDefaultMessage()}.
      *
      * @return the message to be displayed to the Endpoint
      */

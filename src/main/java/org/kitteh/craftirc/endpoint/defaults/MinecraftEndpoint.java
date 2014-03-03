@@ -2,10 +2,10 @@ package org.kitteh.craftirc.endpoint.defaults;
 
 import org.bukkit.Server;
 import org.kitteh.craftirc.endpoint.Endpoint;
+import org.kitteh.craftirc.endpoint.EndpointMessage;
 import org.kitteh.craftirc.endpoint.EndpointType;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.endpoint.filter.defaults.BukkitPermissionFilter;
-import org.kitteh.craftirc.message.EndpointMessage;
 import org.kitteh.craftirc.util.MinecraftPlayer;
 
 import java.util.LinkedList;
