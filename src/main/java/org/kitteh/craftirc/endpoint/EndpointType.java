@@ -15,4 +15,11 @@ public @interface EndpointType {
      * @return unique name for this Endpoint type
      */
     String name();
+
+    /**
+     * Determines if the Endpoint will receive messages on the server thread.
+     *
+     * @return true if messages will be sent on the main thread
+     */
+    boolean sync() default false;
 }

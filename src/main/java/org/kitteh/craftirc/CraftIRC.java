@@ -83,6 +83,6 @@ public final class CraftIRC extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
         }
 
-        this.endpointManager = new EndpointManager(endpoints, links);
+        this.endpointManager = new EndpointManager(this, endpoints, links);
     }
 }

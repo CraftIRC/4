@@ -92,7 +92,11 @@ public abstract class Endpoint {
 
     final void receiveMessage(Message message) {
         TargetedMessage targetedMessage = new TargetedMessage(this, message);
-        this.processReceivedMessage(targetedMessage);
+        try {
+            this.processReceivedMessage(targetedMessage);
+        } catch (Throwable thrown) {
+            // TODO output stacktrace
+        }
         for (Filter filter : this.filters) {
             try {
                 filter.processIncomingMessage(targetedMessage);

@@ -2,13 +2,12 @@ package org.kitteh.craftirc.endpoint;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
+import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.util.Pair;
 
 import java.lang.reflect.Constructor;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,8 +18,10 @@ public final class EndpointManager {
     private final Map<String, List<Pair<String, Map<?, ?>>>> unRegistered = new ConcurrentHashMap<String, List<Pair<String, Map<?, ?>>>>();
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
     private final Map<String, List<String>> links = new ConcurrentHashMap<String, List<String>>();
+    private final MessageDistributor messageDistributor;
 
-    public EndpointManager(List<?> endpoints, List<?> links) {
+    public EndpointManager(CraftIRC plugin, List<?> endpoints, List<?> links) {
+        this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
         registerEndpointType(MinecraftEndpoint.class);
 
@@ -64,16 +65,27 @@ public final class EndpointManager {
     }
 
     public void sendMessage(Message message) {
-        Endpoint source = message.getSource();
-        List<String> targets = this.links.get(source.getName());
-        if (targets != null) { // Ya know, just in case
-            for (String name : targets) {
-                Endpoint target = this.endpoints.get(name);
-                if (target != null) { // Just in case!
-                    target.receiveMessage(message);
+        this.messageDistributor.addMessage(message);
+    }
+
+    /**
+     * Gets the Endpoint destinations of a named source Endpoint
+     *
+     * @param source source Endpoint
+     * @return destinations of a message send by the speciified Endpoint
+     */
+    Set<Endpoint> getDestinations(String source) {
+        Set<Endpoint> destinations = new HashSet<Endpoint>();
+        List<String> targets = this.links.get(source);
+        if (targets != null) {
+            for (String target : targets) {
+                Endpoint endpoint = this.endpoints.get(target);
+                if (endpoint != null) {
+                    destinations.add(endpoint);
                 }
             }
         }
+        return destinations;
     }
 
     private <T> T get(Map<?, ?> map, String key, Class<T> clazz) {
