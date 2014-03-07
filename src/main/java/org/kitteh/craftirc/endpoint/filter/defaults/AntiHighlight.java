@@ -7,8 +7,8 @@ import org.kitteh.craftirc.endpoint.filter.Filter;
  * Anti highlight aww yes.
  */
 public class AntiHighlight implements Filter {
-    private String splitter;
-    private String variable;
+    private final String splitter;
+    private final String variable;
 
     public AntiHighlight(String splitter, String variable) {
         this.splitter = splitter;

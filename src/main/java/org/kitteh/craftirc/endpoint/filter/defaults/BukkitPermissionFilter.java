@@ -14,8 +14,8 @@ import java.util.List;
  * A filter by permission node.
  */
 public final class BukkitPermissionFilter implements Filter {
-    private String permission;
-    private Server server;
+    private final String permission;
+    private final Server server;
 
     /**
      * Creates a filter by permission node.

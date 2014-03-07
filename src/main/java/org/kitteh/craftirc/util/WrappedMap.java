@@ -10,8 +10,8 @@ import java.util.Map;
  * have been changed, as well as any additional values.
  */
 public class WrappedMap<K, V> {
-    private Map<K, V> innerMap;
-    private Map<K, V> outerMap = new HashMap<K, V>();
+    private final Map<K, V> innerMap;
+    private final Map<K, V> outerMap = new HashMap<K, V>();
 
     /**
      * Wraps a map.
@@ -43,7 +43,7 @@ public class WrappedMap<K, V> {
      * @param key key which may exist in the map
      * @return true if the key is stored at either level
      */
-    public boolean containsKey(Object key) {
+    public boolean containsKey(K key) {
         return this.innerMap.containsKey(key) || this.outerMap.containsKey(key);
     }
 
@@ -55,7 +55,7 @@ public class WrappedMap<K, V> {
      * @param value value which may exist in the map
      * @return true if the value is in the map and visible
      */
-    public boolean containsValue(Object value) {
+    public boolean containsValue(V value) {
         if (this.outerMap.containsValue(value)) {
             return true;
         }
@@ -76,7 +76,7 @@ public class WrappedMap<K, V> {
      * @param key the key
      * @return the value the key is mapped to, or null if no mapping exists
      */
-    public V get(Object key) {
+    public V get(K key) {
         if (this.outerMap.containsKey(key)) {
             return this.outerMap.get(key);
         }
@@ -113,7 +113,7 @@ public class WrappedMap<K, V> {
      * @param key the key for which the mapping should be removed
      * @return the removed mapped value, or null if no mapping existed
      */
-    public V remove(Object key) {
+    public V remove(K key) {
         return this.outerMap.remove(key);
     }
 

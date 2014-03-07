@@ -20,7 +20,7 @@ import java.util.List;
 public class MinecraftEndpoint extends Endpoint {
     public static final String PLAYER_LIST = "destinationPlayers";
 
-    private Server server;
+    private final Server server;
 
     public MinecraftEndpoint(Server server) {
         this.server = server;

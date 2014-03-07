@@ -8,8 +8,8 @@ import java.util.UUID;
  * Represents an ingame player
  */
 public final class MinecraftPlayer {
-    private String name;
-    private UUID uniqueId;
+    private final String name;
+    private final UUID uniqueId;
 
     /**
      * Creates a MinecraftPlayer instance.

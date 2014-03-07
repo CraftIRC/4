@@ -8,10 +8,10 @@ import org.kitteh.craftirc.util.WrappedMap;
  * <p/>
  */
 public final class TargetedMessage {
-    private Message originatingMessage;
-    private Endpoint target;
+    private final Message originatingMessage;
+    private final Endpoint target;
     private String customMessage;
-    private WrappedMap<String, Object> customData;
+    private final WrappedMap<String, Object> customData;
 
     /**
      * Creates a message targetted at an

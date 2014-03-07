@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 final class MessageDistributor extends Thread {
     private class SendMessage implements Callable<Object> {
-        private Message message;
-        private Endpoint target;
+        private final Message message;
+        private final Endpoint target;
 
         private SendMessage(Message message, Endpoint target) {
             this.message = message;
@@ -28,7 +28,7 @@ final class MessageDistributor extends Thread {
     }
 
     private final EndpointManager endpointManager;
-    private ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<Message>();
+    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<Message>();
     private final CraftIRC plugin;
 
     MessageDistributor(EndpointManager manager, CraftIRC plugin) {

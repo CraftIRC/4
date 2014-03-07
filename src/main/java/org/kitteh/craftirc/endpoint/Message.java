@@ -11,9 +11,9 @@ import java.util.Map;
  * {@link org.kitteh.craftirc.endpoint.Endpoint}.
  */
 public final class Message {
-    private Map<String, Object> data;
-    private String defaultMessage;
-    private Endpoint source;
+    private final Map<String, Object> data;
+    private final String defaultMessage;
+    private final Endpoint source;
 
     /**
      * Creates a new message.

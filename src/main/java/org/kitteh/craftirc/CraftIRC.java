@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public final class CraftIRC extends JavaPlugin {
-    EndpointManager endpointManager;
+    private EndpointManager endpointManager;
 
     public EndpointManager getEndpointManager() {
         return this.endpointManager;
