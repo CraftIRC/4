@@ -35,11 +35,23 @@ public class MinecraftEndpoint extends Endpoint {
     }
 
     @Override
-    protected void processReceivedMessage(TargetedMessage message) {
+    protected void preProcessReceivedMessage(TargetedMessage message) {
         List<MinecraftPlayer> players = new LinkedList<MinecraftPlayer>();
         for (Player player : this.server.getOnlinePlayers()) {
             players.add(new MinecraftPlayer(player.getName(), player.getUniqueId()));
         }
         message.getCustomData().put(MinecraftEndpoint.PLAYER_LIST, players);
+    }
+
+    @Override
+    protected void receiveMessage(TargetedMessage message) {
+        @SuppressWarnings("unchecked")
+        List<MinecraftPlayer> recipients = (List<MinecraftPlayer>) message.getCustomData().get(MinecraftEndpoint.PLAYER_LIST);
+        for (MinecraftPlayer recipient : recipients) {
+            Player player = this.server.getPlayerExact(recipient.getName());
+            if (player != null) {
+                player.sendMessage(message.getCustomMessage());
+            }
+        }
     }
 }

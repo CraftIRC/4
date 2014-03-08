@@ -147,11 +147,11 @@ public final class EndpointManager {
 
     private void loadEndpoints(List<?> list) {
         for (final Object listElement : list) {
-            if (!Map.class.isAssignableFrom(listElement.getClass())) {
+            final Map<?, ?> endpointMap;
+            if ((endpointMap = this.getMap(listElement)) == null) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;
             }
-            final Map<?, ?> endpointMap = (Map<?, ?>) listElement;
             final String name = this.get(endpointMap, "name", String.class);
             if (name == null) {
                 // TODO fire message for unnamed/invalidly-named endpoint
@@ -182,11 +182,11 @@ public final class EndpointManager {
             return;
         }
         for (final Object listElement : list) {
-            if (!Map.class.isAssignableFrom(listElement.getClass())) {
+            final Map<?, ?> linkMap;
+            if ((linkMap = this.getMap(listElement)) == null) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;
             }
-            final Map<?, ?> linkMap = (Map<?, ?>) listElement;
             final String source = this.get(linkMap, "source", String.class);
             if (source == null) {
                 // TODO fire message for link without source
@@ -222,5 +222,12 @@ public final class EndpointManager {
             this.links.put(source, targets);
         }
         targets.add(target);
+    }
+
+    private Map<?, ?> getMap(Object o) {
+        if (Map.class.isAssignableFrom(o.getClass())) {
+            return (Map<?, ?>) o;
+        }
+        return null;
     }
 }

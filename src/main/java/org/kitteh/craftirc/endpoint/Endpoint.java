@@ -60,9 +60,19 @@ public abstract class Endpoint {
      *
      * @param message message to process
      */
-    protected void processReceivedMessage(TargetedMessage message) {
+    protected void preProcessReceivedMessage(TargetedMessage message) {
         // By default, don't do anything
     }
+
+    /**
+     * We get signal.
+     * <p/>
+     * A message received here has been processed by filters and is not
+     * rejected by them.
+     *
+     * @param message the message to be displayed
+     */
+    protected abstract void receiveMessage(TargetedMessage message);
 
     /**
      * Loads filters for this Endpoint.
@@ -90,20 +100,36 @@ public abstract class Endpoint {
         }
     }
 
+    /**
+     * Receive a message and process.
+     * <p/>
+     * Sequence of events:
+     * <ol>
+     * <li>Pre-process</li>
+     * <li>Run through filters, stop if rejected</li>
+     * <li>Handle as received</li>
+     * </ol>
+     *
+     * @param message the message sent by the source
+     */
     final void receiveMessage(Message message) {
         TargetedMessage targetedMessage = new TargetedMessage(this, message);
         try {
-            this.processReceivedMessage(targetedMessage);
+            this.preProcessReceivedMessage(targetedMessage);
         } catch (Throwable thrown) {
             // TODO output stacktrace
         }
         for (Filter filter : this.filters) {
             try {
                 filter.processIncomingMessage(targetedMessage);
+                if (targetedMessage.isRejected()) {
+                    return;
+                }
             } catch (Throwable thrown) {
                 // TODO output stacktrace
             }
         }
+        this.receiveMessage(targetedMessage);
     }
 
     void setName(String name) {

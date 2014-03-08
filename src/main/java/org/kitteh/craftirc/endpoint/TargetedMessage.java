@@ -12,6 +12,7 @@ public final class TargetedMessage {
     private final Endpoint target;
     private String customMessage;
     private final WrappedMap<String, Object> customData;
+    private boolean rejected = false;
 
     /**
      * Creates a message targetted at an
@@ -76,5 +77,13 @@ public final class TargetedMessage {
      */
     public Message getOriginatingMessage() {
         return this.originatingMessage;
+    }
+
+    public void reject() {
+        this.rejected = true;
+    }
+
+    public boolean isRejected() {
+        return this.rejected;
     }
 }
