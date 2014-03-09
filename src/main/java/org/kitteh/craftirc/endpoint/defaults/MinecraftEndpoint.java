@@ -11,6 +11,7 @@ import org.kitteh.craftirc.util.MinecraftPlayer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The standard {@link org.kitteh.craftirc.endpoint.Endpoint} for minecraft
@@ -27,9 +28,12 @@ public class MinecraftEndpoint extends Endpoint {
     }
 
     @Override
-    protected Filter loadFilter(String name, Object data) {
+    protected Filter loadFilter(String name, Map<?, ?> data) {
         if (name.equalsIgnoreCase("permission")) {
-            return new BukkitPermissionFilter(this.server, data.toString());
+            Object oPerm = data.get("permission");
+            if (oPerm instanceof String) {
+                return new BukkitPermissionFilter(this.server, (String) oPerm);
+            }
         }
         return null;
     }

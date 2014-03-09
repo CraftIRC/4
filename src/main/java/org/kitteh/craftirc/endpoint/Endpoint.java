@@ -50,7 +50,7 @@ public abstract class Endpoint {
      * @param name name of the Filter to load
      * @param data associated information
      */
-    protected abstract Filter loadFilter(String name, Object data);
+    protected abstract Filter loadFilter(String name, Map<?, ?> data);
 
     /**
      * Processes a received message prior to processing by filters. For
@@ -79,13 +79,14 @@ public abstract class Endpoint {
      *
      * @param filters configuration section describing the filters to load
      */
-    final void loadFilters(Map<String, Object> filters) {
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+    final void loadFilters(List<Map<?, ?>> filters) {
+        for (Map<?, ?> map : filters) {
+            String type = map.get("type").toString();
             try {
-                Filter filter = this.loadFilter(entry.getKey(), entry.getValue());
+                Filter filter = this.loadFilter(type, map);
                 if (filter == null) {
                     // Default filters here
-                    if (entry.getKey().equalsIgnoreCase("regex")) {
+                    if (type.equalsIgnoreCase("regex")) {
                         filter = new RegexFilter(); // TODO data!
                     }
                 }

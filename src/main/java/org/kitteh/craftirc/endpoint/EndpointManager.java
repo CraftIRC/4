@@ -128,9 +128,26 @@ public final class EndpointManager {
         try {
             final Endpoint endpoint = type.newInstance(args);
             endpoint.setName(name);
-            final Map<String, Object> filters = this.getStringObjectMap(map.get("filter"), "filter");
-            if (filters != null) {
-                endpoint.loadFilters(filters);
+            Object oFilterList = map.get("filters");
+            if (oFilterList instanceof List) {
+                List<?> filterList = (List<?>) oFilterList;
+                List<Map<?, ?>> filters = new LinkedList<Map<?, ?>>();
+                int containsInvalid = 0;
+                for (Object o : filterList) {
+                    if (o instanceof Map && ((Map<?, ?>) o).containsKey("type")) {
+                        filters.add((Map<?, ?>) o);
+                    } else {
+                        containsInvalid++;
+                    }
+                }
+                if (containsInvalid > 0) {
+                    // TODO message about containing an invalid filter
+                }
+                if (!filters.isEmpty()) {
+                    endpoint.loadFilters(filters);
+                }
+            } else {
+                // TODO message about filters not being properly defined
             }
             final Map<String, Object> extras = this.getStringObjectMap(map.get("extra"), "extra");
             if (extras != null) {
