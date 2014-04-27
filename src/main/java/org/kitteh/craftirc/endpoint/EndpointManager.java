@@ -19,8 +19,10 @@ public final class EndpointManager {
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
     private final Map<String, List<String>> links = new ConcurrentHashMap<String, List<String>>();
     private final MessageDistributor messageDistributor;
+    private final CraftIRC plugin;
 
     public EndpointManager(CraftIRC plugin, List<?> endpoints, List<?> links) {
+        this.plugin = plugin;
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
         registerEndpointType(MinecraftEndpoint.class);
@@ -122,7 +124,7 @@ public final class EndpointManager {
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < args.length; i++) {
             if (parameterTypes[i].equals(Server.class)) {
-                args[i] = null; // TODO add Server
+                args[i] = this.plugin.getServer();
             }
         }
         try {
