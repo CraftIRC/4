@@ -155,16 +155,14 @@ public final class EndpointManager {
             if (extras != null) {
                 endpoint.loadExtra(extras);
             }
-            final Endpoint replaced = this.endpoints.put(name, endpoint);
-            if (replaced != null) {
-                // TODO message about replacing an endpoint. Alternately, don't replace.
-            }
+            this.endpoints.put(name, endpoint);
         } catch (final Exception e) {
             // TODO error loading endpoint
         }
     }
 
     private void loadEndpoints(List<?> list) {
+        Set<String> usedEndpointNames = new HashSet<>();
         for (final Object listElement : list) {
             final Map<?, ?> endpointMap;
             if ((endpointMap = this.getMap(listElement)) == null) {
@@ -181,6 +179,11 @@ public final class EndpointManager {
                 // TODO fire message for invalid type for endpoint 'name'
                 continue;
             }
+            if (usedEndpointNames.contains(name)) {
+                // TODO fire message for duplicate endpoint name 'name'
+                continue;
+            }
+            usedEndpointNames.add(name);
             final Constructor<? extends Endpoint> constructor = this.types.get(type);
             if (constructor == null) {
                 List<Pair<String, Map<?, ?>>> unregged = this.unRegistered.get(type);
