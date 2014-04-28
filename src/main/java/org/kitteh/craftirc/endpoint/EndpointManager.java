@@ -3,7 +3,9 @@ package org.kitteh.craftirc.endpoint;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.kitteh.craftirc.CraftIRC;
+import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
+import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.Pair;
 
 import java.lang.reflect.Constructor;
@@ -25,10 +27,11 @@ public final class EndpointManager {
         this.plugin = plugin;
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
-        registerEndpointType(MinecraftEndpoint.class);
+        this.registerEndpointType(MinecraftEndpoint.class);
+        this.registerEndpointType(IRCEndpoint.class);
 
-        loadEndpoints(endpoints);
-        loadLinks(links);
+        this.loadEndpoints(endpoints);
+        this.loadLinks(links);
     }
 
     /**
@@ -90,16 +93,6 @@ public final class EndpointManager {
         return destinations;
     }
 
-    private <T> T get(Map<?, ?> map, String key, Class<T> clazz) {
-        final Object object = map.get(key);
-        if (clazz.isAssignableFrom(object.getClass())) {
-            @SuppressWarnings("unchecked")
-            final T t = (T) object;
-            return t;
-        }
-        return null;
-    }
-
     @SuppressWarnings("unchecked")
     private Map<String, Object> getStringObjectMap(Object o, String name) {
         if (o == null) {
@@ -125,6 +118,8 @@ public final class EndpointManager {
         for (int i = 0; i < args.length; i++) {
             if (parameterTypes[i].equals(Server.class)) {
                 args[i] = this.plugin.getServer();
+            } else if (parameterTypes[i].equals(CraftIRC.class)) {
+                args[i] = this.plugin;
             }
         }
         try {
@@ -152,9 +147,7 @@ public final class EndpointManager {
                 // TODO message about filters not being properly defined
             }
             final Map<String, Object> extras = this.getStringObjectMap(map.get("extra"), "extra");
-            if (extras != null) {
-                endpoint.loadExtra(extras);
-            }
+            endpoint.loadExtra(extras == null ? new HashMap<String, Object>() : extras);
             this.endpoints.put(name, endpoint);
         } catch (final Exception e) {
             // TODO error loading endpoint
@@ -165,16 +158,16 @@ public final class EndpointManager {
         Set<String> usedEndpointNames = new HashSet<>();
         for (final Object listElement : list) {
             final Map<?, ?> endpointMap;
-            if ((endpointMap = this.getMap(listElement)) == null) {
+            if ((endpointMap = MapGetter.castToMap(listElement)) == null) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;
             }
-            final String name = this.get(endpointMap, "name", String.class);
+            final String name = MapGetter.getString(endpointMap, "name");
             if (name == null) {
                 // TODO fire message for unnamed/invalidly-named endpoint
                 continue;
             }
-            final String type = this.get(endpointMap, "type", String.class);
+            final String type = MapGetter.getString(endpointMap, "type");
             if (type == null) {
                 // TODO fire message for invalid type for endpoint 'name'
                 continue;
@@ -205,16 +198,16 @@ public final class EndpointManager {
         }
         for (final Object listElement : list) {
             final Map<?, ?> linkMap;
-            if ((linkMap = this.getMap(listElement)) == null) {
+            if ((linkMap = MapGetter.castToMap(listElement)) == null) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;
             }
-            final String source = this.get(linkMap, "source", String.class);
+            final String source = MapGetter.getString(linkMap, "source");
             if (source == null) {
                 // TODO fire message for link without source
                 continue;
             }
-            final String target = this.get(linkMap, "target", String.class);
+            final String target = MapGetter.getString(linkMap, "target");
             if (target == null) {
                 // TODO fire message for link without target
                 continue;
@@ -244,12 +237,5 @@ public final class EndpointManager {
             this.links.put(source, targets);
         }
         targets.add(target);
-    }
-
-    private Map<?, ?> getMap(Object o) {
-        if (Map.class.isAssignableFrom(o.getClass())) {
-            return (Map<?, ?>) o;
-        }
-        return null;
     }
 }

@@ -3,6 +3,7 @@ package org.kitteh.craftirc.endpoint;
 import org.apache.commons.lang.Validate;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
+import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public abstract class Endpoint {
      *
      * @param data the 'extra' section of the configuration
      */
-    protected void loadExtra(Map<String, Object> data) {
+    protected void loadExtra(Map<String, Object> data) throws CraftIRCInvalidConfigException {
         // By default, nothing extra to load
     }
 

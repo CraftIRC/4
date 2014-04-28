@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.craftirc.endpoint.EndpointManager;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
+import org.kitteh.craftirc.irc.BotManager;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -16,7 +17,12 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public final class CraftIRC extends JavaPlugin {
+    private BotManager botManager;
     private EndpointManager endpointManager;
+
+    public BotManager getBotManager() {
+        return this.botManager;
+    }
 
     public EndpointManager getEndpointManager() {
         return this.endpointManager;
@@ -26,6 +32,7 @@ public final class CraftIRC extends JavaPlugin {
     public void onEnable() {
         this.getLogger().info("I do nothing!");
         CraftIRCInvalidConfigException exception = null;
+        List<?> bots = null;
         List<?> endpoints = null;
         List<?> links = null;
 
@@ -60,7 +67,15 @@ public final class CraftIRC extends JavaPlugin {
                 throw new CraftIRCInvalidConfigException("Config doesn't even start with mappings. Would advise starting from scratch.");
             }
 
+
             Map<?, ?> config = (Map<?, ?>) yamlBase;
+
+            Object botsObject = config.get("bots");
+            if (!(botsObject instanceof List)) {
+                throw new CraftIRCInvalidConfigException("No bots defined!");
+            }
+            bots = (List<?>) botsObject;
+
             Object endpointsObject = config.get("endpoints");
             if (!(endpointsObject instanceof List)) {
                 throw new CraftIRCInvalidConfigException("No endpoints defined! Would advise starting from scratch.");
@@ -83,6 +98,7 @@ public final class CraftIRC extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
         }
 
+        this.botManager = new BotManager(bots);
         this.endpointManager = new EndpointManager(this, endpoints, links);
     }
 }
