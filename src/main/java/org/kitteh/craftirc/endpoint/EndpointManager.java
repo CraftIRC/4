@@ -16,10 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * Maintains {@link Endpoint}s and classes corresponding to Endpoint types.
  */
 public final class EndpointManager {
-    private final Map<String, Constructor<? extends Endpoint>> types = new ConcurrentHashMap<String, Constructor<? extends Endpoint>>();
-    private final Map<String, List<Pair<String, Map<?, ?>>>> unRegistered = new ConcurrentHashMap<String, List<Pair<String, Map<?, ?>>>>();
-    private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
-    private final Map<String, List<String>> links = new ConcurrentHashMap<String, List<String>>();
+    private final Map<String, Constructor<? extends Endpoint>> types = new ConcurrentHashMap<>();
+    private final Map<String, List<Pair<String, Map<?, ?>>>> unRegistered = new ConcurrentHashMap<>();
+    private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<>();
+    private final Map<String, List<String>> links = new ConcurrentHashMap<>();
     private final MessageDistributor messageDistributor;
     private final CraftIRC plugin;
 
@@ -80,7 +80,7 @@ public final class EndpointManager {
      * @return destinations of a message send by the speciified Endpoint
      */
     Set<Endpoint> getDestinations(String source) {
-        Set<Endpoint> destinations = new HashSet<Endpoint>();
+        Set<Endpoint> destinations = new HashSet<>();
         List<String> targets = this.links.get(source);
         if (targets != null) {
             for (String target : targets) {
@@ -128,7 +128,7 @@ public final class EndpointManager {
             Object oFilterList = map.get("filters");
             if (oFilterList instanceof List) {
                 List<?> filterList = (List<?>) oFilterList;
-                List<Map<?, ?>> filters = new LinkedList<Map<?, ?>>();
+                List<Map<?, ?>> filters = new LinkedList<>();
                 int containsInvalid = 0;
                 for (Object o : filterList) {
                     if (o instanceof Map && ((Map<?, ?>) o).containsKey("type")) {
@@ -181,7 +181,7 @@ public final class EndpointManager {
             if (constructor == null) {
                 List<Pair<String, Map<?, ?>>> unregged = this.unRegistered.get(type);
                 if (unregged == null) {
-                    unregged = new LinkedList<Pair<String, Map<?, ?>>>();
+                    unregged = new LinkedList<>();
                     this.unRegistered.put(type, unregged);
                 }
                 unregged.add(new Pair<String, Map<?, ?>>(name, endpointMap));
@@ -233,7 +233,7 @@ public final class EndpointManager {
         target = target.toLowerCase();
         List<String> targets = this.links.get(source);
         if (targets == null) {
-            targets = new LinkedList<String>();
+            targets = new LinkedList<>();
             this.links.put(source, targets);
         }
         targets.add(target);

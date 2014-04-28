@@ -17,7 +17,7 @@ import java.util.Map;
 @EndpointType(name = "irc")
 public class IRCEndpoint extends Endpoint {
     private IRCBot bot;
-    private CraftIRC plugin;
+    private final CraftIRC plugin;
 
     public IRCEndpoint(CraftIRC plugin) {
         this.plugin = plugin;

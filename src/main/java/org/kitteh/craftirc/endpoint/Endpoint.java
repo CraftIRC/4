@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class Endpoint {
     private String name;
-    private final List<Filter> filters = new CopyOnWriteArrayList<Filter>();
+    private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
     /**
      * Gets the name of this Endpoint.

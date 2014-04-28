@@ -24,7 +24,7 @@ public final class TargetedMessage {
     public TargetedMessage(Endpoint target, Message originatingMessage) {
         this.target = target;
         this.originatingMessage = originatingMessage;
-        this.customData = new WrappedMap<String, Object>(originatingMessage.getData());
+        this.customData = new WrappedMap<>(originatingMessage.getData());
         this.customMessage = originatingMessage.getDefaultMessage();
     }
 

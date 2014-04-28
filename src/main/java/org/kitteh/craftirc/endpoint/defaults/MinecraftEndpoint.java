@@ -40,7 +40,7 @@ public class MinecraftEndpoint extends Endpoint {
 
     @Override
     protected void preProcessReceivedMessage(TargetedMessage message) {
-        List<MinecraftPlayer> players = new LinkedList<MinecraftPlayer>();
+        List<MinecraftPlayer> players = new LinkedList<>();
         for (Player player : this.server.getOnlinePlayers()) {
             players.add(new MinecraftPlayer(player.getName(), player.getUniqueId()));
         }

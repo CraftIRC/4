@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class WrappedMap<K, V> {
     private final Map<K, V> innerMap;
-    private final Map<K, V> outerMap = new HashMap<K, V>();
+    private final Map<K, V> outerMap = new HashMap<>();
 
     /**
      * Wraps a map.

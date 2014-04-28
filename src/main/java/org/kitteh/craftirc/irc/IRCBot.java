@@ -15,10 +15,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Wraps an IRC bot and handles events
  */
 public final class IRCBot {
-    private Bot bot;
-    private Listener listener;
-    private String name;
-    private Map<String, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
+    private final Bot bot;
+    private final Listener listener;
+    private final String name;
+    private final Map<String, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
 
     IRCBot(String name, Bot bot) {
         this.bot = bot;

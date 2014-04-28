@@ -28,7 +28,7 @@ final class MessageDistributor extends Thread {
     }
 
     private final EndpointManager endpointManager;
-    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<Message>();
+    private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
     private final CraftIRC plugin;
 
     MessageDistributor(EndpointManager manager, CraftIRC plugin) {

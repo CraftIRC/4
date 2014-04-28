@@ -18,7 +18,7 @@ public final class MapGetter {
             return null;
         }
         Object o = map.get(key);
-        if (o == null || type.isAssignableFrom(o.getClass())) {
+        if (o == null || !type.isAssignableFrom(o.getClass())) {
             return null;
         }
         return (T) o;

@@ -1,12 +1,9 @@
 package org.kitteh.craftirc.irc;
 
 import org.kitteh.craftirc.util.MapGetter;
-import org.kitteh.craftirc.util.Pair;
 import org.kitteh.irc.BotBuilder;
 
-import java.lang.reflect.Constructor;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Manages IRC bots.
  */
 public final class BotManager {
-    private Map<String, IRCBot> bots = new ConcurrentHashMap<>();
+    private final Map<String, IRCBot> bots = new ConcurrentHashMap<>();
 
     public BotManager(List<?> bots) {
         this.loadBots(bots);
