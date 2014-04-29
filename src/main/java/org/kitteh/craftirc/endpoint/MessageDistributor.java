@@ -48,7 +48,7 @@ final class MessageDistributor extends Thread {
             Message message = this.messages.poll();
             if (message != null) {
                 for (Endpoint target : this.endpointManager.getDestinations(message.getSource().getName())) {
-                    if (target.getClass().getAnnotation(EndpointType.class).sync()) {
+                    if (target.getClass().getAnnotation(SyncEndpoint.class) != null) {
                         this.plugin.getServer().getScheduler().callSyncMethod(this.plugin, new SendMessage(message, target));
                     } else {
                         target.receiveMessage(message);

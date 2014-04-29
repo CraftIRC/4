@@ -1,10 +1,12 @@
 package org.kitteh.craftirc.endpoint;
 
-import org.apache.commons.lang.Validate;
+import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.filter.Filter;
-import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
+import org.kitteh.craftirc.util.loadable.Loadable;
+import org.kitteh.craftirc.util.MapGetter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -13,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Endpoints are the origin and destination of messages tracked by this
  * plugin.
  */
-public abstract class Endpoint {
+public abstract class Endpoint extends Loadable {
     private String name;
     private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
@@ -27,9 +29,9 @@ public abstract class Endpoint {
     }
 
     private void addFilter(Filter filter) {
-        Validate.notNull(filter, "Cannot add null filter!");
         this.filters.add(filter);
     }
+
 
     /**
      * Optional method to load any additional information for this Endpoint.
@@ -45,13 +47,16 @@ public abstract class Endpoint {
         // By default, nothing extra to load
     }
 
-    /**
-     * Loads a named {@link org.kitteh.craftirc.endpoint.filter.Filter}.
-     *
-     * @param name name of the Filter to load
-     * @param data associated information
-     */
-    protected abstract Filter loadFilter(String name, Map<?, ?> data);
+    protected final void load(CraftIRC plugin, Map<?, ?> data) throws CraftIRCInvalidConfigException {
+        this.name = MapGetter.getString(data, "name");
+        final Map<String, Object> extras = MapGetter.castToStringObjectMap(data.get("extra"));
+        this.loadExtra(extras == null ? new HashMap<String, Object>() : extras);
+
+        List<?> filters =  MapGetter.get(data, "filters", List.class);
+        if(filters != null) {
+            plugin.getFilterRegistry().loadList(filters, this);
+        }
+    }
 
     /**
      * Processes a received message prior to processing by filters. For
@@ -74,33 +79,6 @@ public abstract class Endpoint {
      * @param message the message to be displayed
      */
     protected abstract void receiveMessage(TargetedMessage message);
-
-    /**
-     * Loads filters for this Endpoint.
-     *
-     * @param filters configuration section describing the filters to load
-     */
-    final void loadFilters(List<Map<?, ?>> filters) {
-        for (Map<?, ?> map : filters) {
-            String type = map.get("type").toString();
-            try {
-                Filter filter = this.loadFilter(type, map);
-                if (filter == null) {
-                    // Default filters here
-                    if (type.equalsIgnoreCase("regex")) {
-                        filter = new RegexFilter(); // TODO data!
-                    }
-                }
-                if (filter != null) {
-                    this.addFilter(filter);
-                } else {
-                    // TODO log unknown filter
-                }
-            } catch (Throwable thrown) {
-                // TODO print stacktrace
-            }
-        }
-    }
 
     /**
      * Receive a message and process.
@@ -132,9 +110,5 @@ public abstract class Endpoint {
             }
         }
         this.receiveMessage(targetedMessage);
-    }
-
-    void setName(String name) {
-        this.name = name;
     }
 }

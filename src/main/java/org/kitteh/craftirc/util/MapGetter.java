@@ -6,11 +6,24 @@ import java.util.Map;
  * Gets elements from a String-Object map.
  */
 public final class MapGetter {
-    public static Map<?, ?> castToMap(Object o) {
+    public static Map<Object, Object> castToMap(Object o) {
         if (Map.class.isAssignableFrom(o.getClass())) {
-            return (Map<?, ?>) o;
+            return (Map<Object, Object>) o;
         }
         return null;
+    }
+
+    public static Map<String, Object> castToStringObjectMap(Object o) {
+        if (!(o instanceof Map)) {
+            return null;
+        }
+        final Map<?, ?> map = (Map<?, ?>) o;
+        for (final Map.Entry<?, ?> entry : map.entrySet()) {
+            if (!(entry.getKey() instanceof String)) {
+                return null;
+            }
+        }
+        return (Map<String, Object>) map;
     }
 
     public static <T> T get(Map<?, ?> map, String key, Class<T> type) {

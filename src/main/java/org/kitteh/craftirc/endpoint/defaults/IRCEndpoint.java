@@ -2,19 +2,18 @@ package org.kitteh.craftirc.endpoint.defaults;
 
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.Endpoint;
-import org.kitteh.craftirc.endpoint.EndpointType;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
-import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.irc.IRCBot;
 import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.Map;
 
 /**
  * The standard {@link org.kitteh.craftirc.endpoint.Endpoint} for IRC bots.
  */
-@EndpointType(name = "irc")
+@Loadable.Type(name = "irc")
 public class IRCEndpoint extends Endpoint {
     private IRCBot bot;
     private final CraftIRC plugin;
@@ -24,13 +23,8 @@ public class IRCEndpoint extends Endpoint {
     }
 
     @Override
-    protected Filter loadFilter(String name, Map<?, ?> data) {
-        return null;
-    }
-
-    @Override
     protected void receiveMessage(TargetedMessage message) {
-
+        // TODO
     }
 
     @Override
@@ -43,6 +37,6 @@ public class IRCEndpoint extends Endpoint {
         if (channel == null) {
             throw new CraftIRCInvalidConfigException("No channel defined");
         }
-        bot.addChannel(this, channel);
+        this.bot.addChannel(this, channel);
     }
 }

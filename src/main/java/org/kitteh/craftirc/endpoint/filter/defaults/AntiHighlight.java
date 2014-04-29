@@ -2,17 +2,25 @@ package org.kitteh.craftirc.endpoint.filter.defaults;
 
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
+import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
+import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.loadable.Loadable;
+
+import java.util.Map;
 
 /**
  * Anti highlight aww yes.
  */
-public class AntiHighlight implements Filter {
-    private final String splitter;
-    private final String variable;
+@Loadable.Type(name = "antihighlight")
+public class AntiHighlight extends Filter {
+    private String splitter;
+    private String variable;
 
-    public AntiHighlight(String splitter, String variable) {
-        this.splitter = splitter;
-        this.variable = variable;
+    @Override
+    protected void load(Map<?, ?> data) throws CraftIRCInvalidConfigException {
+        if ((this.splitter = MapGetter.getString(data, "splitter")) == null || (this.variable = MapGetter.getString(data, "variable")) == null) {
+            throw new CraftIRCInvalidConfigException("Invalid AntiHighlight config. Requires 'splitter' and 'variable' defined");
+        }
     }
 
     @Override

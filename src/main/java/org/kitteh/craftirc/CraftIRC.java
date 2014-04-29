@@ -2,6 +2,7 @@ package org.kitteh.craftirc;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.craftirc.endpoint.EndpointManager;
+import org.kitteh.craftirc.endpoint.filter.FilterRegistry;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.irc.BotManager;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 public final class CraftIRC extends JavaPlugin {
     private BotManager botManager;
     private EndpointManager endpointManager;
+    private FilterRegistry filterRegistry;
 
     public BotManager getBotManager() {
         return this.botManager;
@@ -28,9 +30,14 @@ public final class CraftIRC extends JavaPlugin {
         return this.endpointManager;
     }
 
+    public FilterRegistry getFilterRegistry() {
+        return this.filterRegistry;
+    }
+
     @Override
     public void onEnable() {
-        this.getLogger().info("I do nothing!");
+        this.filterRegistry = new FilterRegistry(this);
+
         CraftIRCInvalidConfigException exception = null;
         List<?> bots = null;
         List<?> endpoints = null;
