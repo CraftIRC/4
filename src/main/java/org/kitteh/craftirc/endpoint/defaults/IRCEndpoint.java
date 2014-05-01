@@ -16,6 +16,7 @@ import java.util.Map;
 @Loadable.Type(name = "irc")
 public class IRCEndpoint extends Endpoint {
     private IRCBot bot;
+    private String channel;
     private final CraftIRC plugin;
 
     public IRCEndpoint(CraftIRC plugin) {
@@ -24,7 +25,7 @@ public class IRCEndpoint extends Endpoint {
 
     @Override
     protected void receiveMessage(TargetedMessage message) {
-        // TODO
+        this.bot.sendMessage(this.channel, message.getCustomMessage());
     }
 
     @Override
@@ -33,10 +34,10 @@ public class IRCEndpoint extends Endpoint {
         if (botName == null || (this.bot = this.plugin.getBotManager().getBot(botName)) == null) {
             throw new CraftIRCInvalidConfigException("Invalid bot name '"+botName+"'");
         }
-        final String channel = MapGetter.getString(data, "channel");
-        if (channel == null) {
+        this.channel = MapGetter.getString(data, "channel");
+        if (this.channel == null) {
             throw new CraftIRCInvalidConfigException("No channel defined");
         }
-        this.bot.addChannel(this, channel);
+        this.bot.addChannel(this, this.channel);
     }
 }

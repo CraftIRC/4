@@ -41,6 +41,10 @@ public final class IRCBot {
         points.add(endpoint);
     }
 
+    public void sendMessage(String target, String message) {
+        this.bot.sendMessage(target, message);
+    }
+
     private class Listener {
         @EventHandler
         public void message(ChannelMessageEvent event) {
