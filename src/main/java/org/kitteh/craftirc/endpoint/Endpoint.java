@@ -16,6 +16,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * plugin.
  */
 public abstract class Endpoint extends Loadable {
+    public class EndpointFilterLoader {
+        private EndpointFilterLoader() {
+        }
+
+        public Endpoint getEndpoint() {
+            return Endpoint.this;
+        }
+
+        public void addFilter(Filter filter) {
+            Endpoint.this.addFilter(filter);
+        }
+    }
+
     private String name;
     private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
@@ -53,7 +66,7 @@ public abstract class Endpoint extends Loadable {
 
         List<?> filters = MapGetter.get(data, "filters", List.class);
         if (filters != null) {
-            plugin.getFilterRegistry().loadList(filters, this);
+            plugin.getFilterRegistry().loadList(filters, new EndpointFilterLoader());
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public final class FilterRegistry extends LoadableTypeManager<Filter> {
     enum Target {
-        Endpoint
+        EndpointLoader
     }
 
     public FilterRegistry(CraftIRC plugin) {
@@ -34,20 +34,23 @@ public final class FilterRegistry extends LoadableTypeManager<Filter> {
         throw new UnsupportedOperationException("Must provide Endpoint when loading filters!");
     }
 
-    public void loadList(List<?> list, Endpoint endpoint) {
+    public void loadList(List<?> list, Endpoint.EndpointFilterLoader endpoint) {
         for (final Object listElement : list) {
             final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
                 continue;
             }
-            data.put(Target.Endpoint, endpoint);
+            data.put(Target.EndpointLoader, endpoint);
         }
         super.loadList(list);
     }
 
     @Override
     protected void processCompleted(Filter loaded) {
-
+        Endpoint.EndpointFilterLoader loader = loaded.getLoader();
+        if (loader != null) {
+            loader.addFilter(loaded);
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public abstract class Filter extends Loadable {
     private Endpoint endpoint;
+    private Endpoint.EndpointFilterLoader loader;
 
     /**
      * Gets the Endpoint using this Filter instance.
@@ -21,6 +22,10 @@ public abstract class Filter extends Loadable {
      */
     protected Endpoint getEndpoint() {
         return this.endpoint;
+    }
+
+    Endpoint.EndpointFilterLoader getLoader() {
+        return this.loader;
     }
 
     /**
@@ -33,8 +38,9 @@ public abstract class Filter extends Loadable {
 
     @Override
     protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        if (data.containsKey(FilterRegistry.Target.Endpoint)) {
-            this.endpoint = (Endpoint) data.get(FilterRegistry.Target.Endpoint);
+        if (data.containsKey(FilterRegistry.Target.EndpointLoader)) {
+            this.loader = (Endpoint.EndpointFilterLoader) data.get(FilterRegistry.Target.EndpointLoader);
+            this.endpoint = this.loader.getEndpoint();
         }
         this.load(data);
     }
