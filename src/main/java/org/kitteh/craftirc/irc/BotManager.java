@@ -1,5 +1,6 @@
 package org.kitteh.craftirc.irc;
 
+import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.irc.BotBuilder;
 
@@ -25,19 +26,22 @@ public final class BotManager {
 
     private void loadBots(List<?> list) {
         Set<String> usedBotNames = new HashSet<>();
+        int nonMap = 0;
+        int noName = 0;
         for (final Object listElement : list) {
             final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
-                // TODO: Track (Don't fire each time!) that an invalid entry was added
+                nonMap++;
                 continue;
             }
             final String name = MapGetter.getString(data, "name");
             if (name == null) {
-                // TODO fire message for unnamed/invalidly-named bot
+                CraftIRC.log().warning("");
+                noName++;
                 continue;
             }
             if (usedBotNames.contains(name)) {
-                // TODO fire message for duplicate endpoint name 'name'
+                CraftIRC.log().warning(String.format("Ignoring duplicate bot name %s", name));
                 continue;
             }
             usedBotNames.add(name);
@@ -62,6 +66,12 @@ public final class BotManager {
             botBuilder.nick(nick != null ? nick : "CraftIRC");
 
             bots.put(name, new IRCBot(name, botBuilder.build()));
+        }
+        if (nonMap > 0) {
+            CraftIRC.log().warning(String.format("Bots list contained %d entries which were not maps", nonMap));
+        }
+        if (noName > 0) {
+            CraftIRC.log().warning(String.format("Bots list contained %d entries without a 'name'", noName));
         }
     }
 }

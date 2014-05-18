@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
 /**
  * Endpoints are the origin and destination of messages tracked by this
@@ -109,7 +110,7 @@ public abstract class Endpoint extends Loadable {
         try {
             this.preProcessReceivedMessage(targetedMessage);
         } catch (Throwable thrown) {
-            // TODO output stacktrace
+            CraftIRC.log().log(Level.WARNING, "Unable to preprocess a received message", thrown);
         }
         for (Filter filter : this.filters) {
             try {
@@ -118,7 +119,7 @@ public abstract class Endpoint extends Loadable {
                     return;
                 }
             } catch (Throwable thrown) {
-                // TODO output stacktrace
+                CraftIRC.log().log(Level.WARNING, "Unable to process a received message", thrown);
             }
         }
         this.receiveMessage(targetedMessage);

@@ -74,7 +74,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
 
     private void loadLinks(List<?> list) {
         if (list == null) {
-            // TODO fire message for lack of links
+            CraftIRC.log().severe("No links defined");
             return;
         }
         for (final Object listElement : list) {

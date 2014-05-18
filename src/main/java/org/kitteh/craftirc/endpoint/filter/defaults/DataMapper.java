@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
 
 /**
  * Maps data to a message.
- * <p/>
- * TODO get a better name
  */
 @Loadable.Type(name = "datamapper")
 public class DataMapper extends Filter {
