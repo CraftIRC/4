@@ -27,7 +27,7 @@ public final class BukkitPermissionFilter extends Filter {
     }
 
     @Override
-    protected void load(Map<?, ?> data) throws CraftIRCInvalidConfigException {
+    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         if ((this.permission = MapGetter.getString(data, "permission")) == null) {
             throw new CraftIRCInvalidConfigException("Invalid AntiHighlight config. Requires 'permission' defined");
         }
@@ -43,7 +43,7 @@ public final class BukkitPermissionFilter extends Filter {
     }
 
     @Override
-    public void processIncomingMessage(TargetedMessage message) {
+    public void processMessage(TargetedMessage message) {
         if (message.getCustomData().containsKey(MinecraftEndpoint.PLAYER_LIST)) {
             @SuppressWarnings("unchecked")
             List<MinecraftPlayer> players = (List<MinecraftPlayer>) message.getCustomData().get(MinecraftEndpoint.PLAYER_LIST);

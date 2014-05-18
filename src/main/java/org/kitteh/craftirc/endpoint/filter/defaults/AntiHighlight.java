@@ -17,14 +17,14 @@ public class AntiHighlight extends Filter {
     private String variable;
 
     @Override
-    protected void load(Map<?, ?> data) throws CraftIRCInvalidConfigException {
+    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         if ((this.splitter = MapGetter.getString(data, "splitter")) == null || (this.variable = MapGetter.getString(data, "variable")) == null) {
             throw new CraftIRCInvalidConfigException("Invalid AntiHighlight config. Requires 'splitter' and 'variable' defined");
         }
     }
 
     @Override
-    public void processIncomingMessage(TargetedMessage message) {
+    public void processMessage(TargetedMessage message) {
         if (message.getCustomData().containsKey(this.variable)) {
             String oldValue = message.getCustomData().get(this.variable).toString();
             if (oldValue.length() > 1) {

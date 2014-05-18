@@ -7,26 +7,13 @@ import java.util.Map;
  */
 public final class MapGetter {
     public static Map<Object, Object> castToMap(Object o) {
-        if (Map.class.isAssignableFrom(o.getClass())) {
+        if (o instanceof Map) {
             return (Map<Object, Object>) o;
         }
         return null;
     }
 
-    public static Map<String, Object> castToStringObjectMap(Object o) {
-        if (!(o instanceof Map)) {
-            return null;
-        }
-        final Map<?, ?> map = (Map<?, ?>) o;
-        for (final Map.Entry<?, ?> entry : map.entrySet()) {
-            if (!(entry.getKey() instanceof String)) {
-                return null;
-            }
-        }
-        return (Map<String, Object>) map;
-    }
-
-    public static <T> T get(Map<?, ?> map, String key, Class<T> type) {
+    public static <T> T get(Map<Object, Object> map, String key, Class<T> type) {
         if (map == null) {
             return null;
         }
@@ -37,11 +24,15 @@ public final class MapGetter {
         return (T) o;
     }
 
-    public static String getString(Map<?, ?> map, String key) {
+    public static Map<Object, Object> getMap(Map<Object, Object> map, String key) {
+        return get(map, key, Map.class);
+    }
+
+    public static String getString(Map<Object, Object> map, String key) {
         return get(map, key, String.class);
     }
 
-    public static Integer getInt(Map<?, ?> map, String key) {
+    public static Integer getInt(Map<Object, Object> map, String key) {
         return get(map, key, Integer.class);
     }
 }

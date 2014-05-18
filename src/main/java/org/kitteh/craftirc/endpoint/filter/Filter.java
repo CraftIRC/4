@@ -14,8 +14,6 @@ import java.util.Map;
 public abstract class Filter extends Loadable {
     private Endpoint endpoint;
 
-    // TODO handle outgoing
-
     /**
      * Gets the Endpoint using this Filter instance.
      *
@@ -31,10 +29,10 @@ public abstract class Filter extends Loadable {
      *
      * @param message message to process
      */
-    public abstract void processIncomingMessage(TargetedMessage message);
+    public abstract void processMessage(TargetedMessage message);
 
     @Override
-    protected void load(CraftIRC plugin, Map<?, ?> data) throws CraftIRCInvalidConfigException {
+    protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         if (data.containsKey(FilterRegistry.Target.Endpoint)) {
             this.endpoint = (Endpoint) data.get(FilterRegistry.Target.Endpoint);
         }
@@ -47,5 +45,5 @@ public abstract class Filter extends Loadable {
      * @param data information to load
      * @throws CraftIRCInvalidConfigException
      */
-    protected abstract void load(Map<?, ?> data) throws CraftIRCInvalidConfigException;
+    protected abstract void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException;
 }

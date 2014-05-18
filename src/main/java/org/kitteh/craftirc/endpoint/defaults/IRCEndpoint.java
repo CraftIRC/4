@@ -29,7 +29,7 @@ public class IRCEndpoint extends Endpoint {
     }
 
     @Override
-    protected void loadExtra(Map<String, Object> data) throws CraftIRCInvalidConfigException {
+    protected void loadExtra(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         final String botName = MapGetter.getString(data, "bot");
         if (botName == null || (this.bot = this.plugin.getBotManager().getBot(botName)) == null) {
             throw new CraftIRCInvalidConfigException("Invalid bot name '" + botName + "'");

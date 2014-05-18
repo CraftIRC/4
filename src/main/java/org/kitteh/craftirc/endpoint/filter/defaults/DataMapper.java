@@ -29,7 +29,7 @@ public class DataMapper extends Filter {
     }
 
     @Override
-    public void processIncomingMessage(TargetedMessage message) {
+    public void processMessage(TargetedMessage message) {
         Object[] vars = new Object[this.variables.size()];
         for (int i = 0; i < vars.length; i++) {
             vars[i] = message.getCustomData().get(this.variables.get(i)).toString();
@@ -38,7 +38,7 @@ public class DataMapper extends Filter {
     }
 
     @Override
-    protected void load(Map<?, ?> data) throws CraftIRCInvalidConfigException {
+    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         if ((this.message = MapGetter.getString(data, "message")) == null) {
             throw new CraftIRCInvalidConfigException("Message required!");
         }

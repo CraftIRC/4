@@ -13,12 +13,12 @@ import java.util.Map;
 @Loadable.Type(name = "regex")
 public class RegexFilter extends Filter {
     @Override
-    protected void load(Map<?, ?> data) throws CraftIRCInvalidConfigException {
+    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         // TODO get dx to do this
     }
 
     @Override
-    public void processIncomingMessage(TargetedMessage message) {
+    public void processMessage(TargetedMessage message) {
         // TODO get dx to do this
     }
 }

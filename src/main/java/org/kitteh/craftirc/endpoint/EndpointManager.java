@@ -63,12 +63,12 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     }
 
     @Override
-    protected void processFailedLoad(Exception exception, Map<?, ?> data) {
+    protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
 
     }
 
     @Override
-    protected void processInvalid(String reason, Map<?, ?> data) {
+    protected void processInvalid(String reason, Map<Object, Object> data) {
 
     }
 
@@ -78,7 +78,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
             return;
         }
         for (final Object listElement : list) {
-            final Map<?, ?> linkMap;
+            final Map<Object, Object> linkMap;
             if ((linkMap = MapGetter.castToMap(listElement)) == null) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;

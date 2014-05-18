@@ -11,7 +11,6 @@ import java.util.Map;
  * Represents an object that can be loaded from config.
  */
 public abstract class Loadable {
-
     @Retention(value = RetentionPolicy.RUNTIME)
     public @interface Type {
         String name();
@@ -23,5 +22,5 @@ public abstract class Loadable {
      * @param data data to load
      * @throws CraftIRCInvalidConfigException if invalid
      */
-    protected abstract void load(CraftIRC plugin, Map<?, ?> data) throws CraftIRCInvalidConfigException;
+    protected abstract void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException;
 }

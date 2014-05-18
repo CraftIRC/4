@@ -22,12 +22,14 @@ public final class FilterRegistry extends LoadableTypeManager<Filter> {
 
     public FilterRegistry(CraftIRC plugin) {
         super(plugin, Filter.class);
+        // Register filter types here
         this.registerType(AntiHighlight.class);
         this.registerType(BukkitPermissionFilter.class);
         this.registerType(DataMapper.class);
         this.registerType(RegexFilter.class);
     }
 
+    @Override
     public void loadList(List<?> list) {
         throw new UnsupportedOperationException("Must provide Endpoint when loading filters!");
     }
@@ -49,12 +51,12 @@ public final class FilterRegistry extends LoadableTypeManager<Filter> {
     }
 
     @Override
-    protected void processFailedLoad(Exception exception, Map<?, ?> data) {
+    protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
         // TODO log
     }
 
     @Override
-    protected void processInvalid(String reason, Map<?, ?> data) {
+    protected void processInvalid(String reason, Map<Object, Object> data) {
         // TODO log
     }
 }

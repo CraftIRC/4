@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class LoadableTypeManager<T extends Loadable> {
     private final Map<String, Constructor<? extends T>> types = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
-    private final Map<String, List<Map<?, ?>>> unRegistered = new ConcurrentHashMap<>();
+    private final Map<String, List<Map<Object, Object>>> unRegistered = new ConcurrentHashMap<>();
     private final Class<T> clazz;
 
     public LoadableTypeManager(CraftIRC plugin, Class<T> clazz) {
@@ -28,7 +28,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
 
     public void loadList(List<?> list) {
         for (final Object listElement : list) {
-            final Map<?, ?> data;
+            final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
                 continue;
             }
@@ -39,7 +39,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
             }
             final Constructor<? extends T> constructor = this.types.get(type);
             if (constructor == null) {
-                List<Map<?, ?>> unregged = this.unRegistered.get(type);
+                List<Map<Object, Object>> unregged = this.unRegistered.get(type);
                 if (unregged == null) {
                     unregged = new LinkedList<>();
                     this.unRegistered.put(type, unregged);
@@ -51,7 +51,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         }
     }
 
-    private void load(Constructor<? extends T> constructor, Map<?, ?> data) {
+    private void load(Constructor<? extends T> constructor, Map<Object, Object> data) {
         Class<?>[] parameterTypes = constructor.getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < args.length; i++) {
@@ -104,7 +104,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         Validate.isTrue(!this.types.containsKey(name), this.clazz.getSimpleName() + " type name '" + name + "' is already registered to '" + this.types.get(name).getDeclaringClass().getSimpleName() + "' and cannot be registered by '" + clazz.getSimpleName() + "'");
         this.types.put(name, constructor);
         if (this.unRegistered.containsKey(name)) {
-            for (final Map<?, ?> loadable : this.unRegistered.get(name)) {
+            for (final Map<Object, Object> loadable : this.unRegistered.get(name)) {
                 this.load(constructor, loadable);
             }
         }
@@ -112,7 +112,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
 
     protected abstract void processCompleted(T loaded) throws CraftIRCInvalidConfigException;
 
-    protected abstract void processFailedLoad(Exception exception, Map<?, ?> data);
+    protected abstract void processFailedLoad(Exception exception, Map<Object, Object> data);
 
-    protected abstract void processInvalid(String reason, Map<?, ?> data);
+    protected abstract void processInvalid(String reason, Map<Object, Object> data);
 }

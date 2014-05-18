@@ -26,7 +26,7 @@ public final class BotManager {
     private void loadBots(List<?> list) {
         Set<String> usedBotNames = new HashSet<>();
         for (final Object listElement : list) {
-            final Map<?, ?> data;
+            final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
                 // TODO: Track (Don't fire each time!) that an invalid entry was added
                 continue;
@@ -47,7 +47,7 @@ public final class BotManager {
             Integer port = MapGetter.getInt(data, "port");
             String user = MapGetter.getString(data, "user");
             String realname = MapGetter.getString(data, "realname");
-            Map<?, ?> bindMap = MapGetter.get(data, "bind", Map.class);
+            Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
             String bindhost = MapGetter.getString(bindMap, "host");
             Integer bindport = MapGetter.getInt(bindMap, "port");
             BotBuilder botBuilder = new BotBuilder(name);

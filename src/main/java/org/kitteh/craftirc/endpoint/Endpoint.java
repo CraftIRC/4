@@ -32,7 +32,6 @@ public abstract class Endpoint extends Loadable {
         this.filters.add(filter);
     }
 
-
     /**
      * Optional method to load any additional information for this Endpoint.
      * <p/>
@@ -43,14 +42,14 @@ public abstract class Endpoint extends Loadable {
      *
      * @param data the 'extra' section of the configuration
      */
-    protected void loadExtra(Map<String, Object> data) throws CraftIRCInvalidConfigException {
+    protected void loadExtra(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         // By default, nothing extra to load
     }
 
-    protected final void load(CraftIRC plugin, Map<?, ?> data) throws CraftIRCInvalidConfigException {
+    protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         this.name = MapGetter.getString(data, "name");
-        final Map<String, Object> extras = MapGetter.castToStringObjectMap(data.get("extra"));
-        this.loadExtra(extras == null ? new HashMap<String, Object>() : extras);
+        final Map<Object, Object> extras = MapGetter.getMap(data, "extra");
+        this.loadExtra(extras == null ? new HashMap<>() : extras);
 
         List<?> filters = MapGetter.get(data, "filters", List.class);
         if (filters != null) {
@@ -101,7 +100,7 @@ public abstract class Endpoint extends Loadable {
         }
         for (Filter filter : this.filters) {
             try {
-                filter.processIncomingMessage(targetedMessage);
+                filter.processMessage(targetedMessage);
                 if (targetedMessage.isRejected()) {
                     return;
                 }
