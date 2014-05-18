@@ -23,5 +23,5 @@ public abstract class Loadable {
      * @param data data to load
      * @throws CraftIRCInvalidConfigException if invalid
      */
-    protected abstract void load(CraftIRC plugin, Map<?,?> data) throws CraftIRCInvalidConfigException;
+    protected abstract void load(CraftIRC plugin, Map<?, ?> data) throws CraftIRCInvalidConfigException;
 }

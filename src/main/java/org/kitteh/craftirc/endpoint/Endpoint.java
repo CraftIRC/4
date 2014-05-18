@@ -52,8 +52,8 @@ public abstract class Endpoint extends Loadable {
         final Map<String, Object> extras = MapGetter.castToStringObjectMap(data.get("extra"));
         this.loadExtra(extras == null ? new HashMap<String, Object>() : extras);
 
-        List<?> filters =  MapGetter.get(data, "filters", List.class);
-        if(filters != null) {
+        List<?> filters = MapGetter.get(data, "filters", List.class);
+        if (filters != null) {
             plugin.getFilterRegistry().loadList(filters, this);
         }
     }

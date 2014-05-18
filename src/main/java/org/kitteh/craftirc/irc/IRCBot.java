@@ -16,15 +16,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public final class IRCBot {
     private final Bot bot;
-    private final Listener listener;
     private final String name;
     private final Map<String, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
 
     IRCBot(String name, Bot bot) {
         this.bot = bot;
-        this.listener = new Listener();
         this.name = name;
-        this.bot.getEventManager().registerEventListener(this.listener);
+        this.bot.getEventManager().registerEventListener(new Listener());
     }
 
     public String getName() {
@@ -53,7 +51,7 @@ public final class IRCBot {
 
         @EventHandler
         public void action(ChannelCTCPEvent event) {
-            if (event.getMessage().startsWith("ACTION ")){
+            if (event.getMessage().startsWith("ACTION ")) {
                 final String message = event.getMessage().substring("ACTION ".length());
                 // TODO
             }

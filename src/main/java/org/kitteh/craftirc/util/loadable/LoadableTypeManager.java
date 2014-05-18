@@ -5,7 +5,6 @@ import org.bukkit.Server;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
-import org.kitteh.craftirc.util.Pair;
 
 import java.lang.reflect.Constructor;
 import java.util.LinkedList;

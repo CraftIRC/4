@@ -8,10 +8,29 @@ import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.Map;
 
+/**
+ * This is a filter.
+ */
 public abstract class Filter extends Loadable {
     private Endpoint endpoint;
 
     // TODO handle outgoing
+
+    /**
+     * Gets the Endpoint using this Filter instance.
+     *
+     * @return the Endpoint in use
+     */
+    protected Endpoint getEndpoint() {
+        return this.endpoint;
+    }
+
+    /**
+     * Processes an incoming message. Should be capable of handling calls
+     * from multiple threads at once.
+     *
+     * @param message message to process
+     */
     public abstract void processIncomingMessage(TargetedMessage message);
 
     @Override
@@ -22,5 +41,11 @@ public abstract class Filter extends Loadable {
         this.load(data);
     }
 
-    protected abstract void load(Map<?,?> data) throws CraftIRCInvalidConfigException;
+    /**
+     * Loads this filter's data.
+     *
+     * @param data information to load
+     * @throws CraftIRCInvalidConfigException
+     */
+    protected abstract void load(Map<?, ?> data) throws CraftIRCInvalidConfigException;
 }

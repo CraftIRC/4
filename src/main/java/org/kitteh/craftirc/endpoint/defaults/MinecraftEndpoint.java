@@ -9,7 +9,6 @@ import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The standard {@link org.kitteh.craftirc.endpoint.Endpoint} for minecraft

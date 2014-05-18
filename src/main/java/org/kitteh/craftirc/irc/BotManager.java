@@ -47,7 +47,7 @@ public final class BotManager {
             Integer port = MapGetter.getInt(data, "port");
             String user = MapGetter.getString(data, "user");
             String realname = MapGetter.getString(data, "realname");
-            Map<?,?> bindMap = MapGetter.get(data, "bind", Map.class);
+            Map<?, ?> bindMap = MapGetter.get(data, "bind", Map.class);
             String bindhost = MapGetter.getString(bindMap, "host");
             Integer bindport = MapGetter.getInt(bindMap, "port");
             BotBuilder botBuilder = new BotBuilder(name);
@@ -58,7 +58,7 @@ public final class BotManager {
             if (bindhost != null) {
                 botBuilder.bind(bindhost);
             }
-            botBuilder.bind(bindport!= null ? bindport : 0);
+            botBuilder.bind(bindport != null ? bindport : 0);
             botBuilder.nick(nick != null ? nick : "CraftIRC");
 
             bots.put(name, new IRCBot(name, botBuilder.build()));

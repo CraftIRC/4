@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public final class FilterRegistry extends LoadableTypeManager<Filter> {
     enum Target {
-        Endpoint;
+        Endpoint
     }
 
     public FilterRegistry(CraftIRC plugin) {
@@ -50,11 +50,11 @@ public final class FilterRegistry extends LoadableTypeManager<Filter> {
 
     @Override
     protected void processFailedLoad(Exception exception, Map<?, ?> data) {
-// TODO log
+        // TODO log
     }
 
     @Override
     protected void processInvalid(String reason, Map<?, ?> data) {
-// TODO log
+        // TODO log
     }
 }

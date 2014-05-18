@@ -24,6 +24,10 @@ public class DataMapper extends Filter {
     private String message;
     private List<String> variables;
 
+    public String getMessageFormat() {
+        return this.message;
+    }
+
     @Override
     public void processIncomingMessage(TargetedMessage message) {
         Object[] vars = new Object[this.variables.size()];
@@ -38,6 +42,7 @@ public class DataMapper extends Filter {
         if ((this.message = MapGetter.getString(data, "message")) == null) {
             throw new CraftIRCInvalidConfigException("Message required!");
         }
+
         Matcher matcher = PERCENT_VARIABLE.matcher(this.message);
         this.variables = new LinkedList<>();
         StringBuilder builder = new StringBuilder();

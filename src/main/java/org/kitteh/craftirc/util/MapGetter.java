@@ -41,7 +41,7 @@ public final class MapGetter {
         return get(map, key, String.class);
     }
 
-    public static Integer getInt(Map<?,?> map, String key) {
+    public static Integer getInt(Map<?, ?> map, String key) {
         return get(map, key, Integer.class);
     }
 }

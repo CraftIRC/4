@@ -56,8 +56,8 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     @Override
     protected void processCompleted(Endpoint endpoint) throws CraftIRCInvalidConfigException {
         final String name = endpoint.getName();
-        if(this.endpoints.containsKey(name)) {
-            throw new CraftIRCInvalidConfigException("Duplicate Endpoint name '"+name+"'");
+        if (this.endpoints.containsKey(name)) {
+            throw new CraftIRCInvalidConfigException("Duplicate Endpoint name '" + name + "'");
         }
         this.endpoints.put(name, endpoint);
     }
