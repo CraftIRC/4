@@ -5,6 +5,7 @@ import org.kitteh.craftirc.endpoint.EndpointManager;
 import org.kitteh.craftirc.endpoint.filter.FilterRegistry;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
+import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -16,8 +17,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class CraftIRC extends JavaPlugin {
+    private static Logger logger;
+
+    public static Logger log() {
+        if (CraftIRC.logger == null) {
+            throw new CraftIRCWillLeakTearsException();
+        }
+        return CraftIRC.logger;
+    }
+
     private BotManager botManager;
     private EndpointManager endpointManager;
     private FilterRegistry filterRegistry;
@@ -35,7 +46,15 @@ public final class CraftIRC extends JavaPlugin {
     }
 
     @Override
+    public void onDisable() {
+        // TODO close up shop
+        // And lastly...
+        CraftIRC.logger = null;
+    }
+
+    @Override
     public void onEnable() {
+        CraftIRC.logger = this.getLogger();
         this.filterRegistry = new FilterRegistry(this);
 
         CraftIRCInvalidConfigException exception = null;
