@@ -57,10 +57,14 @@ final class MessageDistributor extends Thread {
     MessageDistributor(EndpointManager manager, CraftIRC plugin) {
         this.endpointManager = manager;
         this.plugin = plugin;
+        this.start();
     }
 
     void addMessage(Message message) {
         this.messages.add(message);
+        synchronized (this.messages) {
+            this.messages.notify();
+        }
     }
 
     @Override
@@ -75,6 +79,15 @@ final class MessageDistributor extends Thread {
                         this.plugin.getServer().getScheduler().callSyncMethod(this.plugin, new SendMessage(message, target));
                     } else {
                         target.receiveMessage(message);
+                    }
+                }
+            }
+            if (this.messages.isEmpty()) {
+                synchronized (this.messages) {
+                    try {
+                        this.messages.wait();
+                    } catch (InterruptedException e) {
+                        break;
                     }
                 }
             }

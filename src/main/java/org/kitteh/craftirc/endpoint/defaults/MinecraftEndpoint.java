@@ -25,32 +25,45 @@ package org.kitteh.craftirc.endpoint.defaults;
 
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.Endpoint;
+import org.kitteh.craftirc.endpoint.Message;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.util.MinecraftPlayer;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The standard {@link org.kitteh.craftirc.endpoint.Endpoint} for minecraft
  * chat messages.
  */
 @Loadable.Type(name = "minecraft")
-public class MinecraftEndpoint extends Endpoint {
-    public static final String PLAYER_LIST = "destinationPlayers";
+public class MinecraftEndpoint extends Endpoint implements Listener {
+    public static final String MESSAGE_FORMAT = "MESSAGE_FORMAT";
+    public static final String MESSAGE_TEXT = "MESSAGE_TEXT";
+    public static final String PLAYER_LIST = "RECIPIENT_NAMES";
+    public static final String SENDER_NAME = "SENDER_NAME";
 
-    private final Server server;
+    private final CraftIRC plugin;
 
-    public MinecraftEndpoint(Server server) {
-        this.server = server;
+    public MinecraftEndpoint(CraftIRC plugin) {
+        this.plugin = plugin;
+        this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
     }
 
     @Override
     protected void preProcessReceivedMessage(TargetedMessage message) {
         List<MinecraftPlayer> players = new LinkedList<>();
-        for (Player player : this.server.getOnlinePlayers()) {
+        for (Player player : this.plugin.getServer().getOnlinePlayers()) {
             players.add(new MinecraftPlayer(player.getName(), player.getUniqueId()));
         }
         message.getCustomData().put(MinecraftEndpoint.PLAYER_LIST, players);
@@ -61,10 +74,27 @@ public class MinecraftEndpoint extends Endpoint {
         @SuppressWarnings("unchecked")
         List<MinecraftPlayer> recipients = (List<MinecraftPlayer>) message.getCustomData().get(MinecraftEndpoint.PLAYER_LIST);
         for (MinecraftPlayer recipient : recipients) {
-            Player player = this.server.getPlayerExact(recipient.getName());
+            Player player = this.plugin.getServer().getPlayerExact(recipient.getName());
             if (player != null) {
                 player.sendMessage(message.getCustomMessage());
             }
         }
+    }
+
+    @EventHandler
+    private void onChat(AsyncPlayerChatEvent event) {
+        Map<String, Object> data = new HashMap<>();
+        Set<String> recipients = new HashSet<>();
+        for (Player player : event.getRecipients()) {
+            recipients.add(player.getName());
+        }
+        String format = event.getFormat();
+        String message = event.getMessage();
+        String sender = event.getPlayer().getName();
+        data.put(MinecraftEndpoint.MESSAGE_FORMAT, format);
+        data.put(MinecraftEndpoint.MESSAGE_TEXT, message);
+        data.put(MinecraftEndpoint.PLAYER_LIST, recipients);
+        data.put(MinecraftEndpoint.SENDER_NAME, sender);
+        this.plugin.getEndpointManager().sendMessage(new Message(this, String.format(event.getFormat(), sender, message), data));
     }
 }

@@ -124,7 +124,9 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         final Loadable.Type type = clazz.getAnnotation(Loadable.Type.class);
         Validate.notNull(type, "Submitted class '" + clazz.getSimpleName() + "' has no Loadable.Type annotation");
         final String name = type.name();
-        Validate.isTrue(!this.types.containsKey(name), this.clazz.getSimpleName() + " type name '" + name + "' is already registered to '" + this.types.get(name).getDeclaringClass().getSimpleName() + "' and cannot be registered by '" + clazz.getSimpleName() + "'");
+        if (this.types.containsKey(name)) {
+            throw new IllegalArgumentException(this.clazz.getSimpleName() + " type name '" + name + "' is already registered to '" + this.types.get(name).getDeclaringClass().getSimpleName() + "' and cannot be registered by '" + clazz.getSimpleName() + "'");
+        }
         this.types.put(name, constructor);
         if (this.unRegistered.containsKey(name)) {
             for (final Map<Object, Object> loadable : this.unRegistered.get(name)) {

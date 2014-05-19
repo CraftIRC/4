@@ -1,0 +1,15 @@
+endpoints:
+  - name: Game
+    type: minecraft
+  - name: IRC
+    type: irc
+    extra:
+      bot: bot
+      channel: '#craftirctest'
+bots:
+  - name: bot
+    nick: mbaxtest
+    host: irc.esper.net
+links:
+  - source: Game
+    target: IRC

@@ -149,8 +149,6 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     }
 
     private void addLink(String source, String target) {
-        source = source.toLowerCase();
-        target = target.toLowerCase();
         List<String> targets = this.links.get(source);
         if (targets == null) {
             targets = new LinkedList<>();

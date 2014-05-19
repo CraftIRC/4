@@ -70,7 +70,9 @@ public final class CraftIRC extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.botManager.shutdown();
+        if (this.botManager != null) {
+            this.botManager.shutdown();
+        }
         // And lastly...
         CraftIRC.logger = null;
     }
@@ -145,6 +147,7 @@ public final class CraftIRC extends JavaPlugin {
         if (exception != null) {
             this.getLogger().log(Level.SEVERE, "Could not start CraftIRC!", exception);
             this.getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         this.botManager = new BotManager(bots);

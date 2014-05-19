@@ -48,6 +48,10 @@ public final class BotManager {
     }
 
     private void loadBots(List<?> list) {
+        if (list == null) {
+            CraftIRC.log().severe("No bots in the config!");
+            return;
+        }
         Set<String> usedBotNames = new HashSet<>();
         int nonMap = 0;
         int noName = 0;
@@ -59,7 +63,6 @@ public final class BotManager {
             }
             final String name = MapGetter.getString(data, "name");
             if (name == null) {
-                CraftIRC.log().warning("");
                 noName++;
                 continue;
             }
