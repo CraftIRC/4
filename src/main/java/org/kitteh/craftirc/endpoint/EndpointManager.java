@@ -32,6 +32,7 @@ import org.kitteh.craftirc.util.MapGetter;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 /**
  * Maintains {@link Endpoint}s and classes corresponding to Endpoint types.
@@ -87,12 +88,12 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
 
     @Override
     protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
-
+        CraftIRC.log().log(Level.WARNING, "Failed to load Endpoint", exception);
     }
 
     @Override
     protected void processInvalid(String reason, Map<Object, Object> data) {
-
+        CraftIRC.log().warning("Encountered invalid Endpoint: " + reason);
     }
 
     private void loadLinks(List<?> list) {
@@ -100,20 +101,23 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
             CraftIRC.log().severe("No links defined");
             return;
         }
+        int nonMap = 0;
+        int noSource = 0;
+        int noTarget = 0;
         for (final Object listElement : list) {
             final Map<Object, Object> linkMap;
             if ((linkMap = MapGetter.castToMap(listElement)) == null) {
-                // TODO: Track (Don't fire each time!) that an invalid entry was added
+                nonMap++;
                 continue;
             }
             final String source = MapGetter.getString(linkMap, "source");
             if (source == null) {
-                // TODO fire message for link without source
+                noSource++;
                 continue;
             }
             final String target = MapGetter.getString(linkMap, "target");
             if (target == null) {
-                // TODO fire message for link without target
+                noTarget++;
                 continue;
             }
             final Object bidirectionalObject = linkMap.get("bidirectional");
@@ -129,6 +133,18 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
             if (bidirectional) {
                 this.addLink(target, source);
             }
+        }
+        if (nonMap > 0) {
+            CraftIRC.log().warning(String.format("Links list contained %d entries which were not maps", nonMap));
+        }
+        if (noSource > 0) {
+            CraftIRC.log().warning(String.format("Links list contained %d entries without a source specified", noSource));
+        }
+        if (noTarget > 0) {
+            CraftIRC.log().warning(String.format("Links list contained %d entries without a target specified", noTarget));
+        }
+        if (this.links.isEmpty()) {
+            CraftIRC.log().severe("Loaded no links! Nothing will be passed between any Endpoints!");
         }
     }
 

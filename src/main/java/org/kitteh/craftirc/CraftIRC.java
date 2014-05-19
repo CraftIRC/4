@@ -70,7 +70,7 @@ public final class CraftIRC extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // TODO close up shop
+        this.botManager.shutdown();
         // And lastly...
         CraftIRC.logger = null;
     }

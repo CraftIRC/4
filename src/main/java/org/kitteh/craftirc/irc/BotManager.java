@@ -97,4 +97,10 @@ public final class BotManager {
             CraftIRC.log().warning(String.format("Bots list contained %d entries without a 'name'", noName));
         }
     }
+
+    public void shutdown() {
+        for (IRCBot bot : this.bots.values()) {
+            bot.shutdown();
+        }
+    }
 }

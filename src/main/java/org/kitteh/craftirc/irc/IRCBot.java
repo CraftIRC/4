@@ -66,6 +66,10 @@ public final class IRCBot {
         this.bot.sendMessage(target, message);
     }
 
+    void shutdown() {
+        this.bot.shutdown("CraftIRC! http://dev.bukkit.org/bukkit-plugins/craftirc");
+    }
+
     private class Listener {
         @EventHandler
         public void message(ChannelMessageEvent event) {

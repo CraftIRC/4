@@ -34,6 +34,7 @@ import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Handles Filters.
@@ -75,14 +76,13 @@ public final class FilterRegistry extends LoadableTypeManager<Filter> {
             loader.addFilter(loaded);
         }
     }
-
     @Override
     protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
-        // TODO log
+        CraftIRC.log().log(Level.WARNING, "Failed to load Filter", exception);
     }
 
     @Override
     protected void processInvalid(String reason, Map<Object, Object> data) {
-        // TODO log
+        CraftIRC.log().warning("Encountered invalid Filter: " + reason);
     }
 }
