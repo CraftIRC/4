@@ -101,7 +101,7 @@ public class RegexFilter extends Filter {
         }
         this.pattern = Pattern.compile(pattern);
         if ((this.action = Action.getByName(MapGetter.getString(data, "action"))) == null) {
-            throw new CraftIRCInvalidConfigException("Regex pattern requires an 'action' defined. Valid action types: ");
+            throw new CraftIRCInvalidConfigException("Regex pattern requires an 'action' defined. Valid action types: " + Action.names);
         }
         if ((this.value = MapGetter.getString(data, "value")) == null) {
             throw new CraftIRCInvalidConfigException("Regex pattern requires a 'value' defined.");
