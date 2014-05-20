@@ -48,10 +48,8 @@ import java.util.Set;
  */
 @Loadable.Type(name = "minecraft")
 public class MinecraftEndpoint extends Endpoint implements Listener {
-    public static final String MESSAGE_FORMAT = "MESSAGE_FORMAT";
-    public static final String MESSAGE_TEXT = "MESSAGE_TEXT";
     public static final String PLAYER_LIST = "RECIPIENT_NAMES";
-    public static final String SENDER_NAME = "SENDER_NAME";
+
 
     private final CraftIRC plugin;
 
@@ -91,10 +89,10 @@ public class MinecraftEndpoint extends Endpoint implements Listener {
         String format = event.getFormat();
         String message = event.getMessage();
         String sender = event.getPlayer().getName();
-        data.put(MinecraftEndpoint.MESSAGE_FORMAT, format);
-        data.put(MinecraftEndpoint.MESSAGE_TEXT, message);
+        data.put(Endpoint.MESSAGE_FORMAT, format);
+        data.put(Endpoint.MESSAGE_TEXT, message);
         data.put(MinecraftEndpoint.PLAYER_LIST, recipients);
-        data.put(MinecraftEndpoint.SENDER_NAME, sender);
+        data.put(Endpoint.SENDER_NAME, sender);
         this.plugin.getEndpointManager().sendMessage(new Message(this, String.format(event.getFormat(), sender, message), data));
     }
 }

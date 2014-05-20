@@ -53,6 +53,10 @@ public abstract class Endpoint extends Loadable {
         }
     }
 
+    public static final String MESSAGE_FORMAT = "MESSAGE_FORMAT";
+    public static final String MESSAGE_TEXT = "MESSAGE_TEXT";
+    public static final String SENDER_NAME = "SENDER_NAME";
+
     private String name;
     private final List<Filter> filters = new CopyOnWriteArrayList<>();
 

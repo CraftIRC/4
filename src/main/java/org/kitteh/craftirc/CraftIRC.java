@@ -150,7 +150,7 @@ public final class CraftIRC extends JavaPlugin {
             return;
         }
 
-        this.botManager = new BotManager(bots);
+        this.botManager = new BotManager(this, bots);
         this.endpointManager = new EndpointManager(this, endpoints, links);
     }
 }

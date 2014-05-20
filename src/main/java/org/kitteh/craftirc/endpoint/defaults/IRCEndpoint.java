@@ -38,6 +38,10 @@ import java.util.Map;
  */
 @Loadable.Type(name = "irc")
 public class IRCEndpoint extends Endpoint {
+    public static final String IRC_NICK = "IRC_NICK";
+    public static final String IRC_MASK = "IRC_MASK";
+    public static final String IRC_CHANNEL = "IRC_CHANNEL";
+
     private IRCBot bot;
     private String channel;
     private final CraftIRC plugin;

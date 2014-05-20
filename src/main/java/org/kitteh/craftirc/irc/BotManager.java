@@ -38,8 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class BotManager {
     private final Map<String, IRCBot> bots = new ConcurrentHashMap<>();
+    private final CraftIRC plugin;
 
-    public BotManager(List<?> bots) {
+    public BotManager(CraftIRC plugin, List<?> bots) {
+        this.plugin = plugin;
         this.loadBots(bots);
     }
 
@@ -91,7 +93,7 @@ public final class BotManager {
             botBuilder.bind(bindport != null ? bindport : 0);
             botBuilder.nick(nick != null ? nick : "CraftIRC");
 
-            bots.put(name, new IRCBot(name, botBuilder.build()));
+            this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));
         }
         if (nonMap > 0) {
             CraftIRC.log().warning(String.format("Bots list contained %d entries which were not maps", nonMap));
