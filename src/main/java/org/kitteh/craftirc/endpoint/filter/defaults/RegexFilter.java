@@ -26,22 +26,128 @@ package org.kitteh.craftirc.endpoint.filter.defaults;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
+import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Filter of information into the displayed message, via regular expression.
+ * Filter of information, via regular expression.
  */
 @Loadable.Type(name = "regex")
 public class RegexFilter extends Filter {
+    public enum Action {
+        ALLOW,
+        DROP,
+        STORE;
+
+        private static final Map<String, Action> nameMap = new HashMap<>();
+        private static final String names;
+
+        static {
+            StringBuilder builder = new StringBuilder();
+            for (Action action : Action.values()) {
+                nameMap.put(action.name(), action);
+                builder.append(action.name()).append(", ");
+            }
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - ", ".length());
+            }
+            names = builder.toString();
+        }
+
+        private static Action getByName(String name) {
+            if (name == null) {
+                return null;
+            }
+            return Action.nameMap.get(name.toUpperCase());
+        }
+    }
+
+    public enum Match {
+        FULL,
+        PARTIAL;
+
+        private static final Map<String, Match> nameMap = new HashMap<>();
+
+        static {
+            for (Match match : Match.values()) {
+                nameMap.put(match.name(), match);
+
+            }
+        }
+
+        private static Match getByName(String name) {
+            if (name == null) {
+                return null;
+            }
+            return Match.nameMap.get(name.toUpperCase());
+        }
+    }
+
+    private Action action;
+    private Match match;
+    private Pattern pattern;
+    private String value;
+
     @Override
     protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        // TODO get dx to do this
+        String pattern;
+        if ((pattern = MapGetter.getString(data, "pattern")) == null) {
+            throw new CraftIRCInvalidConfigException("Regex pattern requires a 'pattern' defined");
+        }
+        this.pattern = Pattern.compile(pattern);
+        if ((this.action = Action.getByName(MapGetter.getString(data, "action"))) == null) {
+            throw new CraftIRCInvalidConfigException("Regex pattern requires an 'action' defined. Valid action types: ");
+        }
+        if ((this.value = MapGetter.getString(data, "value")) == null) {
+            throw new CraftIRCInvalidConfigException("Regex pattern requires a 'value' defined.");
+        }
+        this.match = Match.getByName(MapGetter.getString(data, "match"));
+        if (this.match == null) {
+            this.match = Match.PARTIAL;
+        }
+        switch (this.action) {
+            case STORE:
+                // TODO
+                break;
+            default:
+                // Nothing else to do
+        }
     }
 
     @Override
     public void processMessage(TargetedMessage message) {
-        // TODO get dx to do this
+        String val = message.getCustomData().get(this.value).toString();
+        Matcher matcher = this.pattern.matcher(val);
+        boolean matches;
+        switch (this.match) {
+            case FULL:
+                matches = matcher.matches();
+                break;
+            case PARTIAL:
+            default:
+                matches = matcher.find();
+        }
+        switch (this.action) {
+            case ALLOW:
+                if (!matches) {
+                    message.reject();
+                }
+                break;
+            case DROP:
+                if (matches) {
+                    message.reject();
+                }
+                break;
+            case STORE:
+                // TODO
+                break;
+            default:
+                // panic
+        }
     }
 }
