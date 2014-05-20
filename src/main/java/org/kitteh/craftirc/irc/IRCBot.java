@@ -79,7 +79,7 @@ public final class IRCBot {
         this.bot.shutdown("CraftIRC! http://dev.bukkit.org/bukkit-plugins/craftirc");
     }
 
-    private void sendMessage(User sender, Channel channel, String message, String format) {
+    private void sendMessage(User sender, Channel channel, String message, IRCEndpoint.MessageType messageType) {
         if (!this.channels.containsKey(channel.getName())) {
             return;
         }
@@ -87,10 +87,11 @@ public final class IRCBot {
             Map<String, Object> data = new HashMap<>();
             data.put(IRCEndpoint.IRC_CHANNEL, channel.getName());
             data.put(IRCEndpoint.IRC_MASK, sender.getName());
+            data.put(IRCEndpoint.IRC_MESSAGE_TYPE, messageType);
             data.put(IRCEndpoint.IRC_NICK, sender.getNick());
-            data.put(Endpoint.MESSAGE_FORMAT, format);
+            data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
             data.put(Endpoint.MESSAGE_TEXT, message);
-            this.plugin.getEndpointManager().sendMessage(new Message(endpoint, String.format(format, sender.getNick()), data));
+            this.plugin.getEndpointManager().sendMessage(new Message(endpoint, String.format(messageType.getFormat(), sender.getNick()), data));
         }
     }
 
@@ -99,14 +100,14 @@ public final class IRCBot {
         public void message(ChannelMessageEvent event) {
             Actor actor = event.getSender();
             if (actor instanceof User) {
-                IRCBot.this.sendMessage((User) actor, event.getChannel(), event.getMessage(), "<%s> %s");
+                IRCBot.this.sendMessage((User) actor, event.getChannel(), event.getMessage(), IRCEndpoint.MessageType.MESSAGE);
             }
         }
 
         @EventHandler
         public void action(ChannelCTCPEvent event) {
             if (event.getMessage().startsWith("ACTION ") && event.getSender() instanceof User) {
-                IRCBot.this.sendMessage((User) event.getSender(), event.getChannel(), event.getMessage().substring("ACTION ".length()), "* %s %s");
+                IRCBot.this.sendMessage((User) event.getSender(), event.getChannel(), event.getMessage().substring("ACTION ".length()), IRCEndpoint.MessageType.ME);
             }
         }
     }

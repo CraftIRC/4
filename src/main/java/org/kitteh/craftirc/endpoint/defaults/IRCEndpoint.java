@@ -38,9 +38,25 @@ import java.util.Map;
  */
 @Loadable.Type(name = "irc")
 public class IRCEndpoint extends Endpoint {
-    public static final String IRC_NICK = "IRC_NICK";
-    public static final String IRC_MASK = "IRC_MASK";
+    public enum MessageType {
+        ME("* %s %s"),
+        MESSAGE("<%s> %s");
+
+        private final String format;
+
+        private MessageType(String format) {
+            this.format = format;
+        }
+
+        public String getFormat() {
+            return this.format;
+        }
+    }
+
     public static final String IRC_CHANNEL = "IRC_CHANNEL";
+    public static final String IRC_MASK = "IRC_MASK";
+    public static final String IRC_NICK = "IRC_NICK";
+    public static final String IRC_MESSAGE_TYPE = "IRC_MESSAGE_TYPE";
 
     private IRCBot bot;
     private String channel;
