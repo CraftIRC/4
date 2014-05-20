@@ -76,6 +76,7 @@ public final class FilterRegistry extends LoadableTypeManager<Filter> {
             loader.addFilter(loaded);
         }
     }
+
     @Override
     protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
         CraftIRC.log().log(Level.WARNING, "Failed to load Filter", exception);

@@ -44,12 +44,12 @@ public abstract class LoadableTypeManager<T extends Loadable> {
     private final Map<String, List<Map<Object, Object>>> unRegistered = new ConcurrentHashMap<>();
     private final Class<T> clazz;
 
-    public LoadableTypeManager(CraftIRC plugin, Class<T> clazz) {
+    protected LoadableTypeManager(CraftIRC plugin, Class<T> clazz) {
         this.clazz = clazz;
         this.plugin = plugin;
     }
 
-    public void loadList(List<?> list) {
+    protected void loadList(List<?> list) {
         for (final Object listElement : list) {
             final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {

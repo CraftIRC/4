@@ -31,10 +31,13 @@ import java.util.Map;
 public final class MapGetter {
     public static Map<Object, Object> castToMap(Object o) {
         if (o instanceof Map) {
-            return (Map<Object, Object>) o;
+            @SuppressWarnings("unchecked")
+            Map<Object, Object> map = (Map<Object, Object>) o;
+            return map;
         }
         return null;
     }
+
 
     public static <T> T get(Map<Object, Object> map, String key, Class<T> type) {
         if (map == null) {
@@ -44,11 +47,15 @@ public final class MapGetter {
         if (o == null || !type.isAssignableFrom(o.getClass())) {
             return null;
         }
-        return (T) o;
+        @SuppressWarnings("unchecked")
+        T t = (T) o;
+        return t;
     }
 
     public static Map<Object, Object> getMap(Map<Object, Object> map, String key) {
-        return get(map, key, Map.class);
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> newMap = get(map, key, Map.class);
+        return newMap;
     }
 
     public static String getString(Map<Object, Object> map, String key) {
