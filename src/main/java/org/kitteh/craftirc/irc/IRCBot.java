@@ -83,15 +83,16 @@ public final class IRCBot {
         if (!this.channels.containsKey(channel.getName())) {
             return;
         }
+        Map<String, Object> data = new HashMap<>();
+        data.put(IRCEndpoint.IRC_CHANNEL, channel.getName());
+        data.put(IRCEndpoint.IRC_MASK, sender.getName());
+        data.put(IRCEndpoint.IRC_MESSAGE_TYPE, messageType);
+        data.put(IRCEndpoint.IRC_NICK, sender.getNick());
+        data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
+        data.put(Endpoint.MESSAGE_TEXT, message);
+        String formatted = String.format(messageType.getFormat(), sender.getNick());
         for (IRCEndpoint endpoint : this.channels.get(channel.getName())) {
-            Map<String, Object> data = new HashMap<>();
-            data.put(IRCEndpoint.IRC_CHANNEL, channel.getName());
-            data.put(IRCEndpoint.IRC_MASK, sender.getName());
-            data.put(IRCEndpoint.IRC_MESSAGE_TYPE, messageType);
-            data.put(IRCEndpoint.IRC_NICK, sender.getNick());
-            data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
-            data.put(Endpoint.MESSAGE_TEXT, message);
-            this.plugin.getEndpointManager().sendMessage(new Message(endpoint, String.format(messageType.getFormat(), sender.getNick()), data));
+            this.plugin.getEndpointManager().sendMessage(new Message(endpoint, formatted, data));
         }
     }
 

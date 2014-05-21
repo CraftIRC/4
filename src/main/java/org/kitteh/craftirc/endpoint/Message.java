@@ -48,7 +48,7 @@ public final class Message {
     public Message(Endpoint source, String defaultMessage, Map<String, Object> data) {
         this.source = source;
         this.defaultMessage = defaultMessage;
-        this.data = data;
+        this.data = ImmutableMap.copyOf(data);
     }
 
     /**
@@ -57,7 +57,7 @@ public final class Message {
      * @return an immutable map representing the data
      */
     public Map<String, Object> getData() {
-        return ImmutableMap.copyOf(this.data);
+        return this.data;
     }
 
     /**
