@@ -24,6 +24,7 @@
 package org.kitteh.craftirc.endpoint;
 
 import org.kitteh.craftirc.CraftIRC;
+import org.kitteh.craftirc.util.WackyWavingInterruptableArmFlailingThreadMan;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -57,6 +58,7 @@ final class MessageDistributor extends Thread {
     MessageDistributor(EndpointManager manager, CraftIRC plugin) {
         this.endpointManager = manager;
         this.plugin = plugin;
+        this.plugin.wackyWavingInterruptableArmFlailingThreadMan(new WackyWavingInterruptableArmFlailingThreadMan(this));
         this.start();
     }
 

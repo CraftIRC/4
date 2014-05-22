@@ -30,6 +30,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
+import org.kitteh.craftirc.util.WackyWavingInterruptableArmFlailingThreadMan;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -39,6 +40,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,6 +58,7 @@ public final class CraftIRC extends JavaPlugin {
     private BotManager botManager;
     private EndpointManager endpointManager;
     private FilterRegistry filterRegistry;
+    private Set<WackyWavingInterruptableArmFlailingThreadMan> wackyWavingInterruptableArmFlailingThreadMen = new CopyOnWriteArraySet<>();
 
     public BotManager getBotManager() {
         return this.botManager;
@@ -68,10 +72,17 @@ public final class CraftIRC extends JavaPlugin {
         return this.filterRegistry;
     }
 
+    public void wackyWavingInterruptableArmFlailingThreadMan(WackyWavingInterruptableArmFlailingThreadMan wackyWavingInterruptableArmFlailingThreadMan) {
+        this.wackyWavingInterruptableArmFlailingThreadMen.add(wackyWavingInterruptableArmFlailingThreadMan);
+    }
+
     @Override
     public void onDisable() {
         if (this.botManager != null) {
             this.botManager.shutdown();
+        }
+        for (WackyWavingInterruptableArmFlailingThreadMan wackyWavingInterruptableArmFlailingThreadMan : this.wackyWavingInterruptableArmFlailingThreadMen) {
+            wackyWavingInterruptableArmFlailingThreadMan.wackyWavingInterruptableArmFlailingThreadMan();
         }
         // And lastly...
         CraftIRC.logger = null;

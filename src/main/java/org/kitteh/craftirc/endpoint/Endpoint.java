@@ -87,10 +87,11 @@ public abstract class Endpoint extends Loadable {
         // By default, nothing extra to load
     }
 
+    @Override
     protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         this.name = MapGetter.getString(data, "name");
-        final Map<Object, Object> extras = MapGetter.getMap(data, "extra");
-        this.loadExtra(extras == null ? new HashMap<>() : extras);
+        final Map<Object, Object> extra = MapGetter.getMap(data, "extra");
+        this.loadExtra(extra == null ? new HashMap<>() : extra);
 
         List<?> filters = MapGetter.get(data, "filters", List.class);
         if (filters != null) {
