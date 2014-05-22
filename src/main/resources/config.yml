@@ -6,6 +6,16 @@ endpoints:
     extra:
       bot: bot
       channel: '#craftirctest'
+    filters:
+      - type: antihighlight
+        splitter: " "
+        variable: SENDER_NAME
+      - type: datamapper
+        message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
+      - type: regex
+        pattern: "butts"
+        value: MESSAGE_TEXT
+        action: drop
 bots:
   - name: bot
     nick: mbaxtest
