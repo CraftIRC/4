@@ -30,6 +30,8 @@ import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,14 +90,17 @@ public class RegexFilter extends Filter {
         }
     }
 
+    private static final Pattern NAMED_GROUP = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
+
     private Action action;
     private Match match;
     private Pattern pattern;
     private String value;
+    private List<String> namedGroups = new LinkedList<>();
 
     @Override
     protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        String pattern;
+        final String pattern;
         if ((pattern = MapGetter.getString(data, "pattern")) == null) {
             throw new CraftIRCInvalidConfigException("Regex pattern requires a 'pattern' defined");
         }
@@ -112,7 +117,14 @@ public class RegexFilter extends Filter {
         }
         switch (this.action) {
             case STORE:
-                // TODO
+                Matcher namedGroupMatcher = NAMED_GROUP.matcher(pattern);
+                while (namedGroupMatcher.find()) {
+                    this.namedGroups.add(namedGroupMatcher.group(1));
+                }
+                if (this.namedGroups.isEmpty()) {
+                    throw new CraftIRCInvalidConfigException("To use the STORE action, a named matching group must be defined");
+                }
+                // TODO: Provide for defining which, in multiple match cases, found item is stored
                 break;
             default:
                 // Nothing else to do
@@ -144,7 +156,14 @@ public class RegexFilter extends Filter {
                 }
                 break;
             case STORE:
-                // TODO
+                do {
+                    for (String name : this.namedGroups) {
+                        String match = matcher.group(name);
+                        if (match != null) {
+                            message.getCustomData().put(name, match);
+                        }
+                    }
+                } while (this.match == Match.PARTIAL && matcher.find());
                 break;
             default:
                 // panic
