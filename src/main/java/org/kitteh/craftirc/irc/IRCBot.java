@@ -45,7 +45,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Wraps an IRC bot and handles events
  */
 public final class IRCBot {
-
     private final Bot bot;
     private final String name;
     private final Map<String, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
@@ -98,7 +97,6 @@ public final class IRCBot {
     }
 
     private class Listener {
-
         @EventHandler
         public void message(ChannelMessageEvent event) {
             Actor actor = event.getSender();
