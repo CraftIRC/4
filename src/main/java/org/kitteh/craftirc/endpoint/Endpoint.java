@@ -26,8 +26,8 @@ package org.kitteh.craftirc.endpoint;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.loadable.Loadable;
 import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.HashMap;
 import java.util.List;

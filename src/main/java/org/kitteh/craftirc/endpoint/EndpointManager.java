@@ -27,10 +27,14 @@ import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
