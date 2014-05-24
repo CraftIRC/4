@@ -58,7 +58,7 @@ public final class CraftIRC extends JavaPlugin {
     private BotManager botManager;
     private EndpointManager endpointManager;
     private FilterRegistry filterRegistry;
-    private Set<WackyWavingInterruptableArmFlailingThreadMan> wackyWavingInterruptableArmFlailingThreadMen = new CopyOnWriteArraySet<>();
+    private final Set<WackyWavingInterruptableArmFlailingThreadMan> wackyWavingInterruptableArmFlailingThreadMen = new CopyOnWriteArraySet<>();
 
     public BotManager getBotManager() {
         return this.botManager;

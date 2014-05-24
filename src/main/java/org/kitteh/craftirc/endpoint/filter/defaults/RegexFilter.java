@@ -27,6 +27,7 @@ import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.HashMap;
@@ -95,8 +96,9 @@ public class RegexFilter extends Filter {
     private Action action;
     private Match match;
     private Pattern pattern;
+    @Load
     private String value;
-    private List<String> namedGroups = new LinkedList<>();
+    private final List<String> namedGroups = new LinkedList<>();
 
     @Override
     protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
@@ -107,9 +109,6 @@ public class RegexFilter extends Filter {
         this.pattern = Pattern.compile(pattern);
         if ((this.action = Action.getByName(MapGetter.getString(data, "action"))) == null) {
             throw new CraftIRCInvalidConfigException("Regex pattern requires an 'action' defined. Valid action types: " + Action.names);
-        }
-        if ((this.value = MapGetter.getString(data, "value")) == null) {
-            throw new CraftIRCInvalidConfigException("Regex pattern requires a 'value' defined.");
         }
         this.match = Match.getByName(MapGetter.getString(data, "match"));
         if (this.match == null) {

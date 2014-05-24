@@ -7,7 +7,7 @@ import java.util.Map;
  * Builds maps and gets in fights.
  */
 public final class MapBuilder<K, V> {
-    private Map<K, V> map = new HashMap<>();
+    private final Map<K, V> map = new HashMap<>();
 
     public MapBuilder<K, V> add(K key, V value) {
         this.map.put(key, value);

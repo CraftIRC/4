@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.craftirc.endpoint;
+package org.kitteh.craftirc.util.loadable;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,9 +29,26 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Designates an {@link Endpoint} which must run on the main server thread.
+ * A variable to be loaded on Loadable load.
+ * TODO be compatble with enums and other fun loady types.
  */
 @Retention(value = RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface SyncEndpoint {
+@Target(ElementType.FIELD)
+public @interface Load {
+    /**
+     * Gets if this value is required. If true, and not found when loading, a
+     * {@link org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException}
+     * is thrown. Default value is true.
+     *
+     * @return true if required
+     */
+    boolean required() default true;
+
+    /**
+     * Gets the name to load from the config. If an empty string, the field
+     * name will be used. This is the default.
+     *
+     * @return the name in the config
+     */
+    String name() default "";
 }

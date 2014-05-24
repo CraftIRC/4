@@ -74,5 +74,7 @@ public abstract class Filter extends Loadable {
      * @param data information to load
      * @throws CraftIRCInvalidConfigException
      */
-    protected abstract void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException;
+    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+
+    }
 }

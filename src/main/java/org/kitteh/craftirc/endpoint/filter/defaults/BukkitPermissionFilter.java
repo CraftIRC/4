@@ -28,32 +28,24 @@ import org.bukkit.entity.Player;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.endpoint.filter.Filter;
-import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.MinecraftPlayer;
+import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A filter by permission node.
  */
 @Loadable.Type(name = "bukkit-permission")
 public final class BukkitPermissionFilter extends Filter {
+    @Load
     private String permission;
     private final Server server;
 
     public BukkitPermissionFilter(Server server) {
         this.server = server;
-    }
-
-    @Override
-    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        if ((this.permission = MapGetter.getString(data, "permission")) == null) {
-            throw new CraftIRCInvalidConfigException("Invalid AntiHighlight config. Requires 'permission' defined");
-        }
     }
 
     /**

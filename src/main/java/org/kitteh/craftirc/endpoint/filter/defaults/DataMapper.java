@@ -26,7 +26,7 @@ package org.kitteh.craftirc.endpoint.filter.defaults;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.LinkedList;
@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 public class DataMapper extends Filter {
     private static final Pattern PERCENT_VARIABLE = Pattern.compile("%([^ \\n]+)%");
     private String format;
+    @Load
     private String message;
     private List<String> variables;
 
@@ -60,10 +61,6 @@ public class DataMapper extends Filter {
 
     @Override
     protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        if ((this.message = MapGetter.getString(data, "message")) == null) {
-            throw new CraftIRCInvalidConfigException("Message required!");
-        }
-
         Matcher matcher = PERCENT_VARIABLE.matcher(this.message);
         this.variables = new LinkedList<>();
         StringBuilder builder = new StringBuilder();
