@@ -58,7 +58,7 @@ public final class CraftIRC extends JavaPlugin {
     private BotManager botManager;
     private EndpointManager endpointManager;
     private FilterRegistry filterRegistry;
-    private final Set<WackyWavingInterruptableArmFlailingThreadMan> wackyWavingInterruptableArmFlailingThreadMen = new CopyOnWriteArraySet<>();
+    private final Set<WackyWavingInterruptableArmFlailingThreadMan> threads = new CopyOnWriteArraySet<>();
 
     public BotManager getBotManager() {
         return this.botManager;
@@ -72,8 +72,8 @@ public final class CraftIRC extends JavaPlugin {
         return this.filterRegistry;
     }
 
-    public void wackyWavingInterruptableArmFlailingThreadMan(WackyWavingInterruptableArmFlailingThreadMan wackyWavingInterruptableArmFlailingThreadMan) {
-        this.wackyWavingInterruptableArmFlailingThreadMen.add(wackyWavingInterruptableArmFlailingThreadMan);
+    public void wackyWavingInterruptableArmFlailingThreadMan(WackyWavingInterruptableArmFlailingThreadMan thread) {
+        this.threads.add(thread);
     }
 
     @Override
@@ -81,8 +81,8 @@ public final class CraftIRC extends JavaPlugin {
         if (this.botManager != null) {
             this.botManager.shutdown();
         }
-        for (WackyWavingInterruptableArmFlailingThreadMan wackyWavingInterruptableArmFlailingThreadMan : this.wackyWavingInterruptableArmFlailingThreadMen) {
-            wackyWavingInterruptableArmFlailingThreadMan.wackyWavingInterruptableArmFlailingThreadMan();
+        for (WackyWavingInterruptableArmFlailingThreadMan thread : this.threads) {
+            thread.interrupt();
         }
         // And lastly...
         CraftIRC.logger = null;

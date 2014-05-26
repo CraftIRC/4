@@ -34,7 +34,7 @@ public final class WackyWavingInterruptableArmFlailingThreadMan {
         this.target = target;
     }
 
-    public void wackyWavingInterruptableArmFlailingThreadMan() {
+    public void interrupt() {
         this.target.interrupt();
     }
 
