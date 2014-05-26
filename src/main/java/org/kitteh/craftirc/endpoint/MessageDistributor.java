@@ -58,7 +58,7 @@ final class MessageDistributor extends Thread {
     MessageDistributor(EndpointManager manager, CraftIRC plugin) {
         this.endpointManager = manager;
         this.plugin = plugin;
-        this.plugin.wackyWavingInterruptableArmFlailingThreadMan(new WackyWavingInterruptableArmFlailingThreadMan(this));
+        this.plugin.trackThread(new WackyWavingInterruptableArmFlailingThreadMan(this));
         this.start();
     }
 

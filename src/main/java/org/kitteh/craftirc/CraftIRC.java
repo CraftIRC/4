@@ -72,7 +72,12 @@ public final class CraftIRC extends JavaPlugin {
         return this.filterRegistry;
     }
 
-    public void wackyWavingInterruptableArmFlailingThreadMan(WackyWavingInterruptableArmFlailingThreadMan thread) {
+    /**
+     * Adds a thread to the list of threads to interrupt on disable.
+     *
+     * @param thread tracks a thread via the wrapper
+     */
+    public void trackThread(WackyWavingInterruptableArmFlailingThreadMan thread) {
         this.threads.add(thread);
     }
 
