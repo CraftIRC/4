@@ -25,7 +25,7 @@ package org.kitteh.craftirc;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.craftirc.endpoint.EndpointManager;
-import org.kitteh.craftirc.endpoint.filter.FilterRegistry;
+import org.kitteh.craftirc.endpoint.filter.FilterManager;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
@@ -57,7 +57,7 @@ public final class CraftIRC extends JavaPlugin {
 
     private BotManager botManager;
     private EndpointManager endpointManager;
-    private FilterRegistry filterRegistry;
+    private FilterManager filterManager;
     private final Set<WackyWavingInterruptableArmFlailingThreadMan> threads = new CopyOnWriteArraySet<>();
 
     public BotManager getBotManager() {
@@ -68,8 +68,8 @@ public final class CraftIRC extends JavaPlugin {
         return this.endpointManager;
     }
 
-    public FilterRegistry getFilterRegistry() {
-        return this.filterRegistry;
+    public FilterManager getFilterManager() {
+        return this.filterManager;
     }
 
     /**
@@ -96,7 +96,7 @@ public final class CraftIRC extends JavaPlugin {
     @Override
     public void onEnable() {
         CraftIRC.logger = this.getLogger();
-        this.filterRegistry = new FilterRegistry(this);
+        this.filterManager = new FilterManager(this);
 
         CraftIRCInvalidConfigException exception = null;
         List<?> bots = null;

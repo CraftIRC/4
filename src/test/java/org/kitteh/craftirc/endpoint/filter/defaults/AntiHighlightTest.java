@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.craftirc.endpoint.Message;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
-import org.kitteh.craftirc.endpoint.filter.FilterRegistry;
+import org.kitteh.craftirc.endpoint.filter.FilterManager;
 import org.kitteh.craftirc.util.MapBuilder;
 import org.kitteh.craftirc.util.PointyEnd;
 
@@ -17,7 +17,7 @@ public class AntiHighlightTest {
     @Test
     public void meow() {
         try {
-            FilterRegistry registry = new FilterRegistry(null);
+            FilterManager registry = new FilterManager(null);
             PointyEnd point = new PointyEnd() {
                 @Override
                 protected void receiveMessage(TargetedMessage message) {

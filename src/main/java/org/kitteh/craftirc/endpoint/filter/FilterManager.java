@@ -39,12 +39,12 @@ import java.util.logging.Level;
 /**
  * Handles Filters.
  */
-public final class FilterRegistry extends LoadableTypeManager<Filter> {
+public final class FilterManager extends LoadableTypeManager<Filter> {
     enum Target {
         EndpointLoader
     }
 
-    public FilterRegistry(CraftIRC plugin) {
+    public FilterManager(CraftIRC plugin) {
         super(plugin, Filter.class);
         // Register filter types here
         this.registerType(AntiHighlight.class);

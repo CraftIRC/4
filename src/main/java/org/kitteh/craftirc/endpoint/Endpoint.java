@@ -95,7 +95,7 @@ public abstract class Endpoint extends Loadable {
 
         List<?> filters = MapGetter.get(data, "filters", List.class);
         if (filters != null) {
-            plugin.getFilterRegistry().loadList(filters, new EndpointFilterLoader());
+            plugin.getFilterManager().loadList(filters, new EndpointFilterLoader());
         }
     }
 
