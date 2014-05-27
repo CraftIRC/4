@@ -25,6 +25,7 @@ package org.kitteh.craftirc.irc;
 
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.kitteh.irc.BotBuilder;
 
 import java.util.HashSet;
@@ -42,6 +43,14 @@ public final class BotManager {
 
     public BotManager(CraftIRC plugin, List<Object> bots) {
         this.plugin = plugin;
+        this.plugin.trackShutdownable(new Shutdownable() {
+            @Override
+            public void shutdown() {
+                for (IRCBot bot : BotManager.this.bots.values()) {
+                    bot.shutdown();
+                }
+            }
+        });
         this.loadBots(bots);
     }
 
@@ -54,8 +63,8 @@ public final class BotManager {
         int nonMap = 0;
         int noName = 0;
         for (final Object listElement : list) {
-            final Map<Object, Object> data;
-            if ((data = MapGetter.castToMap(listElement)) == null) {
+            final Map<Object, Object> data = MapGetter.castToMap(listElement);
+            if (data == null) {
                 nonMap++;
                 continue;
             }
@@ -64,11 +73,10 @@ public final class BotManager {
                 noName++;
                 continue;
             }
-            if (usedBotNames.contains(name)) {
+            if (!usedBotNames.add(name)) {
                 CraftIRC.log().warning(String.format("Ignoring duplicate bot with name %s", name));
                 continue;
             }
-            usedBotNames.add(name);
 
             String nick = MapGetter.getString(data, "nick");
             String server = MapGetter.getString(data, "host");
@@ -96,12 +104,6 @@ public final class BotManager {
         }
         if (noName > 0) {
             CraftIRC.log().warning(String.format("Bots list contained %d entries without a 'name'", noName));
-        }
-    }
-
-    public void shutdown() {
-        for (IRCBot bot : this.bots.values()) {
-            bot.shutdown();
         }
     }
 }

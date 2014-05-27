@@ -31,7 +31,8 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
 import org.kitteh.craftirc.util.MapGetter;
-import org.kitteh.craftirc.util.WackyWavingInterruptableArmFlailingThreadMan;
+import org.kitteh.craftirc.util.shutdownable.Shutdownable;
+import org.kitteh.craftirc.util.shutdownable.WackyWavingInterruptableArmFlailingThreadMan;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -59,7 +60,7 @@ public final class CraftIRC extends JavaPlugin {
     private BotManager botManager;
     private EndpointManager endpointManager;
     private FilterManager filterManager;
-    private final Set<WackyWavingInterruptableArmFlailingThreadMan> threads = new CopyOnWriteArraySet<>();
+    private final Set<Shutdownable> shutdownables = new CopyOnWriteArraySet<>();
 
     public BotManager getBotManager() {
         return this.botManager;
@@ -74,21 +75,18 @@ public final class CraftIRC extends JavaPlugin {
     }
 
     /**
-     * Adds a thread to the list of threads to interrupt on disable.
+     * Starts tracking a feature which can be shut down.
      *
-     * @param thread tracks a thread via the wrapper
+     * @param shutdownable feature to track
      */
-    public void trackThread(WackyWavingInterruptableArmFlailingThreadMan thread) {
-        this.threads.add(thread);
+    public void trackShutdownable(Shutdownable shutdownable) {
+        this.shutdownables.add(shutdownable);
     }
 
     @Override
     public void onDisable() {
-        if (this.botManager != null) {
-            this.botManager.shutdown();
-        }
-        for (WackyWavingInterruptableArmFlailingThreadMan thread : this.threads) {
-            thread.interrupt();
+        for (Shutdownable shutdownable : this.shutdownables) {
+            shutdownable.shutdown();
         }
         // And lastly...
         CraftIRC.logger = null;
