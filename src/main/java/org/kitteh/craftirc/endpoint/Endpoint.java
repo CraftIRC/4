@@ -93,7 +93,7 @@ public abstract class Endpoint extends Loadable {
         final Map<Object, Object> extra = MapGetter.getMap(data, "extra");
         this.loadExtra(extra == null ? new HashMap<>() : extra);
 
-        List<?> filters = MapGetter.get(data, "filters", List.class);
+        List<Object> filters = MapGetter.getList(data, "filters");
         if (filters != null) {
             plugin.getFilterManager().loadList(filters, new EndpointFilterLoader());
         }

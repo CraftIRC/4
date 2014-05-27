@@ -23,6 +23,7 @@
  */
 package org.kitteh.craftirc.util;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +39,6 @@ public final class MapGetter {
         return null;
     }
 
-
     public static <T> T get(Map<Object, Object> map, String key, Class<T> type) {
         if (map == null) {
             return null;
@@ -50,6 +50,12 @@ public final class MapGetter {
         @SuppressWarnings("unchecked")
         T t = (T) o;
         return t;
+    }
+
+    public static List<Object> getList(Map<Object, Object> map, String key) {
+        @SuppressWarnings("unchecked")
+        List<Object> list = get(map, key, List.class);
+        return list;
     }
 
     public static Map<Object, Object> getMap(Map<Object, Object> map, String key) {

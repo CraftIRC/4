@@ -100,7 +100,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         this.plugin = plugin;
     }
 
-    protected void loadList(List<?> list) {
+    protected void loadList(List<Object> list) {
         for (final Object listElement : list) {
             final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {

@@ -30,6 +30,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
+import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.WackyWavingInterruptableArmFlailingThreadMan;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -99,9 +100,6 @@ public final class CraftIRC extends JavaPlugin {
         this.filterManager = new FilterManager(this);
 
         CraftIRCInvalidConfigException exception = null;
-        List<?> bots = null;
-        List<?> endpoints = null;
-        List<?> links = null;
 
         try {
             File configFile = new File(this.getDataFolder(), "config.yml");
@@ -130,30 +128,28 @@ public final class CraftIRC extends JavaPlugin {
             String configString = builder.toString();
             Object yamlBase = yaml.load(configString);
 
-            if (!(yamlBase instanceof Map)) {
+            Map<Object, Object> config = MapGetter.castToMap(yamlBase);
+            if (config == null) {
                 throw new CraftIRCInvalidConfigException("Config doesn't even start with mappings. Would advise starting from scratch.");
             }
 
-
-            Map<?, ?> config = (Map<?, ?>) yamlBase;
-
-            Object botsObject = config.get("bots");
-            if (!(botsObject instanceof List)) {
+            List<Object> bots = MapGetter.getList(config, "bots");
+            if (bots == null) {
                 throw new CraftIRCInvalidConfigException("No bots defined!");
             }
-            bots = (List<?>) botsObject;
 
-            Object endpointsObject = config.get("endpoints");
-            if (!(endpointsObject instanceof List)) {
+            List<Object> endpoints = MapGetter.getList(config, "endpoints");
+            if (endpoints == null) {
                 throw new CraftIRCInvalidConfigException("No endpoints defined! Would advise starting from scratch.");
             }
-            endpoints = (List<?>) endpointsObject;
 
-            Object linksObject = config.get("links");
-            if (!(linksObject instanceof List)) {
+            List<Object> links = MapGetter.getList(config, "links");
+            if (links == null) {
                 throw new CraftIRCInvalidConfigException("No links defined! How can your endpoints be useful?");
             }
-            links = (List<?>) linksObject;
+
+            this.botManager = new BotManager(this, bots);
+            this.endpointManager = new EndpointManager(this, endpoints, links);
         } catch (IOException e) {
             exception = new CraftIRCInvalidConfigException(e);
         } catch (CraftIRCInvalidConfigException e) {
@@ -163,10 +159,6 @@ public final class CraftIRC extends JavaPlugin {
         if (exception != null) {
             this.getLogger().log(Level.SEVERE, "Could not start CraftIRC!", exception);
             this.getServer().getPluginManager().disablePlugin(this);
-            return;
         }
-
-        this.botManager = new BotManager(this, bots);
-        this.endpointManager = new EndpointManager(this, endpoints, links);
     }
 }

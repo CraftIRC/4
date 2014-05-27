@@ -40,7 +40,7 @@ public final class BotManager {
     private final Map<String, IRCBot> bots = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
 
-    public BotManager(CraftIRC plugin, List<?> bots) {
+    public BotManager(CraftIRC plugin, List<Object> bots) {
         this.plugin = plugin;
         this.loadBots(bots);
     }
@@ -49,11 +49,7 @@ public final class BotManager {
         return this.bots.get(name);
     }
 
-    private void loadBots(List<?> list) {
-        if (list == null) {
-            CraftIRC.log().severe("No bots in the config!");
-            return;
-        }
+    private void loadBots(List<Object> list) {
         Set<String> usedBotNames = new HashSet<>();
         int nonMap = 0;
         int noName = 0;

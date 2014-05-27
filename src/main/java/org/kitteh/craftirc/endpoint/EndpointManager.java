@@ -46,7 +46,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     private final Map<String, List<String>> links = new ConcurrentHashMap<>();
     private final MessageDistributor messageDistributor;
 
-    public EndpointManager(CraftIRC plugin, List<?> endpoints, List<?> links) {
+    public EndpointManager(CraftIRC plugin, List<Object> endpoints, List<Object> links) {
         super(plugin, Endpoint.class);
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
@@ -100,11 +100,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
         CraftIRC.log().warning("Encountered invalid Endpoint: " + reason);
     }
 
-    private void loadLinks(List<?> list) {
-        if (list == null) {
-            CraftIRC.log().severe("No links defined");
-            return;
-        }
+    private void loadLinks(List<Object> list) {
         int nonMap = 0;
         int noSource = 0;
         int noTarget = 0;

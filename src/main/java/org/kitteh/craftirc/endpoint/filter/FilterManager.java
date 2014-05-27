@@ -54,11 +54,11 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     @Override
-    public void loadList(List<?> list) {
+    public void loadList(List<Object> list) {
         throw new UnsupportedOperationException("Must provide Endpoint when loading filters!");
     }
 
-    public void loadList(List<?> list, Endpoint.EndpointFilterLoader endpoint) {
+    public void loadList(List<Object> list, Endpoint.EndpointFilterLoader endpoint) {
         for (final Object listElement : list) {
             final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
