@@ -203,7 +203,9 @@ public abstract class LoadableTypeManager<T extends Loadable> {
 
     private void mapFields(Map<String, LoadableField> map, Class<? extends T> clazz) {
         if (this.clazz.isAssignableFrom(clazz.getSuperclass())) {
-            mapFields(map, (Class<? extends T>) clazz.getSuperclass());
+            @SuppressWarnings("unchecked")
+            Class<? extends T> superClass = (Class<? extends T>) clazz.getSuperclass();
+            mapFields(map, superClass);
         }
         for (Field field : clazz.getDeclaredFields()) {
             int modifiers = field.getModifiers();

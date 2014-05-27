@@ -69,7 +69,7 @@ public final class BotManager {
                 continue;
             }
             if (usedBotNames.contains(name)) {
-                CraftIRC.log().warning(String.format("Ignoring duplicate bot name %s", name));
+                CraftIRC.log().warning(String.format("Ignoring duplicate bot with name %s", name));
                 continue;
             }
             usedBotNames.add(name);
