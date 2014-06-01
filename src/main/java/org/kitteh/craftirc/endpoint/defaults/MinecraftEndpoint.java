@@ -49,7 +49,6 @@ import java.util.Set;
 public class MinecraftEndpoint extends Endpoint implements Listener {
     public static final String PLAYER_LIST = "RECIPIENT_NAMES";
 
-
     private final CraftIRC plugin;
 
     public MinecraftEndpoint(CraftIRC plugin) {
