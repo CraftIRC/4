@@ -131,6 +131,11 @@ public final class CraftIRC extends JavaPlugin {
                 throw new CraftIRCInvalidConfigException("Config doesn't even start with mappings. Would advise starting from scratch.");
             }
 
+            Map<Object, Object> repeatableFilterMap = MapGetter.getMap(config, "repeatable-filters");
+            if (repeatableFilterMap != null) {
+                this.filterManager.loadRepeatables(repeatableFilterMap);
+            }
+
             List<Object> bots = MapGetter.getList(config, "bots");
             if (bots == null) {
                 throw new CraftIRCInvalidConfigException("No bots defined!");

@@ -32,8 +32,11 @@ import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -43,6 +46,8 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     enum Target {
         EndpointLoader
     }
+
+    private Map<String, Map<Object, Object>> repeatableObjects = new ConcurrentHashMap<>();
 
     public FilterManager(CraftIRC plugin) {
         super(plugin, Filter.class);
@@ -59,14 +64,37 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     public void loadList(List<Object> list, Endpoint.EndpointFilterLoader endpoint) {
-        for (final Object listElement : list) {
-            final Map<Object, Object> data;
+        for (int i = 0;i < list.size();i++) {
+            Object listElement = list.get(i);
+            Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
-                continue;
+                if (listElement instanceof String && this.repeatableObjects.containsKey(listElement)) {
+                    data = this.repeatableObjects.get(listElement);
+                    list.set(i, data);
+                } else {
+                    continue;
+                }
             }
             data.put(Target.EndpointLoader, endpoint);
         }
         super.loadList(list);
+    }
+
+    public void loadRepeatables(Map<Object, Object> repeatables) {
+        for (Map.Entry entry : repeatables.entrySet()) {
+            if (!(entry.getKey() instanceof String)) {
+                // TODO log
+                continue;
+            }
+            String name = (String) entry.getKey();
+            if (!(entry.getValue() instanceof Map)) {
+                // TODO log
+                continue;
+            }
+            @SuppressWarnings("unchecked")
+            Map<Object, Object> map = (Map<Object, Object>) entry.getValue();
+            this.repeatableObjects.put(name, map);
+        }
     }
 
     @Override
