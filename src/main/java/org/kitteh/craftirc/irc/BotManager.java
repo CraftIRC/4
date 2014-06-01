@@ -78,26 +78,7 @@ public final class BotManager {
                 continue;
             }
 
-            String nick = MapGetter.getString(data, "nick");
-            String server = MapGetter.getString(data, "host");
-            Integer port = MapGetter.getInt(data, "port");
-            String user = MapGetter.getString(data, "user");
-            String realname = MapGetter.getString(data, "realname");
-            Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
-            String bindhost = MapGetter.getString(bindMap, "host");
-            Integer bindport = MapGetter.getInt(bindMap, "port");
-            BotBuilder botBuilder = new BotBuilder(name);
-            botBuilder.server(server != null ? server : "localhost");
-            botBuilder.server(port != null ? port : 6667);
-            botBuilder.user(user != null ? user : "CraftIRC");
-            botBuilder.realName(realname != null ? realname : "CraftIRC Bot");
-            if (bindhost != null) {
-                botBuilder.bind(bindhost);
-            }
-            botBuilder.bind(bindport != null ? bindport : 0);
-            botBuilder.nick(nick != null ? nick : "CraftIRC");
-
-            this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));
+            this.addBot(name, data);
         }
         if (nonMap > 0) {
             CraftIRC.log().warning(String.format("Bots list contained %d entries which were not maps", nonMap));
@@ -105,5 +86,28 @@ public final class BotManager {
         if (noName > 0) {
             CraftIRC.log().warning(String.format("Bots list contained %d entries without a 'name'", noName));
         }
+    }
+
+    private void addBot(String name, Map<Object, Object> data) {
+        String nick = MapGetter.getString(data, "nick");
+        String server = MapGetter.getString(data, "host");
+        Integer port = MapGetter.getInt(data, "port");
+        String user = MapGetter.getString(data, "user");
+        String realname = MapGetter.getString(data, "realname");
+        Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
+        String bindhost = MapGetter.getString(bindMap, "host");
+        Integer bindport = MapGetter.getInt(bindMap, "port");
+        BotBuilder botBuilder = new BotBuilder(name);
+        botBuilder.server(server != null ? server : "localhost");
+        botBuilder.server(port != null ? port : 6667);
+        botBuilder.user(user != null ? user : "CraftIRC");
+        botBuilder.realName(realname != null ? realname : "CraftIRC Bot");
+        if (bindhost != null) {
+            botBuilder.bind(bindhost);
+        }
+        botBuilder.bind(bindport != null ? bindport : 0);
+        botBuilder.nick(nick != null ? nick : "CraftIRC");
+
+        this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));
     }
 }
