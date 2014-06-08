@@ -32,7 +32,6 @@ import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
-import org.kitteh.craftirc.util.shutdownable.WackyWavingInterruptableArmFlailingThreadMan;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 

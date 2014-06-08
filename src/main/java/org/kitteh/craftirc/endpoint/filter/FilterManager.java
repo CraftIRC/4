@@ -32,10 +32,8 @@ import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -47,7 +45,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         EndpointLoader
     }
 
-    private Map<String, Map<Object, Object>> repeatableObjects = new ConcurrentHashMap<>();
+    private final Map<String, Map<Object, Object>> repeatableObjects = new ConcurrentHashMap<>();
 
     public FilterManager(CraftIRC plugin) {
         super(plugin, Filter.class);
