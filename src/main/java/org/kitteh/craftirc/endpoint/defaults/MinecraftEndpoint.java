@@ -80,9 +80,9 @@ public class MinecraftEndpoint extends Endpoint implements Listener {
     @EventHandler
     private void onChat(AsyncPlayerChatEvent event) {
         Map<String, Object> data = new HashMap<>();
-        Set<String> recipients = new HashSet<>();
+        Set<MinecraftPlayer> recipients = new HashSet<>();
         for (Player player : event.getRecipients()) {
-            recipients.add(player.getName());
+            recipients.add(new MinecraftPlayer(player.getName(), player.getUniqueId()));
         }
         String format = event.getFormat();
         String message = event.getMessage();
