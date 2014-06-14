@@ -30,6 +30,8 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.irc.IRCBot;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
+import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.elements.Channel;
 
 import java.util.Map;
 
@@ -59,7 +61,7 @@ public class IRCEndpoint extends Endpoint {
     public static final String IRC_MESSAGE_TYPE = "IRC_MESSAGE_TYPE";
 
     private IRCBot bot;
-    private String channel;
+    private Channel channel;
     private final CraftIRC plugin;
 
     public IRCEndpoint(CraftIRC plugin) {
@@ -77,9 +79,14 @@ public class IRCEndpoint extends Endpoint {
         if (botName == null || (this.bot = this.plugin.getBotManager().getBot(botName)) == null) {
             throw new CraftIRCInvalidConfigException("Invalid bot name '" + botName + "'");
         }
-        this.channel = MapGetter.getString(data, "channel");
-        if (this.channel == null) {
+        String channelName = MapGetter.getString(data, "channel");
+        if (channelName == null) {
             throw new CraftIRCInvalidConfigException("No channel defined");
+        }
+        Actor actor = Actor.getActor(channelName);
+        this.channel = actor instanceof Channel ? (Channel) actor : null;
+        if (this.channel == null) {
+            throw new CraftIRCInvalidConfigException("Not a valid channel name");
         }
         this.bot.addChannel(this, this.channel);
     }

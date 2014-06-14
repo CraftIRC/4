@@ -47,7 +47,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public final class IRCBot {
     private final Bot bot;
     private final String name;
-    private final Map<String, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
+    private final Map<Channel, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
 
     IRCBot(CraftIRC plugin, String name, Bot bot) {
@@ -61,18 +61,18 @@ public final class IRCBot {
         return this.name;
     }
 
-    public void addChannel(IRCEndpoint endpoint, String channel) {
-        this.bot.addChannel(channel);
-        Set<IRCEndpoint> points = this.channels.get(channel.toLowerCase());
+    public void addChannel(IRCEndpoint endpoint, Channel channel) {
+        this.bot.addChannel(channel.getName());
+        Set<IRCEndpoint> points = this.channels.get(channel);
         if (points == null) {
             points = new CopyOnWriteArraySet<>();
-            this.channels.put(channel.toLowerCase(), points);
+            this.channels.put(channel, points);
         }
         points.add(endpoint);
     }
 
-    public void sendMessage(String target, String message) {
-        this.bot.sendMessage(target, message);
+    public void sendMessage(Channel target, String message) {
+        this.bot.sendMessage(target.getName(), message);
     }
 
     void shutdown() {
@@ -80,7 +80,7 @@ public final class IRCBot {
     }
 
     private void sendMessage(User sender, Channel channel, String message, IRCEndpoint.MessageType messageType) {
-        if (!this.channels.containsKey(channel.getName())) {
+        if (!this.channels.containsKey(channel)) {
             return;
         }
         Map<String, Object> data = new HashMap<>();
@@ -91,7 +91,7 @@ public final class IRCBot {
         data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
         data.put(Endpoint.MESSAGE_TEXT, message);
         String formatted = String.format(messageType.getFormat(), sender.getNick(), message);
-        for (IRCEndpoint endpoint : this.channels.get(channel.getName())) {
+        for (IRCEndpoint endpoint : this.channels.get(channel)) {
             this.plugin.getEndpointManager().sendMessage(new Message(endpoint, formatted, data));
         }
     }
