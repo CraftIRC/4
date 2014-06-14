@@ -62,7 +62,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     public void loadList(List<Object> list, Endpoint.EndpointFilterLoader endpoint) {
-        for (int i = 0;i < list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             Object listElement = list.get(i);
             Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
