@@ -94,7 +94,6 @@ public final class CraftIRC extends JavaPlugin {
     @Override
     public void onEnable() {
         CraftIRC.logger = this.getLogger();
-        this.filterManager = new FilterManager(this);
 
         CraftIRCInvalidConfigException exception = null;
 
@@ -131,9 +130,6 @@ public final class CraftIRC extends JavaPlugin {
             }
 
             Map<Object, Object> repeatableFilterMap = MapGetter.getMap(config, "repeatable-filters");
-            if (repeatableFilterMap != null) {
-                this.filterManager.loadRepeatables(repeatableFilterMap);
-            }
 
             List<Object> bots = MapGetter.getList(config, "bots");
             if (bots == null) {
@@ -150,6 +146,7 @@ public final class CraftIRC extends JavaPlugin {
                 throw new CraftIRCInvalidConfigException("No links defined! How can your endpoints be useful?");
             }
 
+            this.filterManager = new FilterManager(this, repeatableFilterMap);
             this.botManager = new BotManager(this, bots);
             this.endpointManager = new EndpointManager(this, endpoints, links);
         } catch (IOException e) {

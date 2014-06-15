@@ -17,7 +17,7 @@ public class AntiHighlightTest {
     @Test
     public void meow() {
         try {
-            FilterManager registry = new FilterManager(null);
+            FilterManager registry = new FilterManager(null, null);
             PointyEnd point = new PointyEnd() {
                 @Override
                 protected void receiveMessage(TargetedMessage message) {

@@ -47,13 +47,16 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
 
     private final Map<String, Map<Object, Object>> repeatableObjects = new ConcurrentHashMap<>();
 
-    public FilterManager(CraftIRC plugin) {
+    public FilterManager(CraftIRC plugin, Map<Object, Object> repeatables) {
         super(plugin, Filter.class);
         // Register filter types here
         this.registerType(AntiHighlight.class);
         this.registerType(BukkitPermissionFilter.class);
         this.registerType(DataMapper.class);
         this.registerType(RegexFilter.class);
+        if (repeatables != null) {
+            this.loadRepeatables(repeatables);
+        }
     }
 
     @Override
@@ -78,7 +81,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         super.loadList(list);
     }
 
-    public void loadRepeatables(Map<Object, Object> repeatables) {
+    private void loadRepeatables(Map<Object, Object> repeatables) {
         for (Map.Entry entry : repeatables.entrySet()) {
             if (!(entry.getKey() instanceof String)) {
                 // TODO log
