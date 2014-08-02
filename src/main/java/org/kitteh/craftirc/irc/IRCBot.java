@@ -32,8 +32,8 @@ import org.kitteh.irc.EventHandler;
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.elements.User;
-import org.kitteh.irc.event.ChannelCTCPEvent;
-import org.kitteh.irc.event.ChannelMessageEvent;
+import org.kitteh.irc.event.channel.ChannelCTCPEvent;
+import org.kitteh.irc.event.channel.ChannelMessageEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,7 +99,7 @@ public final class IRCBot {
     private class Listener {
         @EventHandler
         public void message(ChannelMessageEvent event) {
-            Actor actor = event.getSender();
+            Actor actor = event.getActor();
             if (actor instanceof User) {
                 IRCBot.this.sendMessage((User) actor, event.getChannel(), event.getMessage(), IRCEndpoint.MessageType.MESSAGE);
             }
@@ -107,8 +107,8 @@ public final class IRCBot {
 
         @EventHandler
         public void action(ChannelCTCPEvent event) {
-            if (event.getMessage().startsWith("ACTION ") && event.getSender() instanceof User) {
-                IRCBot.this.sendMessage((User) event.getSender(), event.getChannel(), event.getMessage().substring("ACTION ".length()), IRCEndpoint.MessageType.ME);
+            if (event.getMessage().startsWith("ACTION ") && event.getActor() instanceof User) {
+                IRCBot.this.sendMessage((User) event.getActor(), event.getChannel(), event.getMessage().substring("ACTION ".length()), IRCEndpoint.MessageType.ME);
             }
         }
     }
