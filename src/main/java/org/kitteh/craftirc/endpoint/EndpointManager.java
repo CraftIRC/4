@@ -25,7 +25,6 @@ package org.kitteh.craftirc.endpoint;
 
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
-import org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
@@ -50,7 +49,6 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
         super(plugin, Endpoint.class);
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
-        this.registerType(MinecraftEndpoint.class);
         this.registerType(IRCEndpoint.class);
 
         this.loadList(endpoints);

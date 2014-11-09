@@ -23,13 +23,13 @@
  */
 package org.kitteh.craftirc;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.kitteh.craftirc.endpoint.EndpointManager;
 import org.kitteh.craftirc.endpoint.filter.FilterManager;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
+import org.kitteh.craftirc.util.CraftIRCLogger;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.yaml.snakeyaml.DumperOptions;
@@ -37,8 +37,13 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +51,30 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class CraftIRC extends JavaPlugin {
+public final class CraftIRC {
+    public interface Implementation {
+        /**
+         * Gets the logger CraftIRC can use.
+         *
+         * @return a logger
+         */
+        Logger getLogger();
+
+        /**
+         * Gets the data folder storing the config.
+         *
+         * @return the folder holding the config
+         */
+        File getDataFolder();
+
+        /**
+         * This method should trigger a shutdown of the implementation. Be
+         * sure to call {@link CraftIRC#shutdown()} when done, to kill
+         * threads still running.
+         */
+        void shutdown();
+    }
+
     private static Logger logger;
 
     public static Logger log() {
@@ -82,26 +110,16 @@ public final class CraftIRC extends JavaPlugin {
         this.shutdownables.add(shutdownable);
     }
 
-    @Override
-    public void onDisable() {
-        for (Shutdownable shutdownable : this.shutdownables) {
-            shutdownable.shutdown();
-        }
-        // And lastly...
-        CraftIRC.logger = null;
-    }
-
-    @Override
-    public void onEnable() {
-        CraftIRC.logger = this.getLogger();
+    public CraftIRC(Implementation implementation) {
+        CraftIRC.logger = new CraftIRCLogger(implementation.getLogger());
 
         CraftIRCInvalidConfigException exception = null;
 
         try {
-            File configFile = new File(this.getDataFolder(), "config.yml");
+            File configFile = new File(implementation.getDataFolder(), "config.yml");
             if (!configFile.exists()) {
-                this.getLogger().info("No config.yml found, creating a default configuration.");
-                this.saveDefaultConfig();
+                log().info("No config.yml found, creating a default configuration.");
+                this.saveDefaultConfig(implementation.getDataFolder());
             }
 
             BufferedReader reader = new BufferedReader(new FileReader(configFile));
@@ -156,8 +174,50 @@ public final class CraftIRC extends JavaPlugin {
         }
 
         if (exception != null) {
-            this.getLogger().log(Level.SEVERE, "Could not start CraftIRC!", exception);
-            this.getServer().getPluginManager().disablePlugin(this);
+            log().log(Level.SEVERE, "Could not start CraftIRC!", exception);
+            implementation.shutdown();
+        }
+    }
+
+    /**
+     * Shuts down any running threads. Call this method only to clean up.
+     */
+    public void shutdown() {
+        for (Shutdownable shutdownable : this.shutdownables) {
+            shutdownable.shutdown();
+        }
+        // And lastly...
+        CraftIRC.logger = null;
+    }
+
+    private void saveDefaultConfig(File dataFolder) {
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+        try {
+            URL url = this.getClass().getClassLoader().getResource("config.yml");
+            if (url == null) {
+                log().warning("Could not find a default config to copy!");
+                return;
+            }
+
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            InputStream input = connection.getInputStream();
+
+            File outFile = new File(dataFolder, "config.yml");
+            OutputStream output = new FileOutputStream(outFile);
+
+            byte[] buffer = new byte[1024];
+            int lengthRead;
+            while ((lengthRead = input.read(buffer)) > 0) {
+                output.write(buffer, 0, lengthRead);
+            }
+
+            output.close();
+            input.close();
+        } catch (IOException ex) {
+            log().log(Level.SEVERE, "Exception while saving default config", ex);
         }
     }
 }

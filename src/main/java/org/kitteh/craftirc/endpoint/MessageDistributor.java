@@ -26,7 +26,6 @@ package org.kitteh.craftirc.endpoint;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.shutdownable.WackyWavingInterruptableArmFlailingThreadMan;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -35,30 +34,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * YOU GET A MESSAGE, AND YOU GET A MESSAGE! EVERYBODY GETS A MESSAGE!
  */
 final class MessageDistributor extends Thread {
-    private class SendMessage implements Callable<Object> {
-        private final Message message;
-        private final Endpoint target;
-
-        private SendMessage(Message message, Endpoint target) {
-            this.message = message;
-            this.target = target;
-        }
-
-        @Override
-        public Object call() throws Exception {
-            this.target.receiveMessage(message);
-            return null;
-        }
-    }
-
     private final EndpointManager endpointManager;
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
-    private final CraftIRC plugin;
 
     MessageDistributor(EndpointManager manager, CraftIRC plugin) {
         this.endpointManager = manager;
-        this.plugin = plugin;
-        this.plugin.trackShutdownable(new WackyWavingInterruptableArmFlailingThreadMan(this));
+        plugin.trackShutdownable(new WackyWavingInterruptableArmFlailingThreadMan(this));
         this.start();
     }
 
@@ -77,11 +58,7 @@ final class MessageDistributor extends Thread {
             Message message = this.messages.poll();
             if (message != null) {
                 for (Endpoint target : this.endpointManager.getDestinations(message.getSource().getName())) {
-                    if (target.getClass().getAnnotation(SyncEndpoint.class) != null) {
-                        this.plugin.getServer().getScheduler().callSyncMethod(this.plugin, new SendMessage(message, target));
-                    } else {
-                        target.receiveMessage(message);
-                    }
+                    target.receiveMessage(message);
                 }
             }
             if (this.messages.isEmpty()) {

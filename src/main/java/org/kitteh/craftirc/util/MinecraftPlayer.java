@@ -23,7 +23,7 @@
  */
 package org.kitteh.craftirc.util;
 
-import org.apache.commons.lang.Validate;
+import org.kitteh.irc.util.Sanity;
 
 import java.util.UUID;
 
@@ -41,8 +41,8 @@ public final class MinecraftPlayer {
      * @param uniqueId the player's UUID
      */
     public MinecraftPlayer(String name, UUID uniqueId) {
-        Validate.notNull(name, "Name cannot be null");
-        Validate.notNull(uniqueId, "uniqueId cannot be null");
+        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(uniqueId, "uniqueId cannot be null");
         this.name = name;
         this.uniqueId = uniqueId;
     }

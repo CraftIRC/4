@@ -23,8 +23,8 @@
  */
 package org.kitteh.craftirc.endpoint;
 
-import com.google.common.collect.ImmutableMap;
-
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -48,7 +48,7 @@ public final class Message {
     public Message(Endpoint source, String defaultMessage, Map<String, Object> data) {
         this.source = source;
         this.defaultMessage = defaultMessage;
-        this.data = ImmutableMap.copyOf(data);
+        this.data = Collections.unmodifiableMap(new HashMap<>(data));
     }
 
     /**

@@ -1,4 +1,0 @@
-name: CraftIRC
-main: org.kitteh.craftirc.CraftIRC
-authors: [mbaxter, dequis]
-version: '${project.version}'

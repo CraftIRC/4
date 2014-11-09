@@ -25,9 +25,9 @@ public class AntiHighlightTest {
                 }
             };
             List<Object> list = new LinkedList<>();
-            list.add(new MapBuilder<>().add("splitter", "`").add("variable", VAR_KEY).add("type", "antihighlight").map());
+            list.add(new MapBuilder<>().put("splitter", "`").put("variable", VAR_KEY).put("type", "antihighlight").build());
             registry.loadList(list, point.getLoader());
-            point.message(new Message(null, "Meow", new MapBuilder<String, Object>().add(VAR_KEY, "test").map()));
+            point.message(new Message(null, "Meow", new MapBuilder<String, Object>().put(VAR_KEY, "test").build()));
         } catch (Exception e) {
             throw new AssertionError(e);
         }

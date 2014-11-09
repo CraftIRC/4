@@ -26,7 +26,6 @@ package org.kitteh.craftirc.endpoint.filter;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.filter.defaults.AntiHighlight;
-import org.kitteh.craftirc.endpoint.filter.defaults.BukkitPermissionFilter;
 import org.kitteh.craftirc.endpoint.filter.defaults.DataMapper;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.util.MapGetter;
@@ -51,7 +50,6 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         super(plugin, Filter.class);
         // Register filter types here
         this.registerType(AntiHighlight.class);
-        this.registerType(BukkitPermissionFilter.class);
         this.registerType(DataMapper.class);
         this.registerType(RegexFilter.class);
         if (repeatables != null) {

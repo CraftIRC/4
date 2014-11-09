@@ -100,10 +100,7 @@ public abstract class Endpoint extends Loadable {
     }
 
     /**
-     * Processes a received message prior to processing by filters. For
-     * example, now is the place to add the list of targetted Minecraft
-     * players, in a
-     * {@link org.kitteh.craftirc.endpoint.defaults.MinecraftEndpoint}.
+     * Processes a received message prior to processing by filters.
      *
      * @param message message to process
      */

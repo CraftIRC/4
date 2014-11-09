@@ -97,7 +97,8 @@ public final class BotManager {
         Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
         String bindhost = MapGetter.getString(bindMap, "host");
         Integer bindport = MapGetter.getInt(bindMap, "port");
-        BotBuilder botBuilder = new BotBuilder(name);
+        BotBuilder botBuilder = new BotBuilder();
+        botBuilder.name(name);
         botBuilder.server(server != null ? server : "localhost");
         botBuilder.server(port != null ? port : 6667);
         botBuilder.user(user != null ? user : "CraftIRC");

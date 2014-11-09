@@ -21,17 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.craftirc.endpoint;
+package org.kitteh.craftirc.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
- * Designates an {@link Endpoint} which must run on the main server thread.
+ * Prefixed logger.
  */
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface SyncEndpoint {
+public class CraftIRCLogger extends Logger {
+    public CraftIRCLogger(Logger parent) {
+        super("CraftIRC", null);
+        this.setParent(parent);
+        this.setLevel(Level.ALL);
+    }
+
+    @Override
+    public void log(LogRecord logRecord) {
+        logRecord.setMessage("[CraftIRC] " + logRecord.getMessage());
+        super.log(logRecord);
+    }
 }

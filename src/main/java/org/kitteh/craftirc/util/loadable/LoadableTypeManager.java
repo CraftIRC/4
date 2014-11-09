@@ -23,11 +23,10 @@
  */
 package org.kitteh.craftirc.util.loadable;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.Server;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
+import org.kitteh.irc.util.Sanity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -90,6 +89,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         }
     }
 
+    private final Map<Class<?>, ArgumentProvider<?>> argumentProviders = new ConcurrentHashMap<>();
     private final Map<String, LoadableLoadout> types = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
     private final Map<String, List<Map<Object, Object>>> unRegistered = new ConcurrentHashMap<>();
@@ -129,10 +129,10 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         Class<?>[] parameterTypes = loadout.getConstructor().getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < args.length; i++) {
-            if (parameterTypes[i].equals(Server.class)) {
-                args[i] = this.plugin.getServer();
-            } else if (parameterTypes[i].equals(CraftIRC.class)) {
+            if (parameterTypes[i].equals(CraftIRC.class)) {
                 args[i] = this.plugin;
+            } else if (this.argumentProviders.containsKey(parameterTypes[i])) {
+                args[i] = this.argumentProviders.get(parameterTypes[i]).getArgument();
             }
         }
         T loaded;
@@ -154,6 +154,21 @@ public abstract class LoadableTypeManager<T extends Loadable> {
     }
 
     /**
+     * Registers an ArgumentProvider for a particular class
+     *
+     * @param clazz class to register
+     * @param provider provider to register
+     * @return previously registered provider for given class, else null
+     */
+    public final ArgumentProvider<? extends T> registerArgumentProvider(Class<T> clazz, ArgumentProvider<? extends T> provider) {
+        Sanity.nullCheck(clazz, "Cannot register a null class");
+        Sanity.nullCheck(provider, "Cannot register a null provider");
+        @SuppressWarnings("unchecked")
+        ArgumentProvider<? extends T> old = (ArgumentProvider<? extends T>) this.argumentProviders.put(clazz, provider);
+        return old;
+    }
+
+    /**
      * Registers a Loadable type by {@link Loadable.Type} name. Loadable
      * types registered here can be processed for loading from configuration.
      * <p/>
@@ -161,11 +176,10 @@ public abstract class LoadableTypeManager<T extends Loadable> {
      * <p/>
      * Classes must have a public constructor. The first constructor found is
      * the constructor used. The following types can be specified as
-     * constructor parameters, with all others being passed null:
+     * constructor parameters, with all others being passed null unless an
+     * {@link org.kitteh.craftirc.util.loadable.ArgumentProvider} has been
+     * registered for the type:
      * <ul>
-     * <li>
-     * {@link org.bukkit.Server} - Is passed the Bukkit server.
-     * </li>
      * <li>
      * {@link CraftIRC} - Is passed the plugin instance
      * </li>
@@ -174,15 +188,15 @@ public abstract class LoadableTypeManager<T extends Loadable> {
      * @param clazz class of the Loadable type to be registered
      */
     public final void registerType(Class<? extends T> clazz) {
-        Validate.isTrue(this.clazz.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type " + this.clazz.getSimpleName());
+        Sanity.truthiness(this.clazz.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type " + this.clazz.getSimpleName());
 
         Constructor[] constructors = clazz.getConstructors();
-        Validate.isTrue(constructors.length > 0, "Class '" + clazz.getSimpleName() + "' lacks a public constructor");
+        Sanity.truthiness(constructors.length > 0, "Class '" + clazz.getSimpleName() + "' lacks a public constructor");
         @SuppressWarnings("unchecked")
         Constructor<? extends T> constructor = constructors[0];
 
         final Loadable.Type type = clazz.getAnnotation(Loadable.Type.class);
-        Validate.notNull(type, "Submitted class '" + clazz.getSimpleName() + "' has no Loadable.Type annotation");
+        Sanity.nullCheck(type, "Submitted class '" + clazz.getSimpleName() + "' has no Loadable.Type annotation");
         final String name = type.name();
         if (this.types.containsKey(name)) {
             throw new IllegalArgumentException(this.clazz.getSimpleName() + " type name '" + name + "' is already registered to '" + this.types.get(name).getClazz().getSimpleName() + "' and cannot be registered by '" + clazz.getSimpleName() + "'");

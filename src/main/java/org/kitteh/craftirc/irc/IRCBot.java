@@ -76,7 +76,7 @@ public final class IRCBot {
     }
 
     void shutdown() {
-        this.bot.shutdown("CraftIRC! http://dev.bukkit.org/bukkit-plugins/craftirc");
+        this.bot.shutdown("CraftIRC!");
     }
 
     private void sendMessage(User sender, Channel channel, String message, IRCEndpoint.MessageType messageType) {
