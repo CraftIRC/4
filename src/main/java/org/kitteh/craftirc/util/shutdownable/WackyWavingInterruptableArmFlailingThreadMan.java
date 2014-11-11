@@ -24,8 +24,11 @@
 package org.kitteh.craftirc.util.shutdownable;
 
 /**
- * Thanks to a shipping error, I am currently overstocked on threads, and I
- * am passing the savings on to you!
+ * This Shutdownable simply calls {@link Thread#interrupt()} on a target
+ * thread.
+ *
+ * Thanks to a compilation error, I am currently overstocked on threads, and
+ * I am passing the savings on to you!
  */
 public final class WackyWavingInterruptableArmFlailingThreadMan implements Shutdownable {
     private final Thread target;
@@ -41,7 +44,7 @@ public final class WackyWavingInterruptableArmFlailingThreadMan implements Shutd
 
     @Override
     public boolean equals(Object wackyWavingInterruptableArmFlailingThreadMan) {
-        return wackyWavingInterruptableArmFlailingThreadMan instanceof WackyWavingInterruptableArmFlailingThreadMan && this.target.equals(((WackyWavingInterruptableArmFlailingThreadMan) wackyWavingInterruptableArmFlailingThreadMan).target);
+        return wackyWavingInterruptableArmFlailingThreadMan instanceof WackyWavingInterruptableArmFlailingThreadMan && this.target == ((WackyWavingInterruptableArmFlailingThreadMan) wackyWavingInterruptableArmFlailingThreadMan).target;
     }
 
     @Override
