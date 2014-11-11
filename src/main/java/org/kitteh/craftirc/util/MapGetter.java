@@ -39,7 +39,7 @@ public final class MapGetter {
         return null;
     }
 
-    public static <T> T get(Map<Object, Object> map, String key, Class<T> type) {
+    public static <Type> Type get(Map<Object, Object> map, String key, Class<Type> type) {
         if (map == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public final class MapGetter {
             return null;
         }
         @SuppressWarnings("unchecked")
-        T t = (T) o;
+        Type t = (Type) o;
         return t;
     }
 

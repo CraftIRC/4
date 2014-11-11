@@ -40,23 +40,23 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Manages loadable types.
  */
-public abstract class LoadableTypeManager<T extends Loadable> {
+public abstract class LoadableTypeManager<Type extends Loadable> {
     private class LoadableLoadout {
-        private final Class<? extends T> clazz;
-        private final Constructor<? extends T> constructor;
+        private final Class<? extends Type> clazz;
+        private final Constructor<? extends Type> constructor;
         private final List<LoadableField> fields;
 
-        private LoadableLoadout(Class<? extends T> clazz, Constructor<? extends T> constructor, List<LoadableField> fields) {
+        private LoadableLoadout(Class<? extends Type> clazz, Constructor<? extends Type> constructor, List<LoadableField> fields) {
             this.clazz = clazz;
             this.constructor = constructor;
             this.fields = fields;
         }
 
-        private Class<? extends T> getClazz() {
+        private Class<? extends Type> getClazz() {
             return this.clazz;
         }
 
-        private Constructor<? extends T> getConstructor() {
+        private Constructor<? extends Type> getConstructor() {
             return this.constructor;
         }
 
@@ -93,9 +93,9 @@ public abstract class LoadableTypeManager<T extends Loadable> {
     private final Map<String, LoadableLoadout> types = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
     private final Map<String, List<Map<Object, Object>>> unRegistered = new ConcurrentHashMap<>();
-    private final Class<T> clazz;
+    private final Class<Type> clazz;
 
-    protected LoadableTypeManager(CraftIRC plugin, Class<T> clazz) {
+    protected LoadableTypeManager(CraftIRC plugin, Class<Type> clazz) {
         this.clazz = clazz;
         this.plugin = plugin;
     }
@@ -135,7 +135,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
                 args[i] = this.argumentProviders.get(parameterTypes[i]).getArgument();
             }
         }
-        T loaded;
+        Type loaded;
         try {
             loaded = loadout.getConstructor().newInstance(args);
             for (LoadableField field : loadout.getFields()) {
@@ -160,11 +160,11 @@ public abstract class LoadableTypeManager<T extends Loadable> {
      * @param provider provider to register
      * @return previously registered provider for given class, else null
      */
-    public final ArgumentProvider<? extends T> registerArgumentProvider(Class<T> clazz, ArgumentProvider<? extends T> provider) {
+    public final ArgumentProvider<? extends Type> registerArgumentProvider(Class<Type> clazz, ArgumentProvider<? extends Type> provider) {
         Sanity.nullCheck(clazz, "Cannot register a null class");
         Sanity.nullCheck(provider, "Cannot register a null provider");
         @SuppressWarnings("unchecked")
-        ArgumentProvider<? extends T> old = (ArgumentProvider<? extends T>) this.argumentProviders.put(clazz, provider);
+        ArgumentProvider<? extends Type> old = (ArgumentProvider<? extends Type>) this.argumentProviders.put(clazz, provider);
         return old;
     }
 
@@ -187,13 +187,13 @@ public abstract class LoadableTypeManager<T extends Loadable> {
      *
      * @param clazz class of the Loadable type to be registered
      */
-    public final void registerType(Class<? extends T> clazz) {
+    public final void registerType(Class<? extends Type> clazz) {
         Sanity.truthiness(this.clazz.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type " + this.clazz.getSimpleName());
 
         Constructor[] constructors = clazz.getConstructors();
         Sanity.truthiness(constructors.length > 0, "Class '" + clazz.getSimpleName() + "' lacks a public constructor");
         @SuppressWarnings("unchecked")
-        Constructor<? extends T> constructor = constructors[0];
+        Constructor<? extends Type> constructor = constructors[0];
 
         final Loadable.Type type = clazz.getAnnotation(Loadable.Type.class);
         Sanity.nullCheck(type, "Submitted class '" + clazz.getSimpleName() + "' has no Loadable.Type annotation");
@@ -215,10 +215,10 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         }
     }
 
-    private void mapFields(Map<String, LoadableField> map, Class<? extends T> clazz) {
+    private void mapFields(Map<String, LoadableField> map, Class<? extends Type> clazz) {
         if (this.clazz.isAssignableFrom(clazz.getSuperclass())) {
             @SuppressWarnings("unchecked")
-            Class<? extends T> superClass = (Class<? extends T>) clazz.getSuperclass();
+            Class<? extends Type> superClass = (Class<? extends Type>) clazz.getSuperclass();
             mapFields(map, superClass);
         }
         for (Field field : clazz.getDeclaredFields()) {
@@ -233,7 +233,7 @@ public abstract class LoadableTypeManager<T extends Loadable> {
         }
     }
 
-    protected abstract void processCompleted(T loaded) throws CraftIRCInvalidConfigException;
+    protected abstract void processCompleted(Type loaded) throws CraftIRCInvalidConfigException;
 
     protected abstract void processFailedLoad(Exception exception, Map<Object, Object> data);
 

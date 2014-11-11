@@ -32,16 +32,16 @@ import java.util.Map;
  * The wrapped map is untouched, while an outer map stores any values which
  * have been changed, as well as any additional values.
  */
-public class WrappedMap<K, V> {
-    private final Map<K, V> innerMap;
-    private final Map<K, V> outerMap = new HashMap<>();
+public class WrappedMap<Key, Value> {
+    private final Map<Key, Value> innerMap;
+    private final Map<Key, Value> outerMap = new HashMap<>();
 
     /**
      * Wraps a map.
      *
      * @param map map to be wrapped and untouched
      */
-    public WrappedMap(Map<K, V> map) {
+    public WrappedMap(Map<Key, Value> map) {
         this.innerMap = map;
     }
 
@@ -52,7 +52,7 @@ public class WrappedMap<K, V> {
      */
     public int size() {
         int size = this.innerMap.size();
-        for (K key : this.outerMap.keySet()) {
+        for (Key key : this.outerMap.keySet()) {
             if (!this.innerMap.containsKey(key)) {
                 size++;
             }
@@ -66,7 +66,7 @@ public class WrappedMap<K, V> {
      * @param key key which may exist in the map
      * @return true if the key is stored at either level
      */
-    public boolean containsKey(K key) {
+    public boolean containsKey(Key key) {
         return this.innerMap.containsKey(key) || this.outerMap.containsKey(key);
     }
 
@@ -78,14 +78,14 @@ public class WrappedMap<K, V> {
      * @param value value which may exist in the map
      * @return true if the value is in the map and visible
      */
-    public boolean containsValue(V value) {
+    public boolean containsValue(Value value) {
         if (this.outerMap.containsValue(value)) {
             return true;
         }
-        for (Map.Entry<K, V> entry : this.innerMap.entrySet()) {
+        for (Map.Entry<Key, Value> entry : this.innerMap.entrySet()) {
             if (!this.outerMap.containsKey(entry.getKey())) {
-                V v = entry.getValue();
-                if (value == null ? v == null : value.equals(v)) {
+                Value val = entry.getValue();
+                if (value == null ? val == null : value.equals(val)) {
                     return true;
                 }
             }
@@ -99,7 +99,7 @@ public class WrappedMap<K, V> {
      * @param key the key
      * @return the value the key is mapped to, or null if no mapping exists
      */
-    public V get(K key) {
+    public Value get(Key key) {
         if (this.outerMap.containsKey(key)) {
             return this.outerMap.get(key);
         }
@@ -119,8 +119,8 @@ public class WrappedMap<K, V> {
      * @return the value 'displaced' by the new mapping (See above) or null
      * if nothing was displaced.
      */
-    public V put(K key, V value) {
-        V displaced;
+    public Value put(Key key, Value value) {
+        Value displaced;
         if (this.outerMap.containsKey(key)) {
             displaced = this.outerMap.get(key);
         } else {
@@ -136,7 +136,7 @@ public class WrappedMap<K, V> {
      * @param key the key for which the mapping should be removed
      * @return the removed mapped value, or null if no mapping existed
      */
-    public V remove(K key) {
+    public Value remove(Key key) {
         return this.outerMap.remove(key);
     }
 
@@ -145,7 +145,7 @@ public class WrappedMap<K, V> {
      *
      * @param m mappings to add to the modifiable map
      */
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public void putAll(Map<? extends Key, ? extends Value> m) {
         this.outerMap.putAll(m);
     }
 }
