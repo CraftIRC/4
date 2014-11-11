@@ -28,9 +28,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * Prefixed logger.
+ * Prefixed logger. Appends "[CraftIRC] " to all messages.
  */
-public class CraftIRCLogger extends Logger {
+public final class CraftIRCLogger extends Logger {
     public CraftIRCLogger(Logger parent) {
         super("CraftIRC", null);
         this.setParent(parent);

@@ -27,6 +27,7 @@ import org.kitteh.craftirc.endpoint.EndpointManager;
 import org.kitteh.craftirc.endpoint.filter.FilterManager;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
+import org.kitteh.craftirc.exceptions.CraftIRCUnableToStartException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
 import org.kitteh.craftirc.util.CraftIRCLogger;
@@ -51,30 +52,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * CraftIRC's core. Be sure to call {@link #shutdown()} when finished to
+ * ensure that all running operations complete and clean up threads.
+ */
 public final class CraftIRC {
-    public interface Implementation {
-        /**
-         * Gets the logger CraftIRC can use.
-         *
-         * @return a logger
-         */
-        Logger getLogger();
-
-        /**
-         * Gets the data folder storing the config.
-         *
-         * @return the folder holding the config
-         */
-        File getDataFolder();
-
-        /**
-         * This method should trigger a shutdown of the implementation. Be
-         * sure to call {@link CraftIRC#shutdown()} when done, to kill
-         * threads still running.
-         */
-        void shutdown();
-    }
-
     private static Logger logger;
 
     public static Logger log() {
@@ -110,16 +92,24 @@ public final class CraftIRC {
         this.shutdownables.add(shutdownable);
     }
 
-    public CraftIRC(Implementation implementation) {
-        CraftIRC.logger = new CraftIRCLogger(implementation.getLogger());
-
-        CraftIRCInvalidConfigException exception = null;
-
+    /**
+     * Starts up CraftIRC.
+     *
+     * The {@link Logger} provided to CraftIRC will be utilized for a child
+     * logger which will prefix all messages with "[CraftIRC] ".
+     *
+     * @param logger a logger for CraftIRC to use
+     * @param dataFolder the folder in which config.yml is located
+     * @throws CraftIRCUnableToStartException if startup fails
+     */
+    public CraftIRC(Logger logger, File dataFolder) throws CraftIRCUnableToStartException {
         try {
-            File configFile = new File(implementation.getDataFolder(), "config.yml");
+            CraftIRC.logger = new CraftIRCLogger(logger);
+
+            File configFile = new File(dataFolder, "config.yml");
             if (!configFile.exists()) {
                 log().info("No config.yml found, creating a default configuration.");
-                this.saveDefaultConfig(implementation.getDataFolder());
+                this.saveDefaultConfig(dataFolder);
             }
 
             BufferedReader reader = new BufferedReader(new FileReader(configFile));
@@ -167,20 +157,16 @@ public final class CraftIRC {
             this.filterManager = new FilterManager(this, repeatableFilterMap);
             this.botManager = new BotManager(this, bots);
             this.endpointManager = new EndpointManager(this, endpoints, links);
-        } catch (IOException e) {
-            exception = new CraftIRCInvalidConfigException(e);
-        } catch (CraftIRCInvalidConfigException e) {
-            exception = e;
-        }
-
-        if (exception != null) {
-            log().log(Level.SEVERE, "Could not start CraftIRC!", exception);
-            implementation.shutdown();
+        } catch (Exception e) {
+            throw new CraftIRCUnableToStartException("Could not start CraftIRC!", e);
         }
     }
 
     /**
-     * Shuts down any running threads. Call this method only to clean up.
+     * Shuts down any running threads and finishes any other running
+     * operations. This method calls {@link Shutdownable#shutdown()} on all
+     * {@link Shutdownable} registered to
+     * {@link #trackShutdownable(Shutdownable)}.
      */
     public void shutdown() {
         for (Shutdownable shutdownable : this.shutdownables) {
