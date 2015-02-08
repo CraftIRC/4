@@ -90,7 +90,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
 
     @Override
     protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
-        CraftIRC.log().log(Level.WARNING, "Failed to load Endpoint", exception);
+        CraftIRC.log().warning("Failed to load Endpoint", exception);
     }
 
     @Override

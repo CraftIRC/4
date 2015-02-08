@@ -106,7 +106,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
 
     @Override
     protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
-        CraftIRC.log().log(Level.WARNING, "Failed to load Filter", exception);
+        CraftIRC.log().warning("Failed to load Filter", exception);
     }
 
     @Override

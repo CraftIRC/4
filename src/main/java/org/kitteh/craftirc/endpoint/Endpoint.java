@@ -135,7 +135,7 @@ public abstract class Endpoint extends Loadable {
         try {
             this.preProcessReceivedMessage(targetedMessage);
         } catch (Throwable thrown) {
-            CraftIRC.log().log(Level.WARNING, "Unable to preprocess a received message", thrown);
+            CraftIRC.log().warning("Unable to preprocess a received message", thrown);
         }
         for (Filter filter : this.filters) {
             try {
@@ -144,7 +144,7 @@ public abstract class Endpoint extends Loadable {
                     return;
                 }
             } catch (Throwable thrown) {
-                CraftIRC.log().log(Level.WARNING, "Unable to process a received message", thrown);
+                CraftIRC.log().warning("Unable to process a received message", thrown);
             }
         }
         this.receiveMessage(targetedMessage);

@@ -23,23 +23,17 @@
  */
 package org.kitteh.craftirc.util;
 
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 /**
- * Prefixed logger. Appends "[CraftIRC] " to all messages.
+ * Wrap a logger.
  */
-public final class CraftIRCLogger extends Logger {
-    public CraftIRCLogger(Logger parent) {
-        super("CraftIRC", null);
-        this.setParent(parent);
-        this.setLevel(Level.ALL);
-    }
+public interface Logger {
+    void info(String info);
 
-    @Override
-    public void log(LogRecord logRecord) {
-        logRecord.setMessage("[CraftIRC] " + logRecord.getMessage());
-        super.log(logRecord);
-    }
+    void warning(String warning);
+
+    void warning(String warning, Throwable thrown);
+
+    void severe(String severe);
+
+    void severe(String severe, Throwable thrown);
 }

@@ -30,7 +30,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCUnableToStartException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
-import org.kitteh.craftirc.util.CraftIRCLogger;
+import org.kitteh.craftirc.util.Logger;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.yaml.snakeyaml.DumperOptions;
@@ -49,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * CraftIRC's core. Be sure to call {@link #shutdown()} when finished to
@@ -104,7 +102,7 @@ public final class CraftIRC {
      */
     public CraftIRC(Logger logger, File dataFolder) throws CraftIRCUnableToStartException {
         try {
-            CraftIRC.logger = new CraftIRCLogger(logger);
+            CraftIRC.logger = logger;
 
             File configFile = new File(dataFolder, "config.yml");
             if (!configFile.exists()) {
@@ -201,7 +199,7 @@ public final class CraftIRC {
             output.close();
             input.close();
         } catch (IOException ex) {
-            log().log(Level.SEVERE, "Exception while saving default config", ex);
+            log().severe("Exception while saving default config", ex);
         }
     }
 }
