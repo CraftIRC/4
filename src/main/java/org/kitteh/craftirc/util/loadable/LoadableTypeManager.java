@@ -26,7 +26,7 @@ package org.kitteh.craftirc.util.loadable;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
-import org.kitteh.irc.util.Sanity;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

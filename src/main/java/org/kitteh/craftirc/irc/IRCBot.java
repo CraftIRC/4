@@ -27,42 +27,42 @@ import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.Message;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
-import org.kitteh.irc.Bot;
-import org.kitteh.irc.EventHandler;
-import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.elements.User;
-import org.kitteh.irc.event.channel.ChannelCTCPEvent;
-import org.kitteh.irc.event.channel.ChannelMessageEvent;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.EventHandler;
+import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
+import org.kitteh.irc.client.library.util.LCKeyMap;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * Wraps an IRC bot and handles events
+ * Wraps an IRC client and handles events
  */
 public final class IRCBot {
-    private final Bot bot;
+    private final Client client;
     private final String name;
-    private final Map<Channel, Set<IRCEndpoint>> channels = new ConcurrentHashMap<>();
+    private final Map<String, Set<IRCEndpoint>> channels;
     private final CraftIRC plugin;
 
-    IRCBot(CraftIRC plugin, String name, Bot bot) {
+    IRCBot(CraftIRC plugin, String name, Client client) {
         this.plugin = plugin;
-        this.bot = bot;
+        this.client = client;
+        this.channels = new LCKeyMap<>(client);
         this.name = name;
-        this.bot.getEventManager().registerEventListener(new Listener());
+        this.client.getEventManager().registerEventListener(new Listener());
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void addChannel(IRCEndpoint endpoint, Channel channel) {
-        this.bot.addChannel(channel.getName());
+    public void addChannel(IRCEndpoint endpoint, String channel) {
+        this.client.addChannel(channel);
         Set<IRCEndpoint> points = this.channels.get(channel);
         if (points == null) {
             points = new CopyOnWriteArraySet<>();
@@ -72,15 +72,20 @@ public final class IRCBot {
     }
 
     public void sendMessage(Channel target, String message) {
-        this.bot.sendMessage(target.getName(), message);
+        this.client.sendMessage(target.getName(), message);
+    }
+
+    public void sendMessage(String target, String message) {
+        this.client.sendMessage(target, message);
     }
 
     void shutdown() {
-        this.bot.shutdown("CraftIRC!");
+        this.client.shutdown("CraftIRC!");
     }
 
     private void sendMessage(User sender, Channel channel, String message, IRCEndpoint.MessageType messageType) {
-        if (!this.channels.containsKey(channel)) {
+        final String channelName = channel.getName();
+        if (!this.channels.containsKey(channelName)) {
             return;
         }
         Map<String, Object> data = new HashMap<>();
@@ -91,7 +96,7 @@ public final class IRCBot {
         data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
         data.put(Endpoint.MESSAGE_TEXT, message);
         String formatted = String.format(messageType.getFormat(), sender.getNick(), message);
-        for (IRCEndpoint endpoint : this.channels.get(channel)) {
+        for (IRCEndpoint endpoint : this.channels.get(channelName)) {
             this.plugin.getEndpointManager().sendMessage(new Message(endpoint, formatted, data));
         }
     }
@@ -99,16 +104,14 @@ public final class IRCBot {
     private class Listener {
         @EventHandler
         public void message(ChannelMessageEvent event) {
-            Actor actor = event.getActor();
-            if (actor instanceof User) {
-                IRCBot.this.sendMessage((User) actor, event.getChannel(), event.getMessage(), IRCEndpoint.MessageType.MESSAGE);
-            }
+            User user = event.getActor();
+            IRCBot.this.sendMessage(user, event.getChannel(), event.getMessage(), IRCEndpoint.MessageType.MESSAGE);
         }
 
         @EventHandler
         public void action(ChannelCTCPEvent event) {
-            if (event.getMessage().startsWith("ACTION ") && event.getActor() instanceof User) {
-                IRCBot.this.sendMessage((User) event.getActor(), event.getChannel(), event.getMessage().substring("ACTION ".length()), IRCEndpoint.MessageType.ME);
+            if (event.getMessage().startsWith("ACTION ")) {
+                IRCBot.this.sendMessage(event.getActor(), event.getChannel(), event.getMessage().substring("ACTION ".length()), IRCEndpoint.MessageType.ME);
             }
         }
     }

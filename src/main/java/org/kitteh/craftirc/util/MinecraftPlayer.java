@@ -23,7 +23,7 @@
  */
 package org.kitteh.craftirc.util;
 
-import org.kitteh.irc.util.Sanity;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.UUID;
 

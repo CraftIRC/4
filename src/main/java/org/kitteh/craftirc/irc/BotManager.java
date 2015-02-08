@@ -26,7 +26,7 @@ package org.kitteh.craftirc.irc;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
-import org.kitteh.irc.BotBuilder;
+import org.kitteh.irc.client.library.ClientBuilder;
 
 import java.util.HashSet;
 import java.util.List;
@@ -97,7 +97,7 @@ public final class BotManager {
         Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
         String bindhost = MapGetter.getString(bindMap, "host");
         Integer bindport = MapGetter.getInt(bindMap, "port");
-        BotBuilder botBuilder = new BotBuilder();
+        ClientBuilder botBuilder = new ClientBuilder();
         botBuilder.name(name);
         botBuilder.server(server != null ? server : "localhost");
         botBuilder.server(port != null ? port : 6667);
