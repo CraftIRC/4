@@ -46,9 +46,7 @@ public final class BotManager {
         this.plugin.trackShutdownable(new Shutdownable() {
             @Override
             public void shutdown() {
-                for (IRCBot bot : BotManager.this.bots.values()) {
-                    bot.shutdown();
-                }
+                BotManager.this.bots.values().forEach(IRCBot::shutdown);
             }
         });
         this.loadBots(bots);

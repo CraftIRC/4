@@ -169,9 +169,7 @@ public final class CraftIRC {
      * {@link #trackShutdownable(Shutdownable)}.
      */
     public void shutdown() {
-        for (Shutdownable shutdownable : this.shutdownables) {
-            shutdownable.shutdown();
-        }
+        this.shutdownables.forEach(Shutdownable::shutdown);
         // And lastly...
         CraftIRC.logger = null;
     }
