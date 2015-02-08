@@ -160,11 +160,11 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
      * @param provider provider to register
      * @return previously registered provider for given class, else null
      */
-    public final ArgumentProvider<? extends Type> registerArgumentProvider(Class<Type> clazz, ArgumentProvider<? extends Type> provider) {
+    public final <Argument> ArgumentProvider<? extends Argument> registerArgumentProvider(Class<Argument> clazz, ArgumentProvider<? extends Argument> provider) {
         Sanity.nullCheck(clazz, "Cannot register a null class");
         Sanity.nullCheck(provider, "Cannot register a null provider");
         @SuppressWarnings("unchecked")
-        ArgumentProvider<? extends Type> old = (ArgumentProvider<? extends Type>) this.argumentProviders.put(clazz, provider);
+        ArgumentProvider<? extends Argument> old = (ArgumentProvider<? extends Argument>) this.argumentProviders.put(clazz, provider);
         return old;
     }
 
