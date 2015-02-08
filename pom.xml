@@ -46,6 +46,19 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>kittehReleases</id>
+            <name>Kitteh Releases</name>
+            <url>http://repo.kitteh.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>kittehSnapshots</id>
+            <name>Kitteh Snapshots</name>
+            <url>http://repo.kitteh.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <finalName>${project.artifactId}</finalName>
         <defaultGoal>clean install</defaultGoal>
