@@ -181,7 +181,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
      * registered for the type:
      * <ul>
      * <li>
-     * {@link CraftIRC} - Is passed the plugin instance
+     * {@link CraftIRC} - Is passed the CraftIRC instance
      * </li>
      * </ul>
      *
