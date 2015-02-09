@@ -4,8 +4,8 @@ endpoints:
   - name: IRC
     type: irc
     extra:
-      bot: bot
-      channel: '#craftirctest'
+      bot: MyInternalBotName
+      channel: '#craftirc'
     filters:
       - type: antihighlight
         splitter: " "
@@ -17,9 +17,10 @@ endpoints:
         value: MESSAGE_TEXT
         action: drop
 bots:
-  - name: bot
-    nick: mbaxtest
-    host: irc.esper.net
+  - name: MyInternalBotName
+    nick: CraftIRC
+    host: localhost
 links:
   - source: Game
     target: IRC
+    bidirectional: true
