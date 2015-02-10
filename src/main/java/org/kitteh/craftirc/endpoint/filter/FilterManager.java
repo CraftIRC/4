@@ -34,7 +34,6 @@ import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 /**
  * Handles Filters.

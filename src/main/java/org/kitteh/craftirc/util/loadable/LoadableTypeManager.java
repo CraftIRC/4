@@ -159,6 +159,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
      * @param clazz class to register
      * @param provider provider to register
      * @return previously registered provider for given class, else null
+     * @throws IllegalArgumentException for null class or provider
      */
     public final <Argument> ArgumentProvider<? extends Argument> registerArgumentProvider(Class<Argument> clazz, ArgumentProvider<? extends Argument> provider) {
         Sanity.nullCheck(clazz, "Cannot register a null class");
@@ -186,8 +187,12 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
      * </ul>
      *
      * @param clazz class of the Loadable type to be registered
+     * @throws IllegalArgumentException for null classes, classes not of the
+     * manager's type, classes without the {@link Loadable.Type} annotation,
+     * classes without public constructors, or for duplicate name submissions
      */
     public final void registerType(Class<? extends Type> clazz) {
+        Sanity.nullCheck(clazz, "Cannot register a null class");
         Sanity.truthiness(this.clazz.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type " + this.clazz.getSimpleName());
 
         Constructor[] constructors = clazz.getConstructors();
