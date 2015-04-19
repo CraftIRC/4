@@ -44,7 +44,7 @@ public class IRCEndpoint extends Endpoint {
 
         private final String format;
 
-        private MessageType(String format) {
+        MessageType(String format) {
             this.format = format;
         }
 
