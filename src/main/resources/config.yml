@@ -1,6 +1,9 @@
 endpoints:
   - name: Game
     type: minecraft
+    filters:
+      - type: datamapper
+        message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
   - name: IRC
     type: irc
     extra:
