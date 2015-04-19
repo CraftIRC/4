@@ -54,7 +54,8 @@ public class DataMapper extends Filter {
     public void processMessage(TargetedMessage message) {
         Object[] vars = new Object[this.variables.size()];
         for (int i = 0; i < vars.length; i++) {
-            vars[i] = message.getCustomData().get(this.variables.get(i)).toString();
+            Object data = message.getCustomData().get(this.variables.get(i));
+            vars[i] = data == null ? "" : data.toString();
         }
         message.setCustomMessage(String.format(this.format, vars));
     }
