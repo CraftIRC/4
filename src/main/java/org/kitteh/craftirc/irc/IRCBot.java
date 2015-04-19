@@ -95,6 +95,7 @@ public final class IRCBot {
         data.put(IRCEndpoint.IRC_NICK, sender.getNick());
         data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
         data.put(Endpoint.MESSAGE_TEXT, message);
+        data.put(Endpoint.SENDER_NAME, sender.getNick());
         String formatted = String.format(messageType.getFormat(), sender.getNick(), message);
         for (IRCEndpoint endpoint : this.channels.get(channelName)) {
             this.plugin.getEndpointManager().sendMessage(new Message(endpoint, formatted, data));
