@@ -28,12 +28,12 @@ import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.Message;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.EventHandler;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.util.LCKeyMap;
+import org.kitteh.irc.lib.net.engio.mbassy.listener.Handler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -103,13 +103,13 @@ public final class IRCBot {
     }
 
     private class Listener {
-        @EventHandler
+        @Handler
         public void message(ChannelMessageEvent event) {
             User user = event.getActor();
             IRCBot.this.sendMessage(user, event.getChannel(), event.getMessage(), IRCEndpoint.MessageType.MESSAGE);
         }
 
-        @EventHandler
+        @Handler
         public void action(ChannelCTCPEvent event) {
             if (event.getMessage().startsWith("ACTION ")) {
                 IRCBot.this.sendMessage(event.getActor(), event.getChannel(), event.getMessage().substring("ACTION ".length()), IRCEndpoint.MessageType.ME);

@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.kitteh.irc</groupId>
             <artifactId>client-lib</artifactId>
-            <version>0.1.8</version>
+            <version>0.2.3</version>
             <type>jar</type>
             <optional>true</optional>
             <scope>compile</scope>
