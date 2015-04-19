@@ -35,10 +35,12 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Endpoints are the origin and destination of messages tracked by this
- * plugin.
+ * Endpoints are the origin and destination of messages tracked by CraftIRC.
  */
 public abstract class Endpoint extends Loadable {
+    /**
+     * Helper class for loading filters.
+     */
     public class EndpointFilterLoader {
         private EndpointFilterLoader() {
         }
@@ -52,8 +54,17 @@ public abstract class Endpoint extends Loadable {
         }
     }
 
+    /**
+     * Constant defining the message data value "MESSAGE_FORMAT".
+     */
     public static final String MESSAGE_FORMAT = "MESSAGE_FORMAT";
+    /**
+     * Constant defining the message data value "MESSAGE_TEXT".
+     */
     public static final String MESSAGE_TEXT = "MESSAGE_TEXT";
+    /**
+     * Constant defining the message data value "SENDER_NAME".
+     */
     public static final String SENDER_NAME = "SENDER_NAME";
 
     private String name;

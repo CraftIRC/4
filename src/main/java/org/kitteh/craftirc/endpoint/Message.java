@@ -30,8 +30,7 @@ import java.util.Map;
 /**
  * Defines a message.
  * <p/>
- * Messages are immutable, created by their originating
- * {@link org.kitteh.craftirc.endpoint.Endpoint}.
+ * Messages are immutable, created by their originating {@link Endpoint}.
  */
 public final class Message {
     private final Map<String, Object> data;
@@ -61,8 +60,7 @@ public final class Message {
     }
 
     /**
-     * Gets the default message as created by the source
-     * {@link org.kitteh.craftirc.endpoint.Endpoint}.
+     * Gets the default message as created by the source {@link Endpoint}.
      *
      * @return the default message
      */
@@ -71,8 +69,7 @@ public final class Message {
     }
 
     /**
-     * Gets the source {@link org.kitteh.craftirc.endpoint.Endpoint} of this
-     * message.
+     * Gets the source {@link Endpoint} of this message.
      *
      * @return the source Endpoint
      */

@@ -34,8 +34,16 @@ import java.util.Map;
  * Represents an object that can be loaded from config.
  */
 public abstract class Loadable {
+    /**
+     * Defines a Loadable's information.
+     */
     @Retention(value = RetentionPolicy.RUNTIME)
     public @interface Type {
+        /**
+         * Getst the name of the loadable.
+         *
+         * @return loadable name
+         */
         String name();
     }
 

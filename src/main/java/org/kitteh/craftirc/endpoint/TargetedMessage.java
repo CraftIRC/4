@@ -26,9 +26,7 @@ package org.kitteh.craftirc.endpoint;
 import org.kitteh.craftirc.util.WrappedMap;
 
 /**
- * Defines a message as received by a particular
- * {@link org.kitteh.craftirc.endpoint.Endpoint}.
- * <p/>
+ * Wraps a message as received by a particular {@link Endpoint}.
  */
 public final class TargetedMessage {
     private final Message originatingMessage;
@@ -38,8 +36,7 @@ public final class TargetedMessage {
     private boolean rejected = false;
 
     /**
-     * Creates a message targetted at an
-     * {@link org.kitteh.craftirc.endpoint.Endpoint}.
+     * Creates a message targetted at an {@link Endpoint}.
      *
      * @param target message destination
      * @param originatingMessage the message being sent
@@ -63,8 +60,7 @@ public final class TargetedMessage {
 
     /**
      * Gets the current message to be outputted to the target Endpoint. By
-     * default, this message is
-     * {@link Message#getDefaultMessage()}.
+     * default, this message is {@link Message#getDefaultMessage()}.
      *
      * @return the message to be displayed to the Endpoint
      */
@@ -102,10 +98,18 @@ public final class TargetedMessage {
         return this.originatingMessage;
     }
 
+    /**
+     * Sets a message as being rejected by its destination.
+     */
     public void reject() {
         this.rejected = true;
     }
 
+    /**
+     * Gets if the message is rejected.
+     *
+     * @return true if rejected
+     */
     public boolean isRejected() {
         return this.rejected;
     }

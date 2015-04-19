@@ -34,7 +34,7 @@ import org.kitteh.craftirc.util.loadable.Loadable;
 import java.util.Map;
 
 /**
- * The standard {@link org.kitteh.craftirc.endpoint.Endpoint} for IRC bots.
+ * The standard {@link Endpoint} for IRC bots.
  */
 @Loadable.Type(name = "irc")
 public class IRCEndpoint extends Endpoint {

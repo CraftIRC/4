@@ -41,7 +41,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * Wraps an IRC client and handles events
+ * Wraps an IRC client and handles events.
  */
 public final class IRCBot {
     private final Client client;
@@ -57,10 +57,21 @@ public final class IRCBot {
         this.client.getEventManager().registerEventListener(new Listener());
     }
 
+    /**
+     * Gets the bot's name.
+     *
+     * @return bot name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Adds a channel to the bot, which will join when possible.
+     *
+     * @param endpoint endpoint this channel is assigned to
+     * @param channel channel to join
+     */
     public void addChannel(IRCEndpoint endpoint, String channel) {
         this.client.addChannel(channel);
         Set<IRCEndpoint> points = this.channels.get(channel);
@@ -71,10 +82,22 @@ public final class IRCBot {
         points.add(endpoint);
     }
 
+    /**
+     * Sends a message to the named channel.
+     *
+     * @param target target channel
+     * @param message message to send
+     */
     public void sendMessage(Channel target, String message) {
         this.client.sendMessage(target.getName(), message);
     }
 
+    /**
+     * Sends a message to the named target.
+     *
+     * @param target target
+     * @param message message to send
+     */
     public void sendMessage(String target, String message) {
         this.client.sendMessage(target, message);
     }

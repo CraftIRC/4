@@ -41,6 +41,12 @@ public final class BotManager {
     private final Map<String, IRCBot> bots = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
 
+    /**
+     * Initialized by {@link CraftIRC} main.
+     *
+     * @param plugin the CraftIRC instance
+     * @param bots list of bot data to load
+     */
     public BotManager(CraftIRC plugin, List<Object> bots) {
         this.plugin = plugin;
         this.plugin.trackShutdownable(new Shutdownable() {
@@ -52,6 +58,12 @@ public final class BotManager {
         this.loadBots(bots);
     }
 
+    /**
+     * Gets a bot by name.
+     *
+     * @param name bot name
+     * @return named bot or null if no such bot exists
+     */
     public IRCBot getBot(String name) {
         return this.bots.get(name);
     }

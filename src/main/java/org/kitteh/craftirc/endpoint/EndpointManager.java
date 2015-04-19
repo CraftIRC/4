@@ -44,6 +44,13 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     private final Map<String, List<String>> links = new ConcurrentHashMap<>();
     private final MessageDistributor messageDistributor;
 
+    /**
+     * Initialized by {@link CraftIRC} main.
+     *
+     * @param plugin the CraftIRC instance
+     * @param endpoints a list of endpoint data to load
+     * @param links a list of link data to load
+     */
     public EndpointManager(CraftIRC plugin, List<Object> endpoints, List<Object> links) {
         super(plugin, Endpoint.class);
         this.messageDistributor = new MessageDistributor(this, plugin);
@@ -54,6 +61,11 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
         this.loadLinks(links);
     }
 
+    /**
+     * Queues a message for delivery.
+     *
+     * @param message message to be sent
+     */
     public void sendMessage(Message message) {
         this.messageDistributor.addMessage(message);
     }

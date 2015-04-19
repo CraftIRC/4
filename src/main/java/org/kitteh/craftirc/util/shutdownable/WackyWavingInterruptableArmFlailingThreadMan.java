@@ -33,6 +33,11 @@ package org.kitteh.craftirc.util.shutdownable;
 public final class WackyWavingInterruptableArmFlailingThreadMan implements Shutdownable {
     private final Thread target;
 
+    /**
+     * Wacky waving interruptable arm flailing thread man!
+     *
+     * @param target thread to shut down on {@link #shutdown()}
+     */
     public WackyWavingInterruptableArmFlailingThreadMan(Thread target) {
         this.target = target;
     }

@@ -27,5 +27,8 @@ package org.kitteh.craftirc.util.shutdownable;
  * Shuts down without complaint.
  */
 public interface Shutdownable {
+    /**
+     * Tells the Shutdownable to shut down.
+     */
     void shutdown();
 }
