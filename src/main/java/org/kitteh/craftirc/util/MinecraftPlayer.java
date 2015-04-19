@@ -73,4 +73,9 @@ public final class MinecraftPlayer {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return (this.name.hashCode() * 7) + (this.uniqueId.hashCode() * 3);
+    }
 }
