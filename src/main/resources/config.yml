@@ -12,10 +12,13 @@ endpoints:
         variable: SENDER_NAME
       - type: datamapper
         message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
-      - type: regex
-        pattern: "butts"
-        value: MESSAGE_TEXT
-        action: drop
+      - nobutts
+repeatable-filters:
+  nobutts:
+    type: regex
+    pattern: "butts"
+    value: MESSAGE_TEXT
+    action: drop
 bots:
   - name: MyInternalBotName
     nick: CraftIRC
