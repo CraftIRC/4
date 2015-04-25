@@ -4,6 +4,7 @@ endpoints:
     filters:
       - type: datamapper
         message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
+      - nobutts
   - name: IRC
     type: irc
     extra:
