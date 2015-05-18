@@ -32,7 +32,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
-import org.kitteh.irc.client.library.util.LCKeyMap;
+import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.lib.net.engio.mbassy.listener.Handler;
 
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public final class IRCBot {
     IRCBot(CraftIRC plugin, String name, Client client) {
         this.plugin = plugin;
         this.client = client;
-        this.channels = new LCKeyMap<>(client);
+        this.channels = new CIKeyMap<>(client);
         this.name = name;
         this.client.getEventManager().registerEventListener(new Listener());
     }
