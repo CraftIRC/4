@@ -23,6 +23,8 @@
  */
 package org.kitteh.craftirc.util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +43,7 @@ public class WrappedMap<Key, Value> {
      *
      * @param map map to be wrapped and untouched
      */
-    public WrappedMap(Map<Key, Value> map) {
+    public WrappedMap(@Nonnull Map<Key, Value> map) {
         this.innerMap = map;
     }
 
@@ -66,7 +68,7 @@ public class WrappedMap<Key, Value> {
      * @param key key which may exist in the map
      * @return true if the key is stored at either level
      */
-    public boolean containsKey(Key key) {
+    public boolean containsKey(@Nullable Key key) {
         return this.innerMap.containsKey(key) || this.outerMap.containsKey(key);
     }
 
@@ -78,7 +80,7 @@ public class WrappedMap<Key, Value> {
      * @param value value which may exist in the map
      * @return true if the value is in the map and visible
      */
-    public boolean containsValue(Value value) {
+    public boolean containsValue(@Nullable Value value) {
         if (this.outerMap.containsValue(value)) {
             return true;
         }
@@ -99,7 +101,7 @@ public class WrappedMap<Key, Value> {
      * @param key the key
      * @return the value the key is mapped to, or null if no mapping exists
      */
-    public Value get(Key key) {
+    public Value get(@Nullable Key key) {
         if (this.outerMap.containsKey(key)) {
             return this.outerMap.get(key);
         }
@@ -119,7 +121,7 @@ public class WrappedMap<Key, Value> {
      * @return the value 'displaced' by the new mapping (See above) or null
      * if nothing was displaced.
      */
-    public Value put(Key key, Value value) {
+    public Value put(@Nullable Key key, @Nullable Value value) {
         Value displaced;
         if (this.outerMap.containsKey(key)) {
             displaced = this.outerMap.get(key);
@@ -136,7 +138,7 @@ public class WrappedMap<Key, Value> {
      * @param key the key for which the mapping should be removed
      * @return the removed mapped value, or null if no mapping existed
      */
-    public Value remove(Key key) {
+    public Value remove(@Nullable Key key) {
         return this.outerMap.remove(key);
     }
 
@@ -145,7 +147,7 @@ public class WrappedMap<Key, Value> {
      *
      * @param m mappings to add to the modifiable map
      */
-    public void putAll(Map<? extends Key, ? extends Value> m) {
+    public void putAll(@Nonnull Map<? extends Key, ? extends Value> m) {
         this.outerMap.putAll(m);
     }
 }

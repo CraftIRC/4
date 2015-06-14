@@ -25,6 +25,8 @@ package org.kitteh.craftirc.endpoint;
 
 import org.kitteh.craftirc.util.WrappedMap;
 
+import javax.annotation.Nonnull;
+
 /**
  * Wraps a message as received by a particular {@link Endpoint}.
  */
@@ -41,7 +43,7 @@ public final class TargetedMessage {
      * @param target message destination
      * @param originatingMessage the message being sent
      */
-    public TargetedMessage(Endpoint target, Message originatingMessage) {
+    public TargetedMessage(@Nonnull Endpoint target, @Nonnull Message originatingMessage) {
         this.target = target;
         this.originatingMessage = originatingMessage;
         this.customData = new WrappedMap<>(originatingMessage.getData());
@@ -54,6 +56,7 @@ public final class TargetedMessage {
      *
      * @return the custom data associated with the message
      */
+    @Nonnull
     public WrappedMap<String, Object> getCustomData() {
         return this.customData;
     }
@@ -64,6 +67,7 @@ public final class TargetedMessage {
      *
      * @return the message to be displayed to the Endpoint
      */
+    @Nonnull
     public String getCustomMessage() {
         return this.customMessage;
     }
@@ -74,7 +78,8 @@ public final class TargetedMessage {
      * @param message the new message
      * @return the previously set message
      */
-    public String setCustomMessage(String message) {
+    @Nonnull
+    public String setCustomMessage(@Nonnull String message) {
         String oldMessage = this.customMessage;
         this.customMessage = message;
         return oldMessage;
@@ -85,6 +90,7 @@ public final class TargetedMessage {
      *
      * @return the Endpoint at which this message is targetted
      */
+    @Nonnull
     public Endpoint getTarget() {
         return this.target;
     }
@@ -94,6 +100,7 @@ public final class TargetedMessage {
      *
      * @return the originating message
      */
+    @Nonnull
     public Message getOriginatingMessage() {
         return this.originatingMessage;
     }

@@ -28,6 +28,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -46,20 +47,23 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         private final Constructor<? extends Type> constructor;
         private final List<LoadableField> fields;
 
-        private LoadableLoadout(Class<? extends Type> clazz, Constructor<? extends Type> constructor, List<LoadableField> fields) {
+        private LoadableLoadout(@Nonnull Class<? extends Type> clazz, @Nonnull Constructor<? extends Type> constructor, @Nonnull List<LoadableField> fields) {
             this.clazz = clazz;
             this.constructor = constructor;
             this.fields = fields;
         }
 
+        @Nonnull
         private Class<? extends Type> getClazz() {
             return this.clazz;
         }
 
+        @Nonnull
         private Constructor<? extends Type> getConstructor() {
             return this.constructor;
         }
 
+        @Nonnull
         private List<LoadableField> getFields() {
             return this.fields;
         }
@@ -70,16 +74,18 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         private final String name;
         private final boolean required;
 
-        private LoadableField(String name, Field field, boolean required) {
+        private LoadableField(@Nonnull String name, @Nonnull Field field, boolean required) {
             this.field = field;
             this.name = name;
             this.required = required;
         }
 
+        @Nonnull
         private Field getField() {
             return this.field;
         }
 
+        @Nonnull
         private String getName() {
             return this.name;
         }
@@ -95,12 +101,12 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
     private final Map<String, List<Map<Object, Object>>> unRegistered = new ConcurrentHashMap<>();
     private final Class<Type> clazz;
 
-    protected LoadableTypeManager(CraftIRC plugin, Class<Type> clazz) {
+    protected LoadableTypeManager(@Nonnull CraftIRC plugin, @Nonnull Class<Type> clazz) {
         this.clazz = clazz;
         this.plugin = plugin;
     }
 
-    protected void loadList(List<Object> list) {
+    protected void loadList(@Nonnull List<Object> list) {
         for (final Object listElement : list) {
             final Map<Object, Object> data;
             if ((data = MapGetter.castToMap(listElement)) == null) {
@@ -125,11 +131,12 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         }
     }
 
+    @Nonnull
     protected CraftIRC getCraftIRC() {
         return this.plugin;
     }
 
-    private void load(String type, LoadableLoadout loadout, Map<Object, Object> data) {
+    private void load(@Nonnull String type, @Nonnull LoadableLoadout loadout, @Nonnull Map<Object, Object> data) {
         Class<?>[] parameterTypes = loadout.getConstructor().getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < args.length; i++) {
@@ -165,7 +172,8 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
      * @return previously registered provider for given class, else null
      * @throws IllegalArgumentException for null class or provider
      */
-    public final <Argument> ArgumentProvider<? extends Argument> registerArgumentProvider(Class<Argument> clazz, ArgumentProvider<? extends Argument> provider) {
+    @Nonnull
+    public final <Argument> ArgumentProvider<? extends Argument> registerArgumentProvider(@Nonnull Class<Argument> clazz, @Nonnull ArgumentProvider<? extends Argument> provider) {
         Sanity.nullCheck(clazz, "Cannot register a null class");
         Sanity.nullCheck(provider, "Cannot register a null provider");
         @SuppressWarnings("unchecked")
@@ -195,7 +203,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
      * manager's type, classes without the {@link Loadable.Type} annotation,
      * classes without public constructors, or for duplicate name submissions
      */
-    public final void registerType(Class<? extends Type> clazz) {
+    public final void registerType(@Nonnull Class<? extends Type> clazz) {
         Sanity.nullCheck(clazz, "Cannot register a null class");
         Sanity.truthiness(this.clazz.isAssignableFrom(clazz), "Submitted class '" + clazz.getSimpleName() + "' is not of type " + this.clazz.getSimpleName());
 
@@ -224,7 +232,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         }
     }
 
-    private void mapFields(Map<String, LoadableField> map, Class<? extends Type> clazz) {
+    private void mapFields(@Nonnull Map<String, LoadableField> map, @Nonnull Class<? extends Type> clazz) {
         if (this.clazz.isAssignableFrom(clazz.getSuperclass())) {
             @SuppressWarnings("unchecked")
             Class<? extends Type> superClass = (Class<? extends Type>) clazz.getSuperclass();
@@ -242,9 +250,9 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         }
     }
 
-    protected abstract void processCompleted(Type loaded) throws CraftIRCInvalidConfigException;
+    protected abstract void processCompleted(@Nonnull Type loaded) throws CraftIRCInvalidConfigException;
 
-    protected abstract void processFailedLoad(Exception exception, Map<Object, Object> data);
+    protected abstract void processFailedLoad(@Nonnull Exception exception, @Nonnull Map<Object, Object> data);
 
-    protected abstract void processInvalid(String reason, Map<Object, Object> data);
+    protected abstract void processInvalid(@Nonnull String reason, @Nonnull Map<Object, Object> data);
 }

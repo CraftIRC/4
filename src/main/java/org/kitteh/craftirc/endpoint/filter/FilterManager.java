@@ -31,6 +31,8 @@ import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +47,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
 
     private final Map<String, Map<Object, Object>> repeatableObjects = new ConcurrentHashMap<>();
 
-    public FilterManager(CraftIRC plugin, Map<Object, Object> repeatables) {
+    public FilterManager(@Nonnull CraftIRC plugin, @Nullable Map<Object, Object> repeatables) {
         super(plugin, Filter.class);
         // Register filter types here
         this.registerType(AntiHighlight.class);
@@ -57,11 +59,11 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     @Override
-    protected void loadList(List<Object> list) {
+    protected void loadList(@Nonnull List<Object> list) {
         throw new UnsupportedOperationException("Must provide Endpoint when loading filters!");
     }
 
-    public void loadList(List<Object> list, Link.LinkFilterLoader link) {
+    public void loadList(@Nonnull List<Object> list, @Nonnull Link.LinkFilterLoader link) {
         for (int i = 0; i < list.size(); i++) {
             Object listElement = list.get(i);
             Map<Object, Object> data;
@@ -78,7 +80,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         super.loadList(list);
     }
 
-    private void loadRepeatables(Map<Object, Object> repeatables) {
+    private void loadRepeatables(@Nonnull Map<Object, Object> repeatables) {
         for (Map.Entry entry : repeatables.entrySet()) {
             if (!(entry.getKey() instanceof String)) {
                 // TODO log
@@ -96,7 +98,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     @Override
-    protected void processCompleted(Filter loaded) {
+    protected void processCompleted(@Nonnull Filter loaded) {
         Link.LinkFilterLoader loader = loaded.getLoader();
         if (loader != null) {
             loader.addFilter(loaded);
@@ -104,12 +106,12 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     @Override
-    protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
+    protected void processFailedLoad(@Nonnull Exception exception, @Nonnull Map<Object, Object> data) {
         CraftIRC.log().warning("Failed to load Filter", exception);
     }
 
     @Override
-    protected void processInvalid(String reason, Map<Object, Object> data) {
+    protected void processInvalid(@Nonnull String reason, @Nonnull Map<Object, Object> data) {
         CraftIRC.log().warning("Encountered invalid Filter: " + reason);
     }
 }

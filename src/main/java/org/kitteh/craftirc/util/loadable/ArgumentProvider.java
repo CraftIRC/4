@@ -23,6 +23,8 @@
  */
 package org.kitteh.craftirc.util.loadable;
 
+import javax.annotation.Nonnull;
+
 /**
  * I came here for an argument.
  */
@@ -32,5 +34,6 @@ public interface ArgumentProvider<Argument> {
      *
      * @return an instance of the argument type
      */
+    @Nonnull
     Argument getArgument();
 }

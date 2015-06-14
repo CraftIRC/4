@@ -23,17 +23,19 @@
  */
 package org.kitteh.craftirc.util;
 
+import javax.annotation.Nonnull;
+
 /**
  * Wrap a logger.
  */
 public interface Logger {
-    void info(String info);
+    void info(@Nonnull String info);
 
-    void warning(String warning);
+    void warning(@Nonnull String warning);
 
-    void warning(String warning, Throwable thrown);
+    void warning(@Nonnull String warning, @Nonnull Throwable thrown);
 
-    void severe(String severe);
+    void severe(@Nonnull String severe);
 
-    void severe(String severe, Throwable thrown);
+    void severe(@Nonnull String severe, @Nonnull Throwable thrown);
 }

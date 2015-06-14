@@ -29,6 +29,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +47,13 @@ public class DataMapper extends Filter {
     private String message;
     private List<String> variables;
 
+    @Nonnull
     public String getMessageFormat() {
         return this.message;
     }
 
     @Override
-    public void processMessage(TargetedMessage message) {
+    public void processMessage(@Nonnull TargetedMessage message) {
         Object[] vars = new Object[this.variables.size()];
         for (int i = 0; i < vars.length; i++) {
             Object data = message.getCustomData().get(this.variables.get(i));
@@ -61,7 +63,7 @@ public class DataMapper extends Filter {
     }
 
     @Override
-    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void load(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         Matcher matcher = PERCENT_VARIABLE.matcher(this.message);
         this.variables = new LinkedList<>();
         StringBuilder builder = new StringBuilder();

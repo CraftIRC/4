@@ -28,6 +28,7 @@ import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.util.shutdownable.WackyWavingInterruptableArmFlailingThreadMan;
 import org.kitteh.irc.client.library.util.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -39,13 +40,13 @@ final class MessageDistributor extends Thread {
     private final EndpointManager endpointManager;
     private final ConcurrentLinkedQueue<Message> messages = new ConcurrentLinkedQueue<>();
 
-    MessageDistributor(EndpointManager manager, CraftIRC plugin) {
+    MessageDistributor(@Nonnull EndpointManager manager, @Nonnull CraftIRC plugin) {
         this.endpointManager = manager;
         plugin.trackShutdownable(new WackyWavingInterruptableArmFlailingThreadMan(this));
         this.start();
     }
 
-    void addMessage(Message message) {
+    void addMessage(@Nonnull Message message) {
         this.messages.add(message);
         synchronized (this.messages) {
             this.messages.notify();

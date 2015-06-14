@@ -37,6 +37,7 @@ import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,6 +59,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public final class CraftIRC {
     private static Logger logger;
 
+    @Nonnull
     public static Logger log() {
         if (CraftIRC.logger == null) {
             throw new CraftIRCWillLeakTearsException();
@@ -71,18 +73,22 @@ public final class CraftIRC {
     private LinkManager linkManager;
     private final Set<Shutdownable> shutdownables = new CopyOnWriteArraySet<>();
 
+    @Nonnull
     public BotManager getBotManager() {
         return this.botManager;
     }
 
+    @Nonnull
     public EndpointManager getEndpointManager() {
         return this.endpointManager;
     }
 
+    @Nonnull
     public FilterManager getFilterManager() {
         return this.filterManager;
     }
 
+    @Nonnull
     public LinkManager getLinkManager() {
         return this.linkManager;
     }
@@ -92,7 +98,7 @@ public final class CraftIRC {
      *
      * @param shutdownable feature to track
      */
-    public void trackShutdownable(Shutdownable shutdownable) {
+    public void trackShutdownable(@Nonnull Shutdownable shutdownable) {
         this.shutdownables.add(shutdownable);
     }
 
@@ -106,7 +112,7 @@ public final class CraftIRC {
      * @param dataFolder the folder in which config.yml is located
      * @throws CraftIRCUnableToStartException if startup fails
      */
-    public CraftIRC(Logger logger, File dataFolder) throws CraftIRCUnableToStartException {
+    public CraftIRC(@Nonnull Logger logger, @Nonnull File dataFolder) throws CraftIRCUnableToStartException {
         try {
             CraftIRC.logger = logger;
 
@@ -179,7 +185,7 @@ public final class CraftIRC {
         CraftIRC.logger = null;
     }
 
-    private void saveDefaultConfig(File dataFolder) {
+    private void saveDefaultConfig(@Nonnull File dataFolder) {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }

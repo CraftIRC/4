@@ -30,6 +30,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 import org.kitteh.irc.client.library.util.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
      * @param plugin the CraftIRC instance
      * @param endpoints a list of endpoint data to load
      */
-    public EndpointManager(CraftIRC plugin, List<Object> endpoints) {
+    public EndpointManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> endpoints) {
         super(plugin, Endpoint.class);
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
@@ -63,7 +64,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
      *
      * @param message message to be sent
      */
-    public void sendMessage(Message message) {
+    public void sendMessage(@Nonnull Message message) {
         this.messageDistributor.addMessage(message);
     }
 
@@ -73,7 +74,8 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
      * @param source source Endpoint
      * @return destinations of a message send by the speciified Endpoint
      */
-    Set<Pair<Link, Endpoint>> getDestinations(String source) {
+    @Nonnull
+    Set<Pair<Link, Endpoint>> getDestinations(@Nonnull String source) {
         Set<Pair<Link, Endpoint>> destinations = new HashSet<>();
         List<Link> links = this.getCraftIRC().getLinkManager().getLinks(source);
         for (Link link : links) {
@@ -86,7 +88,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     }
 
     @Override
-    protected void processCompleted(Endpoint endpoint) throws CraftIRCInvalidConfigException {
+    protected void processCompleted(@Nonnull Endpoint endpoint) throws CraftIRCInvalidConfigException {
         final String name = endpoint.getName();
         if (this.endpoints.containsKey(name)) {
             throw new CraftIRCInvalidConfigException("Duplicate Endpoint name '" + name + "'");
@@ -95,12 +97,12 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     }
 
     @Override
-    protected void processFailedLoad(Exception exception, Map<Object, Object> data) {
+    protected void processFailedLoad(@Nonnull Exception exception, @Nonnull Map<Object, Object> data) {
         CraftIRC.log().warning("Failed to load Endpoint", exception);
     }
 
     @Override
-    protected void processInvalid(String reason, Map<Object, Object> data) {
+    protected void processInvalid(@Nonnull String reason, @Nonnull Map<Object, Object> data) {
         CraftIRC.log().warning("Encountered invalid Endpoint: " + reason);
     }
 }

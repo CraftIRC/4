@@ -28,6 +28,8 @@ import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.kitteh.irc.client.library.ClientBuilder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,7 @@ public final class BotManager {
      * @param plugin the CraftIRC instance
      * @param bots list of bot data to load
      */
-    public BotManager(CraftIRC plugin, List<Object> bots) {
+    public BotManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> bots) {
         this.plugin = plugin;
         this.plugin.trackShutdownable(new Shutdownable() {
             @Override
@@ -64,11 +66,12 @@ public final class BotManager {
      * @param name bot name
      * @return named bot or null if no such bot exists
      */
-    public IRCBot getBot(String name) {
+    @Nullable
+    public IRCBot getBot(@Nonnull String name) {
         return this.bots.get(name);
     }
 
-    private void loadBots(List<Object> list) {
+    private void loadBots(@Nonnull List<Object> list) {
         Set<String> usedBotNames = new HashSet<>();
         int nonMap = 0;
         int noName = 0;
@@ -98,7 +101,7 @@ public final class BotManager {
         }
     }
 
-    private void addBot(String name, Map<Object, Object> data) {
+    private void addBot(@Nonnull String name, @Nonnull Map<Object, Object> data) {
         String nick = MapGetter.getString(data, "nick");
         String server = MapGetter.getString(data, "host");
         Integer port = MapGetter.getInt(data, "port");

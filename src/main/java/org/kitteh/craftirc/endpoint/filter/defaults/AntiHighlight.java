@@ -28,6 +28,8 @@ import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import javax.annotation.Nonnull;
+
 /**
  * Anti highlight aww yes.
  */
@@ -39,7 +41,7 @@ public class AntiHighlight extends Filter {
     private String variable;
 
     @Override
-    public void processMessage(TargetedMessage message) {
+    public void processMessage(@Nonnull TargetedMessage message) {
         if (message.getCustomData().containsKey(this.variable)) {
             String oldValue = message.getCustomData().get(this.variable).toString();
             if (oldValue.length() > 1) {

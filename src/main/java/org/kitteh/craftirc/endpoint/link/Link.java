@@ -27,6 +27,8 @@ import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,11 +43,12 @@ public class Link {
         private LinkFilterLoader() {
         }
 
+        @Nonnull
         public Link getLink() {
             return Link.this;
         }
 
-        public void addFilter(Filter filter) {
+        public void addFilter(@Nonnull Filter filter) {
             Link.this.addFilter(filter);
         }
     }
@@ -54,7 +57,7 @@ public class Link {
     private final String target;
     private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
-    public Link(CraftIRC plugin, String source, String target, List<Object> filters) {
+    public Link(@Nonnull CraftIRC plugin, @Nonnull String source, @Nonnull String target, @Nullable List<Object> filters) {
         this.source = source;
         this.target = target;
         if (filters != null) {
@@ -67,6 +70,7 @@ public class Link {
      *
      * @return the source endpoint name
      */
+    @Nonnull
     public String getSource() {
         return this.source;
     }
@@ -76,11 +80,12 @@ public class Link {
      *
      * @return the target endpoint name
      */
+    @Nonnull
     public String getTarget() {
         return this.target;
     }
 
-    private void addFilter(Filter filter) {
+    private void addFilter(@Nonnull Filter filter) {
         this.filters.add(filter);
     }
 
@@ -89,7 +94,7 @@ public class Link {
      *
      * @param message the message sent by the source
      */
-    public void filterMessage(TargetedMessage message) {
+    public void filterMessage(@Nonnull TargetedMessage message) {
         for (Filter filter : this.filters) {
             try {
                 filter.processMessage(message);

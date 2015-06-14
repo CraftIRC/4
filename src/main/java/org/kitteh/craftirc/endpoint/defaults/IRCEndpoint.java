@@ -31,6 +31,7 @@ import org.kitteh.craftirc.irc.IRCBot;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -48,6 +49,7 @@ public class IRCEndpoint extends Endpoint {
             this.format = format;
         }
 
+        @Nonnull
         public String getFormat() {
             return this.format;
         }
@@ -67,12 +69,12 @@ public class IRCEndpoint extends Endpoint {
     }
 
     @Override
-    protected void receiveMessage(TargetedMessage message) {
+    protected void receiveMessage(@Nonnull TargetedMessage message) {
         this.bot.sendMessage(this.channel, message.getCustomMessage());
     }
 
     @Override
-    protected void loadExtra(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void loadExtra(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         final String botName = MapGetter.getString(data, "bot");
         if (botName == null) {
             throw new CraftIRCInvalidConfigException("No bot defined");

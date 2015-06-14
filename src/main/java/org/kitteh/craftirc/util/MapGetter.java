@@ -23,6 +23,8 @@
  */
 package org.kitteh.craftirc.util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,8 @@ import java.util.Map;
  * Gets elements from a String-Object map.
  */
 public final class MapGetter {
-    public static Map<Object, Object> castToMap(Object o) {
+    @Nullable
+    public static Map<Object, Object> castToMap(@Nullable Object o) {
         if (o instanceof Map) {
             @SuppressWarnings("unchecked")
             Map<Object, Object> map = (Map<Object, Object>) o;
@@ -39,7 +42,8 @@ public final class MapGetter {
         return null;
     }
 
-    public static <Type> Type get(Map<Object, Object> map, String key, Class<Type> type) {
+    @Nullable
+    public static <Type> Type get(@Nullable Map<Object, Object> map, @Nonnull String key, @Nonnull Class<Type> type) {
         if (map == null) {
             return null;
         }
@@ -52,23 +56,27 @@ public final class MapGetter {
         return t;
     }
 
-    public static List<Object> getList(Map<Object, Object> map, String key) {
+    @Nullable
+    public static List<Object> getList(@Nullable Map<Object, Object> map, @Nonnull String key) {
         @SuppressWarnings("unchecked")
         List<Object> list = get(map, key, List.class);
         return list;
     }
 
-    public static Map<Object, Object> getMap(Map<Object, Object> map, String key) {
+    @Nullable
+    public static Map<Object, Object> getMap(@Nullable Map<Object, Object> map, @Nonnull String key) {
         @SuppressWarnings("unchecked")
         Map<Object, Object> newMap = get(map, key, Map.class);
         return newMap;
     }
 
-    public static String getString(Map<Object, Object> map, String key) {
+    @Nullable
+    public static String getString(@Nullable Map<Object, Object> map, @Nonnull String key) {
         return get(map, key, String.class);
     }
 
-    public static Integer getInt(Map<Object, Object> map, String key) {
+    @Nullable
+    public static Integer getInt(@Nullable Map<Object, Object> map, @Nonnull String key) {
         return get(map, key, Integer.class);
     }
 }

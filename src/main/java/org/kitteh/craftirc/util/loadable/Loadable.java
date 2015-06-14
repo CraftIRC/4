@@ -26,6 +26,7 @@ package org.kitteh.craftirc.util.loadable;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
@@ -40,7 +41,7 @@ public abstract class Loadable {
     @Retention(value = RetentionPolicy.RUNTIME)
     public @interface Type {
         /**
-         * Getst the name of the loadable.
+         * Gets the name of the loadable.
          *
          * @return loadable name
          */
@@ -53,5 +54,5 @@ public abstract class Loadable {
      * @param data data to load
      * @throws CraftIRCInvalidConfigException if invalid
      */
-    protected abstract void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException;
+    protected abstract void load(@Nonnull CraftIRC plugin, @Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException;
 }

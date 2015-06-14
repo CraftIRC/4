@@ -29,6 +29,7 @@ import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,7 @@ public abstract class Endpoint extends Loadable {
      *
      * @return the name of this endpoint
      */
+    @Nonnull
     public final String getName() {
         return this.name;
     }
@@ -70,12 +72,12 @@ public abstract class Endpoint extends Loadable {
      *
      * @param data the 'extra' section of the configuration
      */
-    protected void loadExtra(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void loadExtra(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         // By default, nothing extra to load
     }
 
     @Override
-    protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected final void load(@Nonnull CraftIRC plugin, @Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         this.name = MapGetter.getString(data, "name");
         final Map<Object, Object> extra = MapGetter.getMap(data, "extra");
         this.loadExtra(extra == null ? new HashMap<>() : extra);
@@ -86,7 +88,7 @@ public abstract class Endpoint extends Loadable {
      *
      * @param message message to process
      */
-    protected void preProcessReceivedMessage(TargetedMessage message) {
+    protected void preProcessReceivedMessage(@Nonnull TargetedMessage message) {
         // By default, don't do anything
     }
 
@@ -98,7 +100,7 @@ public abstract class Endpoint extends Loadable {
      *
      * @param message the message to be displayed
      */
-    protected abstract void receiveMessage(TargetedMessage message);
+    protected abstract void receiveMessage(@Nonnull TargetedMessage message);
 
     /**
      * Receive a message and process.
@@ -113,7 +115,7 @@ public abstract class Endpoint extends Loadable {
      * @param message the message sent by the source
      * @param link the link over which this message is sent
      */
-    final void receiveMessage(Message message, Link link) {
+    final void receiveMessage(@Nonnull Message message, @Nonnull Link link) {
         TargetedMessage targetedMessage = new TargetedMessage(this, message);
         try {
             this.preProcessReceivedMessage(targetedMessage);

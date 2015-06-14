@@ -26,6 +26,7 @@ package org.kitteh.craftirc.endpoint.link;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +42,7 @@ public final class LinkManager {
      * @param plugin the CraftIRC instance
      * @param links a list of link data to load
      */
-    public LinkManager(CraftIRC plugin, List<Object> links) {
+    public LinkManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> links) {
         int nonMap = 0;
         int noSource = 0;
         int noTarget = 0;
@@ -78,7 +79,8 @@ public final class LinkManager {
         }
     }
 
-    public List<Link> getLinks(String source) {
+    @Nonnull
+    public List<Link> getLinks(@Nonnull String source) {
         LinkedList<Link> linkList = new LinkedList<>();
         List<Link> links = this.links.get(source);
         if (links != null) {
@@ -87,7 +89,7 @@ public final class LinkManager {
         return linkList;
     }
 
-    private void addLink(Link link) {
+    private void addLink(@Nonnull Link link) {
         List<Link> links = this.links.get(link.getSource());
         if (links == null) {
             links = new LinkedList<>();

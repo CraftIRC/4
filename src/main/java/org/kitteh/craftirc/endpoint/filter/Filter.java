@@ -29,6 +29,8 @@ import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -43,10 +45,12 @@ public abstract class Filter extends Loadable {
      *
      * @return the Link in use
      */
+    @Nonnull
     protected Link getLink() {
         return this.link;
     }
 
+    @Nullable
     Link.LinkFilterLoader getLoader() {
         return this.loader;
     }
@@ -57,10 +61,10 @@ public abstract class Filter extends Loadable {
      *
      * @param message message to process
      */
-    public abstract void processMessage(TargetedMessage message);
+    public abstract void processMessage(@Nonnull TargetedMessage message);
 
     @Override
-    protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected final void load(@Nonnull CraftIRC plugin, @Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         if (data.containsKey(FilterManager.Target.EndpointLoader)) {
             this.loader = (Link.LinkFilterLoader) data.get(FilterManager.Target.EndpointLoader);
             this.link = this.loader.getLink();
@@ -74,7 +78,7 @@ public abstract class Filter extends Loadable {
      * @param data information to load
      * @throws CraftIRCInvalidConfigException
      */
-    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void load(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
 
     }
 }

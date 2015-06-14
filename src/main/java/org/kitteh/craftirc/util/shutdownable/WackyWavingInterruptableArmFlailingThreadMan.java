@@ -23,6 +23,8 @@
  */
 package org.kitteh.craftirc.util.shutdownable;
 
+import javax.annotation.Nonnull;
+
 /**
  * This Shutdownable simply calls {@link Thread#interrupt()} on a target
  * thread.
@@ -38,7 +40,7 @@ public final class WackyWavingInterruptableArmFlailingThreadMan implements Shutd
      *
      * @param target thread to shut down on {@link #shutdown()}
      */
-    public WackyWavingInterruptableArmFlailingThreadMan(Thread target) {
+    public WackyWavingInterruptableArmFlailingThreadMan(@Nonnull Thread target) {
         this.target = target;
     }
 
@@ -48,7 +50,7 @@ public final class WackyWavingInterruptableArmFlailingThreadMan implements Shutd
     }
 
     @Override
-    public boolean equals(Object wackyWavingInterruptableArmFlailingThreadMan) {
+    public boolean equals(@Nonnull Object wackyWavingInterruptableArmFlailingThreadMan) {
         return wackyWavingInterruptableArmFlailingThreadMan instanceof WackyWavingInterruptableArmFlailingThreadMan && this.target == ((WackyWavingInterruptableArmFlailingThreadMan) wackyWavingInterruptableArmFlailingThreadMan).target;
     }
 

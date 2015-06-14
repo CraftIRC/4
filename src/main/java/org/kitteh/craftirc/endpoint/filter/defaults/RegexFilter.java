@@ -30,6 +30,7 @@ import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,7 +102,7 @@ public class RegexFilter extends Filter {
     private final List<String> namedGroups = new LinkedList<>();
 
     @Override
-    protected void load(Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void load(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         final String pattern;
         if ((pattern = MapGetter.getString(data, "pattern")) == null) {
             throw new CraftIRCInvalidConfigException("Regex pattern requires a 'pattern' defined");
@@ -131,7 +132,7 @@ public class RegexFilter extends Filter {
     }
 
     @Override
-    public void processMessage(TargetedMessage message) {
+    public void processMessage(@Nonnull TargetedMessage message) {
         String val = message.getCustomData().get(this.value).toString();
         Matcher matcher = this.pattern.matcher(val);
         boolean matches;
