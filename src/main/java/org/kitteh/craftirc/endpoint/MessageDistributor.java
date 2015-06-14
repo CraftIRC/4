@@ -24,7 +24,9 @@
 package org.kitteh.craftirc.endpoint;
 
 import org.kitteh.craftirc.CraftIRC;
+import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.util.shutdownable.WackyWavingInterruptableArmFlailingThreadMan;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -57,8 +59,8 @@ final class MessageDistributor extends Thread {
             timeTrack = System.currentTimeMillis();
             Message message = this.messages.poll();
             if (message != null) {
-                for (Endpoint target : this.endpointManager.getDestinations(message.getSource().getName())) {
-                    target.receiveMessage(message);
+                for (Pair<Link, Endpoint> pair : this.endpointManager.getDestinations(message.getSource().getName())) {
+                    pair.getRight().receiveMessage(message, pair.getLeft());
                 }
             }
             if (this.messages.isEmpty()) {

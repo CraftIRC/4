@@ -26,7 +26,7 @@ package org.kitteh.craftirc.util.shutdownable;
 /**
  * This Shutdownable simply calls {@link Thread#interrupt()} on a target
  * thread.
- *
+ * <p/>
  * Thanks to a compilation error, I am currently overstocked on threads, and
  * I am passing the savings on to you!
  */

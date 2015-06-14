@@ -25,12 +25,12 @@ package org.kitteh.craftirc.endpoint;
 
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
+import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<>();
-    private final Map<String, List<String>> links = new ConcurrentHashMap<>();
     private final MessageDistributor messageDistributor;
 
     /**
@@ -49,16 +48,14 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
      *
      * @param plugin the CraftIRC instance
      * @param endpoints a list of endpoint data to load
-     * @param links a list of link data to load
      */
-    public EndpointManager(CraftIRC plugin, List<Object> endpoints, List<Object> links) {
+    public EndpointManager(CraftIRC plugin, List<Object> endpoints) {
         super(plugin, Endpoint.class);
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
         this.registerType(IRCEndpoint.class);
 
         this.loadList(endpoints);
-        this.loadLinks(links);
     }
 
     /**
@@ -76,15 +73,13 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
      * @param source source Endpoint
      * @return destinations of a message send by the speciified Endpoint
      */
-    Set<Endpoint> getDestinations(String source) {
-        Set<Endpoint> destinations = new HashSet<>();
-        List<String> targets = this.links.get(source);
-        if (targets != null) {
-            for (String target : targets) {
-                Endpoint endpoint = this.endpoints.get(target);
-                if (endpoint != null) {
-                    destinations.add(endpoint);
-                }
+    Set<Pair<Link, Endpoint>> getDestinations(String source) {
+        Set<Pair<Link, Endpoint>> destinations = new HashSet<>();
+        List<Link> links = this.getCraftIRC().getLinkManager().getLinks(source);
+        for (Link link : links) {
+            Endpoint endpoint = this.endpoints.get(link.getTarget());
+            if (endpoint != null) {
+                destinations.add(new Pair<>(link, endpoint));
             }
         }
         return destinations;
@@ -107,62 +102,5 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     @Override
     protected void processInvalid(String reason, Map<Object, Object> data) {
         CraftIRC.log().warning("Encountered invalid Endpoint: " + reason);
-    }
-
-    private void loadLinks(List<Object> list) {
-        int nonMap = 0;
-        int noSource = 0;
-        int noTarget = 0;
-        for (final Object listElement : list) {
-            final Map<Object, Object> linkMap;
-            if ((linkMap = MapGetter.castToMap(listElement)) == null) {
-                nonMap++;
-                continue;
-            }
-            final String source = MapGetter.getString(linkMap, "source");
-            if (source == null) {
-                noSource++;
-                continue;
-            }
-            final String target = MapGetter.getString(linkMap, "target");
-            if (target == null) {
-                noTarget++;
-                continue;
-            }
-            final Object bidirectionalObject = linkMap.get("bidirectional");
-            boolean bidirectional = false;
-            if (bidirectionalObject != null) {
-                if (bidirectionalObject instanceof Boolean && bidirectionalObject == Boolean.TRUE) {
-                    bidirectional = true;
-                } else if (bidirectionalObject instanceof String && ((String) bidirectionalObject).equalsIgnoreCase("true")) {
-                    bidirectional = true;
-                }
-            }
-            this.addLink(source, target);
-            if (bidirectional) {
-                this.addLink(target, source);
-            }
-        }
-        if (nonMap > 0) {
-            CraftIRC.log().warning(String.format("Links list contained %d entries which were not maps", nonMap));
-        }
-        if (noSource > 0) {
-            CraftIRC.log().warning(String.format("Links list contained %d entries without a source specified", noSource));
-        }
-        if (noTarget > 0) {
-            CraftIRC.log().warning(String.format("Links list contained %d entries without a target specified", noTarget));
-        }
-        if (this.links.isEmpty()) {
-            CraftIRC.log().severe("Loaded no links! Nothing will be passed between any Endpoints!");
-        }
-    }
-
-    private void addLink(String source, String target) {
-        List<String> targets = this.links.get(source);
-        if (targets == null) {
-            targets = new LinkedList<>();
-            this.links.put(source, targets);
-        }
-        targets.add(target);
     }
 }

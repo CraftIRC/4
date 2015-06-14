@@ -24,8 +24,8 @@
 package org.kitteh.craftirc.endpoint.filter;
 
 import org.kitteh.craftirc.CraftIRC;
-import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
+import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
@@ -35,19 +35,19 @@ import java.util.Map;
  * This is a filter.
  */
 public abstract class Filter extends Loadable {
-    private Endpoint endpoint;
-    private Endpoint.EndpointFilterLoader loader;
+    private Link link;
+    private Link.LinkFilterLoader loader;
 
     /**
-     * Gets the Endpoint using this Filter instance.
+     * Gets the Link using this Filter instance.
      *
-     * @return the Endpoint in use
+     * @return the Link in use
      */
-    protected Endpoint getEndpoint() {
-        return this.endpoint;
+    protected Link getLink() {
+        return this.link;
     }
 
-    Endpoint.EndpointFilterLoader getLoader() {
+    Link.LinkFilterLoader getLoader() {
         return this.loader;
     }
 
@@ -62,8 +62,8 @@ public abstract class Filter extends Loadable {
     @Override
     protected final void load(CraftIRC plugin, Map<Object, Object> data) throws CraftIRCInvalidConfigException {
         if (data.containsKey(FilterManager.Target.EndpointLoader)) {
-            this.loader = (Endpoint.EndpointFilterLoader) data.get(FilterManager.Target.EndpointLoader);
-            this.endpoint = this.loader.getEndpoint();
+            this.loader = (Link.LinkFilterLoader) data.get(FilterManager.Target.EndpointLoader);
+            this.link = this.loader.getLink();
         }
         this.load(data);
     }

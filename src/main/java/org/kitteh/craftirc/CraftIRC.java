@@ -25,6 +25,7 @@ package org.kitteh.craftirc;
 
 import org.kitteh.craftirc.endpoint.EndpointManager;
 import org.kitteh.craftirc.endpoint.filter.FilterManager;
+import org.kitteh.craftirc.endpoint.link.LinkManager;
 import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCUnableToStartException;
@@ -67,6 +68,7 @@ public final class CraftIRC {
     private BotManager botManager;
     private EndpointManager endpointManager;
     private FilterManager filterManager;
+    private LinkManager linkManager;
     private final Set<Shutdownable> shutdownables = new CopyOnWriteArraySet<>();
 
     public BotManager getBotManager() {
@@ -81,6 +83,10 @@ public final class CraftIRC {
         return this.filterManager;
     }
 
+    public LinkManager getLinkManager() {
+        return this.linkManager;
+    }
+
     /**
      * Starts tracking a feature which can be shut down.
      *
@@ -92,7 +98,7 @@ public final class CraftIRC {
 
     /**
      * Starts up CraftIRC.
-     *
+     * <p/>
      * The {@link Logger} provided to CraftIRC will be utilized for a child
      * logger which will prefix all messages with "[CraftIRC] ".
      *
@@ -154,7 +160,8 @@ public final class CraftIRC {
 
             this.filterManager = new FilterManager(this, repeatableFilterMap);
             this.botManager = new BotManager(this, bots);
-            this.endpointManager = new EndpointManager(this, endpoints, links);
+            this.endpointManager = new EndpointManager(this, endpoints);
+            this.linkManager = new LinkManager(this, links);
         } catch (Exception e) {
             throw new CraftIRCUnableToStartException("Could not start CraftIRC!", e);
         }

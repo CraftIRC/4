@@ -1,7 +1,7 @@
 package org.kitteh.craftirc.util;
 
-import org.kitteh.craftirc.endpoint.Endpoint;
-import org.kitteh.craftirc.endpoint.Message;
+import org.kitteh.craftirc.endpoint.TargetedMessage;
+import org.kitteh.craftirc.endpoint.link.Link;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -9,24 +9,28 @@ import java.lang.reflect.Method;
 /**
  * Stick them with it.
  */
-public abstract class PointyEnd extends Endpoint {
-    private static final Constructor<EndpointFilterLoader> LOADER_CONSTRUCTOR;
+public class PointyEnd extends Link {
+    private static final Constructor<LinkFilterLoader> LOADER_CONSTRUCTOR;
     private static final Method RECEIVE_MESSAGE;
 
     static {
         try {
-            LOADER_CONSTRUCTOR = EndpointFilterLoader.class.getDeclaredConstructor(Endpoint.class);
+            LOADER_CONSTRUCTOR = LinkFilterLoader.class.getDeclaredConstructor(Link.class);
             LOADER_CONSTRUCTOR.setAccessible(true);
-            RECEIVE_MESSAGE = Endpoint.class.getDeclaredMethod("receiveMessage", Message.class);
+            RECEIVE_MESSAGE = Link.class.getDeclaredMethod("filterMessage", TargetedMessage.class);
             RECEIVE_MESSAGE.setAccessible(true);
         } catch (NoSuchMethodException e) {
             throw new AssertionError(e);
         }
     }
 
-    private EndpointFilterLoader loader;
+    private LinkFilterLoader loader;
 
-    public final EndpointFilterLoader getLoader() {
+    public PointyEnd() {
+        super(null, "", "", null);
+    }
+
+    public final LinkFilterLoader getLoader() {
         if (this.loader != null) {
             return loader;
         }
@@ -37,7 +41,7 @@ public abstract class PointyEnd extends Endpoint {
         }
     }
 
-    public void message(Message message) {
+    public void message(TargetedMessage message) {
         try {
             RECEIVE_MESSAGE.invoke(this, message);
         } catch (Exception e) {

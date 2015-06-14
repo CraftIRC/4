@@ -1,33 +1,34 @@
+bots:
+  - host: localhost
+    name: MyInternalBotName
+    nick: CraftIRC
 endpoints:
   - name: Game
     type: minecraft
-    filters:
-      - type: datamapper
-        message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
-      - nobutts
   - name: IRC
     type: irc
     extra:
       bot: MyInternalBotName
-      channel: '#craftirc'
+      channel: "#craftirc"
+links:
+  - source: Game
+    target: IRC
     filters:
-      - type: antihighlight
-        splitter: " "
+      - splitter: " "
+        type: antihighlight
         variable: SENDER_NAME
-      - type: datamapper
-        message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
+      - message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
+        type: datamapper
+      - nobutts
+  - source: IRC
+    target: Game
+    filters:
+      - message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
+        type: datamapper
       - nobutts
 repeatable-filters:
   nobutts:
     type: regex
-    pattern: "butts"
     value: MESSAGE_TEXT
+    pattern: butts
     action: drop
-bots:
-  - name: MyInternalBotName
-    nick: CraftIRC
-    host: localhost
-links:
-  - source: Game
-    target: IRC
-    bidirectional: true

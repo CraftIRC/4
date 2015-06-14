@@ -125,6 +125,10 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         }
     }
 
+    protected CraftIRC getCraftIRC() {
+        return this.plugin;
+    }
+
     private void load(String type, LoadableLoadout loadout, Map<Object, Object> data) {
         Class<?>[] parameterTypes = loadout.getConstructor().getParameterTypes();
         Object[] args = new Object[parameterTypes.length];

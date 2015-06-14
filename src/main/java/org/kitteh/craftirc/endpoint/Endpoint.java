@@ -24,36 +24,18 @@
 package org.kitteh.craftirc.endpoint;
 
 import org.kitteh.craftirc.CraftIRC;
-import org.kitteh.craftirc.endpoint.filter.Filter;
+import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Endpoints are the origin and destination of messages tracked by CraftIRC.
  */
 public abstract class Endpoint extends Loadable {
-    /**
-     * Helper class for loading filters.
-     */
-    public class EndpointFilterLoader {
-        private EndpointFilterLoader() {
-        }
-
-        public Endpoint getEndpoint() {
-            return Endpoint.this;
-        }
-
-        public void addFilter(Filter filter) {
-            Endpoint.this.addFilter(filter);
-        }
-    }
-
     /**
      * Constant defining the message data value "MESSAGE_FORMAT".
      */
@@ -68,7 +50,6 @@ public abstract class Endpoint extends Loadable {
     public static final String SENDER_NAME = "SENDER_NAME";
 
     private String name;
-    private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
     /**
      * Gets the name of this Endpoint.
@@ -77,10 +58,6 @@ public abstract class Endpoint extends Loadable {
      */
     public final String getName() {
         return this.name;
-    }
-
-    private void addFilter(Filter filter) {
-        this.filters.add(filter);
     }
 
     /**
@@ -102,11 +79,6 @@ public abstract class Endpoint extends Loadable {
         this.name = MapGetter.getString(data, "name");
         final Map<Object, Object> extra = MapGetter.getMap(data, "extra");
         this.loadExtra(extra == null ? new HashMap<>() : extra);
-
-        List<Object> filters = MapGetter.getList(data, "filters");
-        if (filters != null) {
-            plugin.getFilterManager().loadList(filters, new EndpointFilterLoader());
-        }
     }
 
     /**
@@ -139,23 +111,18 @@ public abstract class Endpoint extends Loadable {
      * </ol>
      *
      * @param message the message sent by the source
+     * @param link the link over which this message is sent
      */
-    final void receiveMessage(Message message) {
+    final void receiveMessage(Message message, Link link) {
         TargetedMessage targetedMessage = new TargetedMessage(this, message);
         try {
             this.preProcessReceivedMessage(targetedMessage);
         } catch (Throwable thrown) {
             CraftIRC.log().warning("Unable to preprocess a received message", thrown);
         }
-        for (Filter filter : this.filters) {
-            try {
-                filter.processMessage(targetedMessage);
-                if (targetedMessage.isRejected()) {
-                    return;
-                }
-            } catch (Throwable thrown) {
-                CraftIRC.log().warning("Unable to process a received message", thrown);
-            }
+        link.filterMessage(targetedMessage);
+        if (targetedMessage.isRejected()) {
+            return;
         }
         this.receiveMessage(targetedMessage);
     }

@@ -24,10 +24,10 @@
 package org.kitteh.craftirc.endpoint.filter;
 
 import org.kitteh.craftirc.CraftIRC;
-import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.filter.defaults.AntiHighlight;
 import org.kitteh.craftirc.endpoint.filter.defaults.DataMapper;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
+import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
@@ -61,7 +61,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         throw new UnsupportedOperationException("Must provide Endpoint when loading filters!");
     }
 
-    public void loadList(List<Object> list, Endpoint.EndpointFilterLoader endpoint) {
+    public void loadList(List<Object> list, Link.LinkFilterLoader link) {
         for (int i = 0; i < list.size(); i++) {
             Object listElement = list.get(i);
             Map<Object, Object> data;
@@ -73,7 +73,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
                     continue;
                 }
             }
-            data.put(Target.EndpointLoader, endpoint);
+            data.put(Target.EndpointLoader, link);
         }
         super.loadList(list);
     }
@@ -97,7 +97,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
 
     @Override
     protected void processCompleted(Filter loaded) {
-        Endpoint.EndpointFilterLoader loader = loaded.getLoader();
+        Link.LinkFilterLoader loader = loaded.getLoader();
         if (loader != null) {
             loader.addFilter(loaded);
         }

@@ -18,16 +18,13 @@ public class AntiHighlightTest {
     public void meow() {
         try {
             FilterManager registry = new FilterManager(null, null);
-            PointyEnd point = new PointyEnd() {
-                @Override
-                protected void receiveMessage(TargetedMessage message) {
-                    Assert.assertEquals("t`e`s`t", message.getCustomData().get(VAR_KEY));
-                }
-            };
+            PointyEnd point = new PointyEnd();
             List<Object> list = new LinkedList<>();
             list.add(new MapBuilder<>().put("splitter", "`").put("variable", VAR_KEY).put("type", "antihighlight").build());
             registry.loadList(list, point.getLoader());
-            point.message(new Message(null, "Meow", new MapBuilder<String, Object>().put(VAR_KEY, "test").build()));
+            TargetedMessage message = new TargetedMessage(null, new Message(null, "Meow", new MapBuilder<String, Object>().put(VAR_KEY, "test").build()));
+            point.message(message);
+            Assert.assertEquals("t`e`s`t", message.getCustomData().get(VAR_KEY));
         } catch (Exception e) {
             throw new AssertionError(e);
         }
