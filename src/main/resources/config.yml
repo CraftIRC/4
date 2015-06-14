@@ -14,17 +14,17 @@ links:
   - source: Game
     target: IRC
     filters:
-      - splitter: " "
-        type: antihighlight
+      - type: antihighlight
+        splitter: " "
         variable: SENDER_NAME
-      - message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
-        type: datamapper
+      - type: datamapper
+        message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
       - nobutts
   - source: IRC
     target: Game
     filters:
-      - message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
-        type: datamapper
+      - type: datamapper
+        message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
       - nobutts
 repeatable-filters:
   nobutts:
