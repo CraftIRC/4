@@ -8,7 +8,7 @@
     <name>CraftIRC</name>
     <version>4.0.0-SNAPSHOT</version>
 
-    <url>http://kitteh.org/</url>
+    <url>http://kitteh.org/craftirc/</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
