@@ -50,8 +50,8 @@ public class Link {
         }
     }
 
-    private String source;
-    private String target;
+    private final String source;
+    private final String target;
     private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
     public Link(CraftIRC plugin, String source, String target, List<Object> filters) {
