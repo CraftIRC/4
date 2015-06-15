@@ -14,6 +14,7 @@ links:
   - source: Game
     target: IRC
     filters:
+      - color
       - type: antihighlight
         splitter: " "
         variable: SENDER_NAME
@@ -23,12 +24,14 @@ links:
   - source: IRC
     target: Game
     filters:
+      - color
       - type: datamapper
         message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
-      - nobutts
 repeatable-filters:
   nobutts:
     type: regex
     value: MESSAGE_TEXT
     pattern: butts
     action: drop
+  colorize:
+    type: color

@@ -25,6 +25,7 @@ package org.kitteh.craftirc.endpoint.filter;
 
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.filter.defaults.AntiHighlight;
+import org.kitteh.craftirc.endpoint.filter.defaults.Colors;
 import org.kitteh.craftirc.endpoint.filter.defaults.DataMapper;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.endpoint.link.Link;
@@ -51,6 +52,7 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         super(plugin, Filter.class);
         // Register filter types here
         this.registerType(AntiHighlight.class);
+        this.registerType(Colors.class);
         this.registerType(DataMapper.class);
         this.registerType(RegexFilter.class);
         if (repeatables != null) {
