@@ -26,13 +26,16 @@ package org.kitteh.craftirc.irc;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
+import org.kitteh.irc.client.library.AuthType;
 import org.kitteh.irc.client.library.ClientBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -107,6 +110,7 @@ public final class BotManager {
         Integer port = MapGetter.getInt(data, "port");
         String user = MapGetter.getString(data, "user");
         String realname = MapGetter.getString(data, "realname");
+
         Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
         String bindhost = MapGetter.getString(bindMap, "host");
         Integer bindport = MapGetter.getInt(bindMap, "port");
@@ -121,6 +125,24 @@ public final class BotManager {
         }
         botBuilder.bind(bindport != null ? bindport : 0);
         botBuilder.nick(nick != null ? nick : "CraftIRC");
+
+        Map<Object, Object> authMap = MapGetter.getMap(data, "auth");
+        if (authMap != null) {
+            AuthType authType = AuthType.NICKSERV;
+            String authTypeString = MapGetter.getString(authMap, "type");
+            if (authTypeString != null && !authTypeString.equalsIgnoreCase(authType.toString())) {
+                String authTypeStringUpper = authTypeString.toUpperCase();
+                Optional<AuthType> authTypeOptional = Arrays.stream(AuthType.values()).filter(t -> t.name().equals(authTypeStringUpper)).findFirst();
+                if (authTypeOptional.isPresent()) {
+                    authType = authTypeOptional.get();
+                }
+            }
+            String authUser = MapGetter.getString(authMap, "user");
+            String authPass = MapGetter.getString(authMap, "pass");
+            if (authUser != null && authPass != null) {
+                botBuilder.auth(authType, authUser, authPass);
+            }
+        }
 
         this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));
     }
