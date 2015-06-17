@@ -110,6 +110,7 @@ public final class BotManager {
         Integer port = MapGetter.getInt(data, "port");
         String user = MapGetter.getString(data, "user");
         String realname = MapGetter.getString(data, "realname");
+        String password = MapGetter.getString(data, "password");
 
         Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
         String bindhost = MapGetter.getString(bindMap, "host");
@@ -118,6 +119,7 @@ public final class BotManager {
         botBuilder.name(name);
         botBuilder.server(server != null ? server : "localhost");
         botBuilder.server(port != null ? port : 6667);
+        botBuilder.serverPassword(password);
         botBuilder.user(user != null ? user : "CraftIRC");
         botBuilder.realName(realname != null ? realname : "CraftIRC Bot");
         if (bindhost != null) {
