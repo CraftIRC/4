@@ -108,6 +108,7 @@ public final class BotManager {
         String nick = MapGetter.getString(data, "nick");
         String server = MapGetter.getString(data, "host");
         Integer port = MapGetter.getInt(data, "port");
+        Boolean ssl = MapGetter.getBoolean(data, "ssl");
         String user = MapGetter.getString(data, "user");
         String realname = MapGetter.getString(data, "realname");
         String password = MapGetter.getString(data, "password");
@@ -119,6 +120,7 @@ public final class BotManager {
         botBuilder.name(name);
         botBuilder.server(server != null ? server : "localhost");
         botBuilder.server(port != null ? port : 6667);
+        botBuilder.secure(ssl != null ? ssl : false);
         botBuilder.serverPassword(password);
         botBuilder.user(user != null ? user : "CraftIRC");
         botBuilder.realName(realname != null ? realname : "CraftIRC Bot");

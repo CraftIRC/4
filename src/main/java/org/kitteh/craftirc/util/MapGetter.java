@@ -57,6 +57,11 @@ public final class MapGetter {
     }
 
     @Nullable
+    public static Boolean getBoolean(@Nullable Map<Object, Object> map, @Nonnull String key) {
+        return get(map, key, Boolean.class);
+    }
+
+    @Nullable
     public static List<Object> getList(@Nullable Map<Object, Object> map, @Nonnull String key) {
         @SuppressWarnings("unchecked")
         List<Object> list = get(map, key, List.class);
