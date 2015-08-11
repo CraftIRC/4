@@ -26,16 +26,15 @@ package org.kitteh.craftirc.irc;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
-import org.kitteh.irc.client.library.AuthType;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ClientBuilder;
+import org.kitteh.irc.client.library.auth.protocol.NickServ;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -116,12 +115,14 @@ public final class BotManager {
         Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
         String bindhost = MapGetter.getString(bindMap, "host");
         Integer bindport = MapGetter.getInt(bindMap, "port");
-        ClientBuilder botBuilder = new ClientBuilder();
+        ClientBuilder botBuilder = Client.builder();
         botBuilder.name(name);
         botBuilder.server(server != null ? server : "localhost");
         botBuilder.server(port != null ? port : 6667);
         botBuilder.secure(ssl != null ? ssl : false);
-        botBuilder.serverPassword(password);
+        if (password != null) {
+            botBuilder.serverPassword(password);
+        }
         botBuilder.user(user != null ? user : "CraftIRC");
         botBuilder.realName(realname != null ? realname : "CraftIRC Bot");
         if (bindhost != null) {
@@ -132,19 +133,10 @@ public final class BotManager {
 
         Map<Object, Object> authMap = MapGetter.getMap(data, "auth");
         if (authMap != null) {
-            AuthType authType = AuthType.NICKSERV;
-            String authTypeString = MapGetter.getString(authMap, "type");
-            if (authTypeString != null && !authTypeString.equalsIgnoreCase(authType.toString())) {
-                String authTypeStringUpper = authTypeString.toUpperCase();
-                Optional<AuthType> authTypeOptional = Arrays.stream(AuthType.values()).filter(t -> t.name().equals(authTypeStringUpper)).findFirst();
-                if (authTypeOptional.isPresent()) {
-                    authType = authTypeOptional.get();
-                }
-            }
             String authUser = MapGetter.getString(authMap, "user");
             String authPass = MapGetter.getString(authMap, "pass");
             if (authUser != null && authPass != null) {
-                botBuilder.auth(authType, authUser, authPass);
+                botBuilder.after(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
             }
         }
 
