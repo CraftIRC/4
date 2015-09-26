@@ -6,7 +6,7 @@
     <artifactId>craftirc</artifactId>
 
     <name>CraftIRC</name>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.0.2-SNAPSHOT</version>
 
     <url>http://kitteh.org/craftirc/</url>
     <properties>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.kitteh.irc</groupId>
             <artifactId>client-lib</artifactId>
-            <version>0.3.1</version>
+            <version>0.3.4</version>
             <type>jar</type>
             <optional>true</optional>
             <scope>compile</scope>
