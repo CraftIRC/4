@@ -117,8 +117,8 @@ public final class BotManager {
         Integer bindport = MapGetter.getInt(bindMap, "port");
         ClientBuilder botBuilder = Client.builder();
         botBuilder.name(name);
-        botBuilder.server(server != null ? server : "localhost");
-        botBuilder.server(port != null ? port : 6667);
+        botBuilder.serverHost(server != null ? server : "localhost");
+        botBuilder.serverPort(port != null ? port : 6667);
         botBuilder.secure(ssl != null ? ssl : false);
         if (password != null) {
             botBuilder.serverPassword(password);
@@ -126,9 +126,9 @@ public final class BotManager {
         botBuilder.user(user != null ? user : "CraftIRC");
         botBuilder.realName(realname != null ? realname : "CraftIRC Bot");
         if (bindhost != null) {
-            botBuilder.bind(bindhost);
+            botBuilder.bindHost(bindhost);
         }
-        botBuilder.bind(bindport != null ? bindport : 0);
+        botBuilder.bindPort(bindport != null ? bindport : 0);
         botBuilder.nick(nick != null ? nick : "CraftIRC");
 
         Map<Object, Object> authMap = MapGetter.getMap(data, "auth");
@@ -136,7 +136,7 @@ public final class BotManager {
             String authUser = MapGetter.getString(authMap, "user");
             String authPass = MapGetter.getString(authMap, "pass");
             if (authUser != null && authPass != null) {
-                botBuilder.after(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
+                botBuilder.afterBuildConsumer(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
             }
         }
 
