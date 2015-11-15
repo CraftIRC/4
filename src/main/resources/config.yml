@@ -3,15 +3,19 @@ bots:
     name: MyInternalBotName
     nick: CraftIRC
 endpoints:
-  - name: Game
-    type: minecraft
+  - name: Chat
+    type: mc-chat
+  - name: Join
+    type: mc-join
+  - name: Quit
+    type: mc-quit
   - name: IRC
     type: irc
     extra:
       bot: MyInternalBotName
       channel: "#craftirc"
 links:
-  - source: Game
+  - source: Chat
     target: IRC
     filters:
       - color
@@ -22,11 +26,15 @@ links:
         message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
       - nobutts
   - source: IRC
-    target: Game
+    target: Chat
     filters:
       - color
       - type: datamapper
         message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
+  - source: Join
+    target: IRC
+  - source: Quit
+    target: IRC
 repeatable-filters:
   nobutts:
     type: regex
