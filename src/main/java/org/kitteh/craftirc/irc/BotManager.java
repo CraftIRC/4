@@ -156,7 +156,7 @@ public final class BotManager {
             botBuilder.listenInput(input -> CraftIRC.log().info("[IN] " + input));
         }
         if (debugOut != null && debugOut) {
-            botBuilder.listenInput(output -> CraftIRC.log().info("[OUT] " + output));
+            botBuilder.listenOutput(output -> CraftIRC.log().info("[OUT] " + output));
         }
 
         this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));
