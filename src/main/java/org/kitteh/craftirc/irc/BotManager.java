@@ -119,7 +119,7 @@ public final class BotManager {
         botBuilder.name(name);
         botBuilder.serverHost(server != null ? server : "localhost");
         botBuilder.serverPort(port != null ? port : 6667);
-        botBuilder.secure(ssl != null ? ssl : false);
+        botBuilder.secure(ssl != null && ssl);
         if (password != null) {
             botBuilder.serverPassword(password);
         }
@@ -138,6 +138,25 @@ public final class BotManager {
             if (authUser != null && authPass != null) {
                 botBuilder.afterBuildConsumer(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
             }
+        }
+
+        Map<Object, Object> debugMap = MapGetter.getMap(data, "debug-output");
+        Boolean debugEx = false, debugIn = false, debugOut = false;
+        if (debugMap != null) {
+            debugEx = MapGetter.getBoolean(debugMap, "exceptions");
+            debugIn = MapGetter.getBoolean(debugMap, "input");
+            debugOut = MapGetter.getBoolean(debugMap, "output");
+        }
+        if (debugEx != null && debugEx) {
+            botBuilder.listenExceptionRemove();
+        } else {
+            botBuilder.listenException(exception -> CraftIRC.log().warning("Exception on bot " + name, exception));
+        }
+        if (debugIn != null && debugIn) {
+            botBuilder.listenInput(input -> CraftIRC.log().info("[INPUT " + name + "] " + input));
+        }
+        if (debugOut != null && debugOut) {
+            botBuilder.listenInput(input -> CraftIRC.log().info("[INPUT " + name + "] " + input));
         }
 
         this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));

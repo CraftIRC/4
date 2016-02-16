@@ -2,6 +2,10 @@ bots:
   - host: localhost
     name: MyInternalBotName
     nick: CraftIRC
+    debug-output:
+      exceptions: false
+      input: false
+      output: false
 endpoints:
   - name: Chat
     type: mc-chat
