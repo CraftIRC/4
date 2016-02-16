@@ -153,10 +153,10 @@ public final class BotManager {
             botBuilder.listenException(exception -> CraftIRC.log().warning("Exception on bot " + name, exception));
         }
         if (debugIn != null && debugIn) {
-            botBuilder.listenInput(input -> CraftIRC.log().info("[INPUT " + name + "] " + input));
+            botBuilder.listenInput(input -> CraftIRC.log().info("[IN] " + input));
         }
         if (debugOut != null && debugOut) {
-            botBuilder.listenInput(input -> CraftIRC.log().info("[INPUT " + name + "] " + input));
+            botBuilder.listenInput(output -> CraftIRC.log().info("[OUT] " + output));
         }
 
         this.bots.put(name, new IRCBot(this.plugin, name, botBuilder.build()));
