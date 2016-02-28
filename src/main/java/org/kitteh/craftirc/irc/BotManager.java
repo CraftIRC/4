@@ -27,7 +27,6 @@ import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.ClientBuilder;
 import org.kitteh.irc.client.library.auth.protocol.NickServ;
 
 import javax.annotation.Nonnull;
@@ -115,7 +114,7 @@ public final class BotManager {
         Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
         String bindhost = MapGetter.getString(bindMap, "host");
         Integer bindport = MapGetter.getInt(bindMap, "port");
-        ClientBuilder botBuilder = Client.builder();
+        Client.Builder botBuilder = Client.builder();
         botBuilder.name(name);
         botBuilder.serverHost(server != null ? server : "localhost");
         botBuilder.serverPort(port != null ? port : 6667);

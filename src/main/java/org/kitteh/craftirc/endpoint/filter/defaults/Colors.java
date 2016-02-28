@@ -30,7 +30,7 @@ import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.util.WrappedMap;
 import org.kitteh.craftirc.util.loadable.Loadable;
-import org.kitteh.irc.client.library.IRCFormat;
+import org.kitteh.irc.client.library.util.Format;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -44,27 +44,27 @@ import java.util.regex.Pattern;
 @Loadable.Type(name = "color")
 public class Colors extends Filter {
     private enum Matches {
-        BLACK(IRCFormat.BLACK, '0'),
-        DARK_BLUE(IRCFormat.DARK_BLUE, '1'),
-        DARK_GREEN(IRCFormat.DARK_GREEN, '2'),
-        DARK_AQUA(IRCFormat.TEAL, '3'),
-        DARK_RED(IRCFormat.BROWN, '4'),
-        DARK_PURPLE(IRCFormat.PURPLE, '5'),
-        GOLD(IRCFormat.OLIVE, '6'),
-        GRAY(IRCFormat.LIGHT_GRAY, '7'),
-        DARK_GRAY(IRCFormat.DARK_GRAY, '8'),
-        BLUE(IRCFormat.BLUE, '9'),
-        GREEN(IRCFormat.GREEN, 'A'),
-        AQUA(IRCFormat.CYAN, 'B'),
-        RED(IRCFormat.RED, 'C'),
-        LIGHT_PURPLE(IRCFormat.MAGENTA, 'D'),
-        YELLOW(IRCFormat.YELLOW, 'E'),
-        WHITE(IRCFormat.WHITE, 'F');
+        BLACK(Format.BLACK, '0'),
+        DARK_BLUE(Format.DARK_BLUE, '1'),
+        DARK_GREEN(Format.DARK_GREEN, '2'),
+        DARK_AQUA(Format.TEAL, '3'),
+        DARK_RED(Format.BROWN, '4'),
+        DARK_PURPLE(Format.PURPLE, '5'),
+        GOLD(Format.OLIVE, '6'),
+        GRAY(Format.LIGHT_GRAY, '7'),
+        DARK_GRAY(Format.DARK_GRAY, '8'),
+        BLUE(Format.BLUE, '9'),
+        GREEN(Format.GREEN, 'A'),
+        AQUA(Format.CYAN, 'B'),
+        RED(Format.RED, 'C'),
+        LIGHT_PURPLE(Format.MAGENTA, 'D'),
+        YELLOW(Format.YELLOW, 'E'),
+        WHITE(Format.WHITE, 'F');
 
-        private IRCFormat irc;
+        private Format irc;
         private char mc;
 
-        Matches(IRCFormat irc, char mc) {
+        Matches(Format irc, char mc) {
             this.irc = irc;
             this.mc = mc;
         }
@@ -81,7 +81,7 @@ public class Colors extends Filter {
                 IRC_MAP.put(matches.irc.getColorChar(), "\u00A7" + matches.mc);
                 MC_MAP.put(matches.mc, matches.irc.toString());
             }
-            IRC_PATTERN = Pattern.compile(IRCFormat.COLOR_CHAR + "([0-9]{1,2})(?:,[0-9]{1,2})?");
+            IRC_PATTERN = Pattern.compile(Format.COLOR_CHAR + "([0-9]{1,2})(?:,[0-9]{1,2})?");
             MC_PATTERN = Pattern.compile("\u00A7([a-z0-9])", Pattern.CASE_INSENSITIVE);
         }
 
@@ -128,21 +128,21 @@ public class Colors extends Filter {
             if (s <= 'F') {
                 builder.append(Matches.getIRCByMC(s));
             } else if (s == 'R') {
-                builder.append(IRCFormat.RESET);
+                builder.append(Format.RESET);
             }
         }
         if (currentIndex < input.length()) {
             builder.append(input.substring(currentIndex));
         }
-        return builder.append(IRCFormat.RESET).toString();
+        return builder.append(Format.RESET).toString();
     }
 
     private String toMC(String input) {
         Matcher matcher = Matches.IRC_PATTERN.matcher(input);
-        input = input.replace(IRCFormat.BOLD.toString(), "");
-        input = input.replace(IRCFormat.UNDERLINE.toString(), "");
-        input = input.replace(IRCFormat.REVERSE.toString(), "");
-        input = input.replace(IRCFormat.RESET.toString(), "\u00A7r");
+        input = input.replace(Format.BOLD.toString(), "");
+        input = input.replace(Format.UNDERLINE.toString(), "");
+        input = input.replace(Format.REVERSE.toString(), "");
+        input = input.replace(Format.RESET.toString(), "\u00A7r");
         int currentIndex = 0;
         StringBuilder builder = new StringBuilder();
         while (matcher.find()) {
