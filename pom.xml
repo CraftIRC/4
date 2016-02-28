@@ -6,7 +6,7 @@
     <artifactId>craftirc</artifactId>
 
     <name>CraftIRC</name>
-    <version>4.0.7</version>
+    <version>4.0.8-SNAPSHOT</version>
 
     <url>http://kitteh.org/craftirc/</url>
     <properties>
