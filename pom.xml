@@ -14,18 +14,11 @@
     </properties>
     <packaging>jar</packaging>
 
-    <repositories>
-        <repository>
-            <id>kitteh-repo</id>
-            <url>http://repo.kitteh.org/content/groups/public</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.kitteh.irc</groupId>
             <artifactId>client-lib</artifactId>
-            <version>0.4.0</version>
+            <version>1.0.0</version>
             <type>jar</type>
             <optional>true</optional>
             <scope>compile</scope>

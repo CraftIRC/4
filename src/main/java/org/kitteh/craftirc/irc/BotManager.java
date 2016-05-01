@@ -25,9 +25,8 @@ package org.kitteh.craftirc.irc;
 
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.util.MapGetter;
-import org.kitteh.craftirc.util.shutdownable.Shutdownable;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.auth.protocol.NickServ;
+import org.kitteh.irc.client.library.feature.auth.NickServ;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,12 +51,7 @@ public final class BotManager {
      */
     public BotManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> bots) {
         this.plugin = plugin;
-        this.plugin.trackShutdownable(new Shutdownable() {
-            @Override
-            public void shutdown() {
-                BotManager.this.bots.values().forEach(IRCBot::shutdown);
-            }
-        });
+        this.plugin.trackShutdownable(() -> BotManager.this.bots.values().forEach(IRCBot::shutdown));
         this.loadBots(bots);
     }
 
@@ -147,9 +141,9 @@ public final class BotManager {
             debugOut = MapGetter.getBoolean(debugMap, "output");
         }
         if (debugEx != null && debugEx) {
-            botBuilder.listenExceptionRemove();
-        } else {
             botBuilder.listenException(exception -> CraftIRC.log().warning("Exception on bot " + name, exception));
+        } else {
+            botBuilder.listenException(null);
         }
         if (debugIn != null && debugIn) {
             botBuilder.listenInput(input -> CraftIRC.log().info("[IN] " + input));
