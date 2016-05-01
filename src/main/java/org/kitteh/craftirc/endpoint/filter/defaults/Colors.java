@@ -23,7 +23,6 @@
  */
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
-import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
