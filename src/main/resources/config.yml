@@ -33,8 +33,13 @@ links:
     target: Chat
     filters:
       - colorize
+      - type : regex
+        value: IRC_PREFIX
+        action: replace
+        pattern: "@"
+        replacement: "[BOSS]"
       - type: datamapper
-        message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
+        message: "[IRC] <%IRC_PREFIXES%%SENDER_NAME%> %MESSAGE_TEXT%"
   - source: Join
     target: IRC
   - source: Quit
