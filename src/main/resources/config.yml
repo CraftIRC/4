@@ -22,7 +22,7 @@ links:
   - source: Chat
     target: IRC
     filters:
-      - color
+      - colorize
       - type: antihighlight
         splitter: " "
         variable: SENDER_NAME
@@ -32,7 +32,7 @@ links:
   - source: IRC
     target: Chat
     filters:
-      - color
+      - colorize
       - type: datamapper
         message: "[IRC] <%SENDER_NAME%> %MESSAGE_TEXT%"
   - source: Join
