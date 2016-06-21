@@ -123,7 +123,7 @@ public final class IRCBot {
         Optional<Set<ChannelUserMode>> userModes = channel.getUserModes(sender);
         if (userModes.isPresent()) {
             for (ChannelUserMode mode : userModes.get()) {
-                modes += mode;
+                modes += mode.getNickPrefix();
             }
         }
         data.put(IRCEndpoint.IRC_PREFIX, modes.isEmpty() ? "" : modes.charAt(0));
