@@ -57,6 +57,8 @@ public class IRCEndpoint extends Endpoint {
 
     public static final String IRC_CHANNEL = "IRC_CHANNEL";
     public static final String IRC_MASK = "IRC_MASK";
+    public static final String IRC_PREFIX = "IRC_PREFIX";
+    public static final String IRC_PREFIXES = "IRC_PREFIXES";
     public static final String IRC_NICK = "IRC_NICK";
     public static final String IRC_MESSAGE_TYPE = "IRC_MESSAGE_TYPE";
 

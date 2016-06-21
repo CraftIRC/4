@@ -29,6 +29,7 @@ import org.kitteh.craftirc.endpoint.Message;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -38,6 +39,7 @@ import org.kitteh.irc.lib.net.engio.mbassy.listener.Handler;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -117,6 +119,15 @@ public final class IRCBot {
         data.put(IRCEndpoint.IRC_CHANNEL, channel.getName());
         data.put(IRCEndpoint.IRC_MASK, sender.getName());
         data.put(IRCEndpoint.IRC_MESSAGE_TYPE, messageType);
+        String modes = "";
+        Optional<Set<ChannelUserMode>> userModes = channel.getUserModes(sender);
+        if (userModes.isPresent()) {
+            for (ChannelUserMode mode : userModes.get()) {
+                modes += mode;
+            }
+        }
+        data.put(IRCEndpoint.IRC_PREFIX, modes.isEmpty() ? "" : modes.charAt(0));
+        data.put(IRCEndpoint.IRC_PREFIXES, modes);
         data.put(IRCEndpoint.IRC_NICK, sender.getNick());
         data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
         data.put(Endpoint.MESSAGE_TEXT, message);
