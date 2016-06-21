@@ -46,6 +46,7 @@ public class RegexFilter extends Filter {
     public enum Action {
         ALLOW,
         DROP,
+        REPLACE,
         STORE;
 
         private static final Map<String, Action> nameMap = new HashMap<>();
@@ -80,7 +81,6 @@ public class RegexFilter extends Filter {
         static {
             for (Match match : Match.values()) {
                 nameMap.put(match.name(), match);
-
             }
         }
 
@@ -97,6 +97,7 @@ public class RegexFilter extends Filter {
     private Action action;
     private Match match;
     private Pattern pattern;
+    private String replacement;
     @Load
     private String value;
     private final List<String> namedGroups = new LinkedList<>();
@@ -116,6 +117,11 @@ public class RegexFilter extends Filter {
             this.match = Match.PARTIAL;
         }
         switch (this.action) {
+            case REPLACE:
+                if ((this.replacement = MapGetter.getString(data, "replacement")) == null) {
+                    throw new CraftIRCInvalidConfigException("Regex pattern replace action requires 'replacement' to be set");
+                }
+                break;
             case STORE:
                 Matcher namedGroupMatcher = NAMED_GROUP.matcher(pattern);
                 while (namedGroupMatcher.find()) {
@@ -153,6 +159,11 @@ public class RegexFilter extends Filter {
             case DROP:
                 if (matches) {
                     message.reject();
+                }
+                break;
+            case REPLACE:
+                if (matches) {
+                    message.getCustomData().put(this.value, matcher.replaceAll(this.replacement));
                 }
                 break;
             case STORE:
