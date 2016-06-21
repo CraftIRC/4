@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  */
 @Loadable.Type(name = "datamapper")
 public class DataMapper extends Filter {
-    private static final Pattern PERCENT_VARIABLE = Pattern.compile("%([^ \\n]+)%");
+    private static final Pattern PERCENT_VARIABLE = Pattern.compile("%([^ %\\n]+)%");
     private String format;
     @Load
     private String message;
