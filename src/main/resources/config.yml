@@ -39,7 +39,7 @@ links:
         pattern: "@"
         replacement: "[BOSS]"
       - type: datamapper
-        message: "[IRC] <%IRC_PREFIXES%%SENDER_NAME%> %MESSAGE_TEXT%"
+        message: "[IRC] <%IRC_PREFIX%%SENDER_NAME%> %MESSAGE_TEXT%"
   - source: Join
     target: IRC
   - source: Quit
