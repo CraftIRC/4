@@ -29,7 +29,7 @@ import org.kitteh.craftirc.endpoint.Message;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -120,7 +121,7 @@ public final class IRCBot {
         data.put(IRCEndpoint.IRC_MASK, sender.getName());
         data.put(IRCEndpoint.IRC_MESSAGE_TYPE, messageType);
         String modes = "";
-        Optional<Set<ChannelUserMode>> userModes = channel.getUserModes(sender);
+        Optional<SortedSet<ChannelUserMode>> userModes = channel.getUserModes(sender);
         if (userModes.isPresent()) {
             for (ChannelUserMode mode : userModes.get()) {
                 modes += mode.getNickPrefix();
