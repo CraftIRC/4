@@ -4,4 +4,4 @@ jdk:
 sudo: false
 notifications:
   email: false
-script: "if [ ${TRAVIS_PULL_REQUEST} = 'true' ]; then mvn test -B; else mvn deploy --settings .travis_settings.xml; fi"
+script: "if [ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'master' ]; then mvn deploy --settings .travis_settings.xml; else mvn test -B; fi"
