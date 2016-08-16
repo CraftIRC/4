@@ -23,15 +23,13 @@
  */
 package org.kitteh.craftirc.endpoint;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.link.Link;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Endpoints are the origin and destination of messages tracked by CraftIRC.
@@ -72,15 +70,17 @@ public abstract class Endpoint extends Loadable {
      *
      * @param data the 'extra' section of the configuration
      */
-    protected void loadExtra(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void loadExtra(@Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
         // By default, nothing extra to load
     }
 
     @Override
-    protected final void load(@Nonnull CraftIRC plugin, @Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        this.name = MapGetter.getString(data, "name");
-        final Map<Object, Object> extra = MapGetter.getMap(data, "extra");
-        this.loadExtra(extra == null ? new HashMap<>() : extra);
+    protected final void load(@Nonnull CraftIRC plugin, @Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
+        this.name = data.getNode("name").getString();
+        final ConfigurationNode extra = data.getNode("extra");
+        if (!extra.isVirtual()) {
+            this.loadExtra(extra);
+        }
     }
 
     /**

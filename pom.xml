@@ -24,9 +24,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.17</version>
+            <groupId>ninja.leaping.configurate</groupId>
+            <artifactId>configurate-yaml</artifactId>
+            <version>3.1.1</version>
             <type>jar</type>
             <optional>true</optional>
             <scope>compile</scope>

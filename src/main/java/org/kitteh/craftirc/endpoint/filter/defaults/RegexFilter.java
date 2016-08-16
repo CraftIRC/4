@@ -23,10 +23,10 @@
  */
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Load;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
@@ -103,22 +103,22 @@ public class RegexFilter extends Filter {
     private final List<String> namedGroups = new LinkedList<>();
 
     @Override
-    protected void load(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void load(@Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
         final String pattern;
-        if ((pattern = MapGetter.getString(data, "pattern")) == null) {
+        if ((pattern = data.getNode("pattern").getString()) == null) {
             throw new CraftIRCInvalidConfigException("Regex pattern requires a 'pattern' defined");
         }
         this.pattern = Pattern.compile(pattern);
-        if ((this.action = Action.getByName(MapGetter.getString(data, "action"))) == null) {
+        if ((this.action = Action.getByName(data.getNode("action").getString())) == null) {
             throw new CraftIRCInvalidConfigException("Regex pattern requires an 'action' defined. Valid action types: " + Action.names);
         }
-        this.match = Match.getByName(MapGetter.getString(data, "match"));
+        this.match = Match.getByName(data.getNode("match").getString());
         if (this.match == null) {
             this.match = Match.PARTIAL;
         }
         switch (this.action) {
             case REPLACE:
-                if ((this.replacement = MapGetter.getString(data, "replacement")) == null) {
+                if ((this.replacement = data.getNode("replacement").getString()) == null) {
                     throw new CraftIRCInvalidConfigException("Regex pattern replace action requires 'replacement' to be set");
                 }
                 break;

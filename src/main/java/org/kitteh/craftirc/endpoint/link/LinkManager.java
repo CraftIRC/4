@@ -23,11 +23,13 @@
  */
 package org.kitteh.craftirc.endpoint.link;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
-import org.kitteh.craftirc.util.MapGetter;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,27 +44,26 @@ public final class LinkManager {
      * @param plugin the CraftIRC instance
      * @param links a list of link data to load
      */
-    public LinkManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> links) {
+    public LinkManager(@Nonnull CraftIRC plugin, @Nonnull List<? extends ConfigurationNode> links) {
         int nonMap = 0;
         int noSource = 0;
         int noTarget = 0;
-        for (final Object listElement : links) {
-            final Map<Object, Object> linkMap;
-            if ((linkMap = MapGetter.castToMap(listElement)) == null) {
+        for (final ConfigurationNode node : links) {
+            if (!node.hasMapChildren()) {
                 nonMap++;
                 continue;
             }
-            final String source = MapGetter.getString(linkMap, "source");
+            final String source = node.getNode("source").getString();
             if (source == null) {
                 noSource++;
                 continue;
             }
-            final String target = MapGetter.getString(linkMap, "target");
+            final String target = node.getNode("target").getString();
             if (target == null) {
                 noTarget++;
                 continue;
             }
-            List<Object> filters = MapGetter.getList(linkMap, "filters");
+            List<? extends ConfigurationNode> filters = node.getNode("filters").getChildrenList();
             this.addLink(new Link(plugin, source, target, filters));
         }
         if (nonMap > 0) {

@@ -23,13 +23,13 @@
  */
 package org.kitteh.craftirc.util.loadable;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Map;
 
 /**
  * Represents an object that can be loaded from config.
@@ -54,5 +54,5 @@ public abstract class Loadable {
      * @param data data to load
      * @throws CraftIRCInvalidConfigException if invalid
      */
-    protected abstract void load(@Nonnull CraftIRC plugin, @Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException;
+    protected abstract void load(@Nonnull CraftIRC plugin, @Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException;
 }

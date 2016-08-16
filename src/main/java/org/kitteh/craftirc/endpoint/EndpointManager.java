@@ -23,6 +23,7 @@
  */
 package org.kitteh.craftirc.endpoint;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.defaults.IRCEndpoint;
 import org.kitteh.craftirc.endpoint.link.Link;
@@ -50,7 +51,7 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
      * @param plugin the CraftIRC instance
      * @param endpoints a list of endpoint data to load
      */
-    public EndpointManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> endpoints) {
+    public EndpointManager(@Nonnull CraftIRC plugin, @Nonnull List<? extends ConfigurationNode> endpoints) {
         super(plugin, Endpoint.class);
         this.messageDistributor = new MessageDistributor(this, plugin);
         // We register ours first.
@@ -97,12 +98,12 @@ public final class EndpointManager extends LoadableTypeManager<Endpoint> {
     }
 
     @Override
-    protected void processFailedLoad(@Nonnull Exception exception, @Nonnull Map<Object, Object> data) {
+    protected void processFailedLoad(@Nonnull Exception exception, @Nonnull ConfigurationNode data) {
         CraftIRC.log().warning("Failed to load Endpoint", exception);
     }
 
     @Override
-    protected void processInvalid(@Nonnull String reason, @Nonnull Map<Object, Object> data) {
+    protected void processInvalid(@Nonnull String reason, @Nonnull ConfigurationNode data) {
         CraftIRC.log().warning("Encountered invalid Endpoint: " + reason);
     }
 }

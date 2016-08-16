@@ -1,5 +1,7 @@
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.SimpleConfigurationNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.craftirc.endpoint.Message;
@@ -17,10 +19,14 @@ public class AntiHighlightTest {
     @Test
     public void meow() {
         try {
-            FilterManager registry = new FilterManager(null, null);
+            FilterManager registry = new FilterManager(null, SimpleConfigurationNode.root());
             PointyEnd point = new PointyEnd();
-            List<Object> list = new LinkedList<>();
-            list.add(new MapBuilder<>().put("splitter", "`").put("variable", VAR_KEY).put("type", "antihighlight").build());
+            List<ConfigurationNode> list = new LinkedList<>();
+            ConfigurationNode node = SimpleConfigurationNode.root();
+            node.getNode("splitter").setValue("`");
+            node.getNode("variable").setValue(VAR_KEY);
+            node.getNode("type").setValue("antihighlight");
+            list.add(node);
             registry.loadList(list, point.getLoader());
             TargetedMessage message = new TargetedMessage(null, new Message(null, "Meow", new MapBuilder<String, Object>().put(VAR_KEY, "test").build()));
             point.message(message);

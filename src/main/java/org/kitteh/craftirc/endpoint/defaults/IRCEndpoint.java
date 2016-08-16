@@ -23,16 +23,15 @@
  */
 package org.kitteh.craftirc.endpoint.defaults;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.Endpoint;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.irc.IRCBot;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.Loadable;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 /**
  * The standard {@link Endpoint} for IRC bots.
@@ -76,8 +75,8 @@ public class IRCEndpoint extends Endpoint {
     }
 
     @Override
-    protected void loadExtra(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        final String botName = MapGetter.getString(data, "bot");
+    protected void loadExtra(@Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
+        final String botName = data.getNode("bot").getString();
         if (botName == null) {
             throw new CraftIRCInvalidConfigException("No bot defined");
         }
@@ -85,7 +84,7 @@ public class IRCEndpoint extends Endpoint {
         if (this.bot == null) {
             throw new CraftIRCInvalidConfigException("No bot defined with name '" + botName + "'");
         }
-        String channelName = MapGetter.getString(data, "channel");
+        String channelName = data.getNode("channel").getString();
         if (channelName == null) {
             throw new CraftIRCInvalidConfigException("No channel defined");
         }

@@ -23,32 +23,27 @@
  */
 package org.kitteh.craftirc;
 
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 import org.kitteh.craftirc.endpoint.EndpointManager;
 import org.kitteh.craftirc.endpoint.filter.FilterManager;
 import org.kitteh.craftirc.endpoint.link.LinkManager;
-import org.kitteh.craftirc.exceptions.CraftIRCFoundTabsException;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
 import org.kitteh.craftirc.exceptions.CraftIRCUnableToStartException;
 import org.kitteh.craftirc.exceptions.CraftIRCWillLeakTearsException;
 import org.kitteh.craftirc.irc.BotManager;
 import org.kitteh.craftirc.util.Logger;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.shutdownable.Shutdownable;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.Nonnull;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -122,49 +117,34 @@ public final class CraftIRC {
                 this.saveDefaultConfig(dataFolder);
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(configFile));
+            YAMLConfigurationLoader yamlConfigurationLoader = YAMLConfigurationLoader.builder().setPath(configFile.toPath()).build();
+            ConfigurationNode root = yamlConfigurationLoader.load();
 
-            StringBuilder builder = new StringBuilder();
-            int lineNumber = 1;
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains("\t")) {
-                    throw new CraftIRCFoundTabsException(lineNumber, line);
-                }
-                builder.append(line).append('\n');
-                lineNumber++;
+            if (root.isVirtual()) {
+                throw new CraftIRCInvalidConfigException("Config doesn't appear valid. Would advise starting from scratch.");
             }
 
-            DumperOptions options = new DumperOptions();
-            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-            Yaml yaml = new Yaml(options);
+            ConfigurationNode repeatableFilters = root.getNode("repeatable-filters");
 
-            String configString = builder.toString();
-            Object yamlBase = yaml.load(configString);
-
-            Map<Object, Object> config = MapGetter.castToMap(yamlBase);
-            if (config == null) {
-                throw new CraftIRCInvalidConfigException("Config doesn't even start with mappings. Would advise starting from scratch.");
-            }
-
-            Map<Object, Object> repeatableFilterMap = MapGetter.getMap(config, "repeatable-filters");
-
-            List<Object> bots = MapGetter.getList(config, "bots");
-            if (bots == null) {
+            ConfigurationNode botsNode = root.getNode("bots");
+            List<? extends ConfigurationNode> bots;
+            if (botsNode.isVirtual() || (bots = botsNode.getChildrenList()).isEmpty()) {
                 throw new CraftIRCInvalidConfigException("No bots defined!");
             }
 
-            List<Object> endpoints = MapGetter.getList(config, "endpoints");
-            if (endpoints == null) {
+            ConfigurationNode endpointsNode = root.getNode("endpoints");
+            List<? extends ConfigurationNode> endpoints;
+            if (endpointsNode.isVirtual() || (endpoints = endpointsNode.getChildrenList()).isEmpty()) {
                 throw new CraftIRCInvalidConfigException("No endpoints defined! Would advise starting from scratch.");
             }
 
-            List<Object> links = MapGetter.getList(config, "links");
-            if (links == null) {
+            ConfigurationNode linksNode = root.getNode("links");
+            List<? extends ConfigurationNode> links;
+            if (linksNode.isVirtual() || (links = linksNode.getChildrenList()).isEmpty()) {
                 throw new CraftIRCInvalidConfigException("No links defined! How can your endpoints be useful?");
             }
 
-            this.filterManager = new FilterManager(this, repeatableFilterMap);
+            this.filterManager = new FilterManager(this, repeatableFilters);
             this.botManager = new BotManager(this, bots);
             this.endpointManager = new EndpointManager(this, endpoints);
             this.linkManager = new LinkManager(this, links);

@@ -23,17 +23,17 @@
  */
 package org.kitteh.craftirc.endpoint.filter;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.filter.defaults.AntiHighlight;
 import org.kitteh.craftirc.endpoint.filter.defaults.Colors;
 import org.kitteh.craftirc.endpoint.filter.defaults.DataMapper;
 import org.kitteh.craftirc.endpoint.filter.defaults.RegexFilter;
 import org.kitteh.craftirc.endpoint.link.Link;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.craftirc.util.loadable.LoadableTypeManager;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,56 +46,49 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
         EndpointLoader
     }
 
-    private final Map<String, Map<Object, Object>> repeatableObjects = new ConcurrentHashMap<>();
+    private final Map<String, ConfigurationNode> repeatableObjects = new ConcurrentHashMap<>();
 
-    public FilterManager(@Nonnull CraftIRC plugin, @Nullable Map<Object, Object> repeatables) {
+    public FilterManager(@Nonnull CraftIRC plugin, @Nonnull ConfigurationNode repeatables) {
         super(plugin, Filter.class);
         // Register filter types here
         this.registerType(AntiHighlight.class);
         this.registerType(Colors.class);
         this.registerType(DataMapper.class);
         this.registerType(RegexFilter.class);
-        if (repeatables != null) {
+        if (!repeatables.isVirtual() && repeatables.hasMapChildren()) {
             this.loadRepeatables(repeatables);
         }
     }
 
     @Override
-    protected void loadList(@Nonnull List<Object> list) {
+    protected void loadList(@Nonnull List<? extends ConfigurationNode> list) {
         throw new UnsupportedOperationException("Must provide Endpoint when loading filters!");
     }
 
-    public void loadList(@Nonnull List<Object> list, @Nonnull Link.LinkFilterLoader link) {
-        for (int i = 0; i < list.size(); i++) {
-            Object listElement = list.get(i);
-            Map<Object, Object> data;
-            if ((data = MapGetter.castToMap(listElement)) == null) {
-                if (listElement instanceof String && this.repeatableObjects.containsKey(listElement)) {
-                    data = this.repeatableObjects.get(listElement);
-                    list.set(i, data);
+    public void loadList(@Nonnull List<? extends ConfigurationNode> list, @Nonnull Link.LinkFilterLoader link) {
+        List<ConfigurationNode> updatedList = new ArrayList<>(list);
+        for (int i = 0; i < updatedList.size(); i++) {
+            ConfigurationNode node = updatedList.get(i);
+            if (!node.hasMapChildren()) {
+                if (this.repeatableObjects.containsKey(node.getString())) {
+                    node = this.repeatableObjects.get(node.getString());
+                    updatedList.set(i, node);
                 } else {
                     continue;
                 }
             }
-            data.put(Target.EndpointLoader, link);
+            node.getNode(Target.EndpointLoader).setValue(link);
         }
-        super.loadList(list);
+        super.loadList(updatedList);
     }
 
-    private void loadRepeatables(@Nonnull Map<Object, Object> repeatables) {
-        for (Map.Entry entry : repeatables.entrySet()) {
+    private void loadRepeatables(@Nonnull ConfigurationNode repeatables) {
+        for (Map.Entry<Object, ? extends ConfigurationNode> entry : repeatables.getChildrenMap().entrySet()) {
             if (!(entry.getKey() instanceof String)) {
                 // TODO log
                 continue;
             }
-            String name = (String) entry.getKey();
-            if (!(entry.getValue() instanceof Map)) {
-                // TODO log
-                continue;
-            }
-            @SuppressWarnings("unchecked")
-            Map<Object, Object> map = (Map<Object, Object>) entry.getValue();
-            this.repeatableObjects.put(name, map);
+            this.repeatableObjects.put((String) entry.getKey(), entry.getValue());
         }
     }
 
@@ -108,12 +101,12 @@ public final class FilterManager extends LoadableTypeManager<Filter> {
     }
 
     @Override
-    protected void processFailedLoad(@Nonnull Exception exception, @Nonnull Map<Object, Object> data) {
+    protected void processFailedLoad(@Nonnull Exception exception, @Nonnull ConfigurationNode data) {
         CraftIRC.log().warning("Failed to load Filter", exception);
     }
 
     @Override
-    protected void processInvalid(@Nonnull String reason, @Nonnull Map<Object, Object> data) {
+    protected void processInvalid(@Nonnull String reason, @Nonnull ConfigurationNode data) {
         CraftIRC.log().warning("Encountered invalid Filter: " + reason);
     }
 }

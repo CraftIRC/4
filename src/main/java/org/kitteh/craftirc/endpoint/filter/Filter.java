@@ -23,6 +23,7 @@
  */
 package org.kitteh.craftirc.endpoint.filter;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.link.Link;
@@ -31,7 +32,6 @@ import org.kitteh.craftirc.util.loadable.Loadable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Map;
 
 /**
  * This is a filter.
@@ -64,9 +64,9 @@ public abstract class Filter extends Loadable {
     public abstract void processMessage(@Nonnull TargetedMessage message);
 
     @Override
-    protected final void load(@Nonnull CraftIRC plugin, @Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
-        if (data.containsKey(FilterManager.Target.EndpointLoader)) {
-            this.loader = (Link.LinkFilterLoader) data.get(FilterManager.Target.EndpointLoader);
+    protected final void load(@Nonnull CraftIRC plugin, @Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
+        if (!data.getNode(FilterManager.Target.EndpointLoader).isVirtual()) {
+            this.loader = (Link.LinkFilterLoader) data.getNode(FilterManager.Target.EndpointLoader).getValue();
             this.link = this.loader.getLink();
         }
         this.load(data);
@@ -78,7 +78,7 @@ public abstract class Filter extends Loadable {
      * @param data information to load
      * @throws CraftIRCInvalidConfigException
      */
-    protected void load(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void load(@Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
 
     }
 }

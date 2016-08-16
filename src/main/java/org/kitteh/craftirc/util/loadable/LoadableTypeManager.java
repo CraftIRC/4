@@ -23,9 +23,9 @@
  */
 package org.kitteh.craftirc.util.loadable;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -98,7 +98,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
     private final Map<Class<?>, ArgumentProvider<?>> argumentProviders = new ConcurrentHashMap<>();
     private final Map<String, LoadableLoadout> types = new ConcurrentHashMap<>();
     private final CraftIRC plugin;
-    private final Map<String, List<Map<Object, Object>>> unRegistered = new ConcurrentHashMap<>();
+    private final Map<String, List<ConfigurationNode>> unRegistered = new ConcurrentHashMap<>();
     private final Class<Type> clazz;
 
     protected LoadableTypeManager(@Nonnull CraftIRC plugin, @Nonnull Class<Type> clazz) {
@@ -106,28 +106,24 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         this.plugin = plugin;
     }
 
-    protected void loadList(@Nonnull List<Object> list) {
-        for (final Object listElement : list) {
-            final Map<Object, Object> data;
-            if ((data = MapGetter.castToMap(listElement)) == null) {
+    protected void loadList(@Nonnull List<? extends ConfigurationNode> list) {
+        for (final ConfigurationNode node : list) {
+            if (node.getNode("type").isVirtual()) {
+                this.processInvalid("No type set", node);
                 continue;
             }
-            final String type;
-            if ((type = MapGetter.getString(data, "type")) == null) {
-                this.processInvalid("No type set", data);
-                continue;
-            }
+            final String type = node.getNode("type").getString();
             final LoadableLoadout loadout = this.types.get(type);
             if (loadout == null) {
-                List<Map<Object, Object>> unregged = this.unRegistered.get(type);
+                List<ConfigurationNode> unregged = this.unRegistered.get(type);
                 if (unregged == null) {
                     unregged = new LinkedList<>();
                     this.unRegistered.put(type, unregged);
                 }
-                unregged.add(data);
+                unregged.add(node);
                 continue;
             }
-            this.load(type, loadout, data);
+            this.load(type, loadout, node);
         }
     }
 
@@ -136,7 +132,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         return this.plugin;
     }
 
-    private void load(@Nonnull String type, @Nonnull LoadableLoadout loadout, @Nonnull Map<Object, Object> data) {
+    private void load(@Nonnull String type, @Nonnull LoadableLoadout loadout, @Nonnull ConfigurationNode data) {
         Class<?>[] parameterTypes = loadout.getConstructor().getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < args.length; i++) {
@@ -150,18 +146,36 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
         try {
             loaded = loadout.getConstructor().newInstance(args);
             for (LoadableField field : loadout.getFields()) {
-                Object o = MapGetter.get(data, field.getName(), field.getField().getType());
-                if (field.isRequired() && o == null) {
+                ConfigurationNode node = data.getNode(field.getName());
+                if (!node.isVirtual()) {
+                    field.getField().set(loaded, this.getByType(node, field.getField().getType()));
+                } else if (field.isRequired()) {
                     throw new CraftIRCInvalidConfigException(String.format("Missing required field '%s' for type '%s'", field.getName(), type));
                 }
-                field.getField().set(loaded, o);
             }
             loaded.load(this.plugin, data);
             this.processCompleted(loaded);
         } catch (Exception e) {
             this.processFailedLoad(e, data);
         }
+    }
 
+    private Object getByType(ConfigurationNode node, Class<?> type) throws CraftIRCInvalidConfigException {
+        if (type == String.class) {
+            return node.getString();
+        } else if (type == Boolean.class) {
+            return node.getBoolean();
+        } else if (type == Double.class) {
+            return node.getDouble();
+        } else if (type == Float.class) {
+            return node.getFloat();
+        } else if (type == Integer.class) {
+            return node.getInt();
+        } else if (type == Long.class) {
+            return node.getLong();
+        } else {
+            throw new CraftIRCInvalidConfigException(String.format("Field '%s' expected an unsupported type", type));
+        }
     }
 
     /**
@@ -226,7 +240,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
 
         this.types.put(name, loadout);
         if (this.unRegistered.containsKey(name)) {
-            for (final Map<Object, Object> data : this.unRegistered.get(name)) {
+            for (final ConfigurationNode data : this.unRegistered.get(name)) {
                 this.load(name, loadout, data);
             }
         }
@@ -252,7 +266,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
 
     protected abstract void processCompleted(@Nonnull Type loaded) throws CraftIRCInvalidConfigException;
 
-    protected abstract void processFailedLoad(@Nonnull Exception exception, @Nonnull Map<Object, Object> data);
+    protected abstract void processFailedLoad(@Nonnull Exception exception, @Nonnull ConfigurationNode data);
 
-    protected abstract void processInvalid(@Nonnull String reason, @Nonnull Map<Object, Object> data);
+    protected abstract void processInvalid(@Nonnull String reason, @Nonnull ConfigurationNode data);
 }

@@ -23,8 +23,8 @@
  */
 package org.kitteh.craftirc.irc;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
-import org.kitteh.craftirc.util.MapGetter;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.auth.NickServ;
 
@@ -49,7 +49,7 @@ public final class BotManager {
      * @param plugin the CraftIRC instance
      * @param bots list of bot data to load
      */
-    public BotManager(@Nonnull CraftIRC plugin, @Nonnull List<Object> bots) {
+    public BotManager(@Nonnull CraftIRC plugin, @Nonnull List<? extends ConfigurationNode> bots) {
         this.plugin = plugin;
         this.plugin.trackShutdownable(() -> BotManager.this.bots.values().forEach(IRCBot::shutdown));
         this.loadBots(bots);
@@ -66,17 +66,16 @@ public final class BotManager {
         return this.bots.get(name);
     }
 
-    private void loadBots(@Nonnull List<Object> list) {
+    private void loadBots(@Nonnull List<? extends ConfigurationNode> list) {
         Set<String> usedBotNames = new HashSet<>();
         int nonMap = 0;
         int noName = 0;
-        for (final Object listElement : list) {
-            final Map<Object, Object> data = MapGetter.castToMap(listElement);
-            if (data == null) {
+        for (final ConfigurationNode node : list) {
+            if (!node.hasMapChildren()) {
                 nonMap++;
                 continue;
             }
-            final String name = MapGetter.getString(data, "name");
+            final String name = node.getNode("name").getString();
             if (name == null) {
                 noName++;
                 continue;
@@ -85,8 +84,7 @@ public final class BotManager {
                 CraftIRC.log().warning(String.format("Ignoring duplicate bot with name %s", name));
                 continue;
             }
-
-            this.addBot(name, data);
+            this.addBot(name, node);
         }
         if (nonMap > 0) {
             CraftIRC.log().warning(String.format("Bots list contained %d entries which were not maps", nonMap));
@@ -96,59 +94,44 @@ public final class BotManager {
         }
     }
 
-    private void addBot(@Nonnull String name, @Nonnull Map<Object, Object> data) {
-        String nick = MapGetter.getString(data, "nick");
-        String server = MapGetter.getString(data, "host");
-        Integer port = MapGetter.getInt(data, "port");
-        Boolean ssl = MapGetter.getBoolean(data, "ssl");
-        String user = MapGetter.getString(data, "user");
-        String realname = MapGetter.getString(data, "realname");
-        String password = MapGetter.getString(data, "password");
-
-        Map<Object, Object> bindMap = MapGetter.getMap(data, "bind");
-        String bindhost = MapGetter.getString(bindMap, "host");
-        Integer bindport = MapGetter.getInt(bindMap, "port");
+    private void addBot(@Nonnull String name, @Nonnull ConfigurationNode data) {
         Client.Builder botBuilder = Client.builder();
         botBuilder.name(name);
-        botBuilder.serverHost(server != null ? server : "localhost");
-        botBuilder.serverPort(port != null ? port : 6667);
-        botBuilder.secure(ssl != null && ssl);
-        if (password != null) {
-            botBuilder.serverPassword(password);
+        botBuilder.serverHost(data.getNode("host").getString("localhost"));
+        botBuilder.serverPort(data.getNode("port").getInt(6667));
+        botBuilder.secure(data.getNode("ssl").getBoolean());
+        ConfigurationNode password = data.getNode("password");
+        if (!password.isVirtual()) {
+            botBuilder.serverPassword(password.getString());
         }
-        botBuilder.user(user != null ? user : "CraftIRC");
-        botBuilder.realName(realname != null ? realname : "CraftIRC Bot");
-        if (bindhost != null) {
-            botBuilder.bindHost(bindhost);
-        }
-        botBuilder.bindPort(bindport != null ? bindport : 0);
-        botBuilder.nick(nick != null ? nick : "CraftIRC");
+        botBuilder.user(data.getNode("user").getString("CraftIRC"));
+        botBuilder.realName(data.getNode("realname").getString("CraftIRC Bot"));
 
-        Map<Object, Object> authMap = MapGetter.getMap(data, "auth");
-        if (authMap != null) {
-            String authUser = MapGetter.getString(authMap, "user");
-            String authPass = MapGetter.getString(authMap, "pass");
-            if (authUser != null && authPass != null) {
-                botBuilder.afterBuildConsumer(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
-            }
+        ConfigurationNode bind = data.getNode("bind");
+        ConfigurationNode bindHost = bind.getNode("host");
+        if (!bindHost.isVirtual()) {
+            botBuilder.bindHost(bindHost.getString());
+        }
+        botBuilder.bindPort(bind.getNode("port").getInt(0));
+        botBuilder.nick(data.getNode("nick").getString("CraftIRC"));
+
+        ConfigurationNode auth = data.getNode("auth");
+        String authUser = auth.getNode("user").getString();
+        String authPass = auth.getNode("pass").getString();
+        if (authUser != null && authPass != null) {
+            botBuilder.afterBuildConsumer(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
         }
 
-        Map<Object, Object> debugMap = MapGetter.getMap(data, "debug-output");
-        Boolean debugEx = false, debugIn = false, debugOut = false;
-        if (debugMap != null) {
-            debugEx = MapGetter.getBoolean(debugMap, "exceptions");
-            debugIn = MapGetter.getBoolean(debugMap, "input");
-            debugOut = MapGetter.getBoolean(debugMap, "output");
-        }
-        if (debugEx != null && debugEx) {
+        ConfigurationNode debug = data.getNode("debug-output");
+        if (debug.getNode("exceptions").getBoolean()) {
             botBuilder.listenException(exception -> CraftIRC.log().warning("Exception on bot " + name, exception));
         } else {
             botBuilder.listenException(null);
         }
-        if (debugIn != null && debugIn) {
+        if (debug.getNode("input").getBoolean()) {
             botBuilder.listenInput(input -> CraftIRC.log().info("[IN] " + input));
         }
-        if (debugOut != null && debugOut) {
+        if (debug.getNode("output").getBoolean()) {
             botBuilder.listenOutput(output -> CraftIRC.log().info("[OUT] " + output));
         }
 

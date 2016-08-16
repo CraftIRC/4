@@ -23,6 +23,7 @@
  */
 package org.kitteh.craftirc.endpoint.filter.defaults;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
 import org.kitteh.craftirc.exceptions.CraftIRCInvalidConfigException;
@@ -32,7 +33,6 @@ import org.kitteh.craftirc.util.loadable.Loadable;
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +63,7 @@ public class DataMapper extends Filter {
     }
 
     @Override
-    protected void load(@Nonnull Map<Object, Object> data) throws CraftIRCInvalidConfigException {
+    protected void load(@Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
         Matcher matcher = PERCENT_VARIABLE.matcher(this.message);
         this.variables = new LinkedList<>();
         StringBuilder builder = new StringBuilder();

@@ -23,6 +23,7 @@
  */
 package org.kitteh.craftirc.endpoint.link;
 
+import ninja.leaping.configurate.ConfigurationNode;
 import org.kitteh.craftirc.CraftIRC;
 import org.kitteh.craftirc.endpoint.TargetedMessage;
 import org.kitteh.craftirc.endpoint.filter.Filter;
@@ -57,7 +58,7 @@ public class Link {
     private final String target;
     private final List<Filter> filters = new CopyOnWriteArrayList<>();
 
-    public Link(@Nonnull CraftIRC plugin, @Nonnull String source, @Nonnull String target, @Nullable List<Object> filters) {
+    public Link(@Nonnull CraftIRC plugin, @Nonnull String source, @Nonnull String target, @Nullable List<? extends ConfigurationNode> filters) {
         this.source = source;
         this.target = target;
         if (filters != null) {
