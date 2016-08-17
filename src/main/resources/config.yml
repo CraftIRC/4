@@ -52,3 +52,20 @@ repeatable-filters:
     action: drop
   colorize:
     type: color
+commands:
+  - command: version
+    endpoints: [irc, mc-cmd]
+  - command: players
+    endpoints: irc
+    permissions:
+      irc: ["@",+]
+  - command: exec
+    endpoints: irc
+    permissions:
+      irc: "@"
+  - command: ircraw
+    rename: raw
+    endpoints: [irc, mc-cmd] # mc-cmd unnamed command endpoint eg. /craftirc raw
+    permissions:
+      mc: craftirc.raw
+      irc: "@"
