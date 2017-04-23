@@ -118,8 +118,9 @@ public final class BotManager {
         ConfigurationNode auth = data.getNode("auth");
         String authUser = auth.getNode("user").getString();
         String authPass = auth.getNode("pass").getString();
+        boolean nickless = auth.getNode("nickless").getBoolean();
         if (authUser != null && authPass != null) {
-            botBuilder.afterBuildConsumer(client -> client.getAuthManager().addProtocol(new NickServ(client, authUser, authPass)));
+            botBuilder.afterBuildConsumer(client -> client.getAuthManager().addProtocol(nickless ? new NicklessServ(client, authUser, authPass) : new NickServ(client, authUser, authPass)));
         }
 
         ConfigurationNode debug = data.getNode("debug-output");
