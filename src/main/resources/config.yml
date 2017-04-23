@@ -23,21 +23,10 @@ links:
     target: IRC
     filters:
       - colorize
-      - type: antihighlight
-        splitter: " "
-        variable: SENDER_NAME
-      - type: datamapper
-        message: "<%SENDER_NAME%> %MESSAGE_TEXT%"
-      - nobutts
   - source: IRC
     target: Chat
     filters:
       - colorize
-      - type : regex
-        value: IRC_PREFIX
-        action: replace
-        pattern: "@"
-        replacement: "[BOSS]"
       - type: datamapper
         message: "[IRC] <%IRC_PREFIX%%SENDER_NAME%> %MESSAGE_TEXT%"
   - source: Join
@@ -45,10 +34,5 @@ links:
   - source: Quit
     target: IRC
 repeatable-filters:
-  nobutts:
-    type: regex
-    value: MESSAGE_TEXT
-    pattern: butts
-    action: drop
   colorize:
     type: color
