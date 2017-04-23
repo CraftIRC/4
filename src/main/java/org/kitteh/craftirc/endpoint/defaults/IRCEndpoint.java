@@ -88,10 +88,6 @@ public class IRCEndpoint extends Endpoint {
         if (channelName == null) {
             throw new CraftIRCInvalidConfigException("No channel defined");
         }
-        /* TODO
-        if (invalid channel name) {
-            throw new CraftIRCInvalidConfigException("Not a valid channel name");
-        }*/
         this.channel = channelName;
         this.bot.addChannel(this, this.channel);
     }
