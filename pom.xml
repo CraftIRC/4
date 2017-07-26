@@ -13,6 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <packaging>jar</packaging>
+    <inceptionYear>2014</inceptionYear>
 
     <licenses>
         <license>
