@@ -79,11 +79,7 @@ public final class IRCBot {
      */
     public void addChannel(@Nonnull IRCEndpoint endpoint, @Nonnull String channel) {
         this.client.addChannel(channel);
-        Set<IRCEndpoint> points = this.channels.get(channel);
-        if (points == null) {
-            points = new CopyOnWriteArraySet<>();
-            this.channels.put(channel, points);
-        }
+        Set<IRCEndpoint> points = this.channels.computeIfAbsent(channel, k -> new CopyOnWriteArraySet<>());
         points.add(endpoint);
     }
 
@@ -120,15 +116,15 @@ public final class IRCBot {
         data.put(IRCEndpoint.IRC_CHANNEL, channel.getName());
         data.put(IRCEndpoint.IRC_MASK, sender.getName());
         data.put(IRCEndpoint.IRC_MESSAGE_TYPE, messageType);
-        String modes = "";
+        StringBuilder modes = new StringBuilder();
         Optional<SortedSet<ChannelUserMode>> userModes = channel.getUserModes(sender);
         if (userModes.isPresent()) {
             for (ChannelUserMode mode : userModes.get()) {
-                modes += mode.getNickPrefix();
+                modes.append(mode.getNickPrefix());
             }
         }
-        data.put(IRCEndpoint.IRC_PREFIX, modes.isEmpty() ? "" : modes.charAt(0));
-        data.put(IRCEndpoint.IRC_PREFIXES, modes);
+        data.put(IRCEndpoint.IRC_PREFIX, (modes.length() == 0) ? "" : modes.charAt(0));
+        data.put(IRCEndpoint.IRC_PREFIXES, modes.toString());
         data.put(IRCEndpoint.IRC_NICK, sender.getNick());
         data.put(Endpoint.MESSAGE_FORMAT, messageType.getFormat());
         data.put(Endpoint.MESSAGE_TEXT, message);

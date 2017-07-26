@@ -76,7 +76,7 @@ public abstract class Filter extends Loadable {
      * Loads this filter's data.
      *
      * @param data information to load
-     * @throws CraftIRCInvalidConfigException
+     * @throws CraftIRCInvalidConfigException if things go poorly
      */
     protected void load(@Nonnull ConfigurationNode data) throws CraftIRCInvalidConfigException {
 

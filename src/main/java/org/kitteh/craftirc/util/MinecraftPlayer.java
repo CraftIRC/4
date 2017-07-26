@@ -43,10 +43,8 @@ public final class MinecraftPlayer {
      * @param uniqueId the player's UUID
      */
     public MinecraftPlayer(@Nonnull String name, @Nonnull UUID uniqueId) {
-        Sanity.nullCheck(name, "Name cannot be null");
-        Sanity.nullCheck(uniqueId, "uniqueId cannot be null");
-        this.name = name;
-        this.uniqueId = uniqueId;
+        this.name = Sanity.nullCheck(name, "Name cannot be null");
+        this.uniqueId = Sanity.nullCheck(uniqueId, "uniqueId cannot be null");
     }
 
     /**

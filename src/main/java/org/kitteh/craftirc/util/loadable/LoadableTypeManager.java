@@ -115,11 +115,7 @@ public abstract class LoadableTypeManager<Type extends Loadable> {
             final String type = node.getNode("type").getString();
             final LoadableLoadout loadout = this.types.get(type);
             if (loadout == null) {
-                List<ConfigurationNode> unregged = this.unRegistered.get(type);
-                if (unregged == null) {
-                    unregged = new LinkedList<>();
-                    this.unRegistered.put(type, unregged);
-                }
+                List<ConfigurationNode> unregged = this.unRegistered.computeIfAbsent(type, k -> new LinkedList<>());
                 unregged.add(node);
                 continue;
             }

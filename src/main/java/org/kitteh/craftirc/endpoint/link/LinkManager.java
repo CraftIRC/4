@@ -91,11 +91,7 @@ public final class LinkManager {
     }
 
     private void addLink(@Nonnull Link link) {
-        List<Link> links = this.links.get(link.getSource());
-        if (links == null) {
-            links = new LinkedList<>();
-            this.links.put(link.getSource(), links);
-        }
+        List<Link> links = this.links.computeIfAbsent(link.getSource(), k -> new LinkedList<>());
         links.add(link);
     }
 }
